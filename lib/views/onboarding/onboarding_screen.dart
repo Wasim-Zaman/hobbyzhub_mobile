@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/views/onboarding/dine_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -128,10 +129,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             width: MediaQuery.of(context).size.width / 2,
                             caption: 'Next',
                             onPressed: () {
-                              _controller.nextPage(
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeIn,
-                              );
+                              if (_currentPage == 2) {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (builder) => DineScreen()),
+                                    (route) => false);
+                              } else {
+                                _controller.nextPage(
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeIn,
+                                );
+                              }
                             }),
                       )
                     ],

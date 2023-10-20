@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/widgets/primary_button.dart';
 
@@ -17,13 +18,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   void initState() {
     _controller = PageController();
-    //newUser();
+
     super.initState();
   }
-
-  // newUser() async {
-  //   await UserSecureStorage.setNewUser('new');
-  // }
 
   int _currentPage = 0;
 
@@ -165,17 +162,17 @@ class OnboardingModel {
 List<OnboardingModel> contents = [
   OnboardingModel(
       title: "Discover Your Passions",
-      image: "assets/images/Top Content (1).png",
+      image: ImageAssets.onboardingImage,
       subtitle:
           "Ready to explore a universe of hobbies? Hobbyzhub invites you to embark on a journey of discovery, where your interests come alive"),
   OnboardingModel(
       title: "Connect with Enthusiasts",
-      image: "assets/images/Top Content (2).png",
+      image: ImageAssets.onboarding3Image,
       subtitle:
           "Ready to explore a universe of hobbies? Hobbyzhub invites you to embark on a journey of discovery, where your interests come alive"),
   OnboardingModel(
       title: "Unleash Your Creativity",
-      image: "assets/images/Top Content.png",
+      image: ImageAssets.onboarding2Image,
       subtitle:
           "Ready to explore a universe of hobbies? Hobbyzhub invites you to embark on a journey of discovery, where your interests come alive"),
 ];

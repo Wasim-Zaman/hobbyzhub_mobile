@@ -3,7 +3,7 @@ import 'package:nb_utils/nb_utils.dart';
 
 class AppToast {
   static success(message, [ToastGravity? gravity]) {
-    _appToast(message, AppColors.successColor, gravity);
+    _appToast(message, AppColors.success, gravity);
   }
 
   static danger(message, [ToastGravity? gravity]) {
@@ -11,7 +11,7 @@ class AppToast {
   }
 
   static normal(message, [ToastGravity? gravity]) {
-    _appToast(message, AppColors.primaryColor, gravity);
+    _appToast(message, AppColors.primary, gravity);
   }
 }
 

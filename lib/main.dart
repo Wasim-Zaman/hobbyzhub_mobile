@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'HobbyzHub',
       theme: AppTheme.light,
+      navigatorKey: navigatorKey,
       home: const SplashScreen(),
     );
   }

@@ -4,4 +4,5 @@ class ImageAssets {
   static const String onboarding2Image = "assets/images/onboarding2.png";
   static const String onboarding3Image = "assets/images/onboarding3.png";
   static const String dineImage = "assets/images/dine.png";
+  static const String loginImage = "assets/images/login.png";
 }

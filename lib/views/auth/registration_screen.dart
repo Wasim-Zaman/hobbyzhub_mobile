@@ -18,6 +18,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   // controllers
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController rePasswordController = TextEditingController();
 
   // form key
   final formKey = GlobalKey<FormState>();
@@ -25,14 +26,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   // focus nodes
   FocusNode emailFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
+  FocusNode rePasswordFocusNode = FocusNode();
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    rePasswordController.dispose();
 
     emailFocusNode.dispose();
     passwordFocusNode.dispose();
+    rePasswordFocusNode.dispose();
+
     super.dispose();
   }
 
@@ -67,8 +72,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               20.height,
               PasswordFieldWidget(
                 labelText: 'RE-PASSWORD',
-                controller: passwordController,
-                hintText: "Enter your password",
+                controller: rePasswordController,
+                hintText: "Re-enter your password",
               ),
               20.height,
               Expanded(

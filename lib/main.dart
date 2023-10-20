@@ -13,7 +13,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'HobbyzHub',
       theme: AppTheme.light,
-      home: const Placeholder(),
     );
   }
 }

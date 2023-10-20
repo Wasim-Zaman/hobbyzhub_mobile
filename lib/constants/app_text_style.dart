@@ -22,4 +22,9 @@ class AppTextStyle {
     color: AppColors.black,
     fontFamily: AppFonts.jost,
   );
+
+  static var button = const TextStyle(
+    color: AppColors.primary,
+    fontWeight: FontWeight.bold,
+  );
 }

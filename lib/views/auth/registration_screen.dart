@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
-import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/password_field_widget.dart';
@@ -98,14 +97,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 children: [
                   const Text('Already have an account?'),
                   TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )),
+                    onPressed: () {},
+                    child: Text("Login", style: AppTextStyle.button),
+                  ),
                 ],
               ),
               30.height,

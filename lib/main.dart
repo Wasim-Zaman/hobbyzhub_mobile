@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/global/themes/app_theme.dart';
 import 'package:hobbyzhub/views/splash_screen/splash_screen.dart';
+import 'package:nb_utils/nb_utils.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initialize();
   runApp(const MyApp());
 }
 

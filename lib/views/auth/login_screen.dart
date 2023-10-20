@@ -1,43 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
+import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/global/fonts/app_fonts.dart';
+import 'package:hobbyzhub/global/pixels/app_pixels.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/password_field_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-class RegistrationScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   final VoidCallback toggleAuth;
-  const RegistrationScreen({Key? key, required this.toggleAuth})
-      : super(key: key);
+  const LoginScreen({Key? key, required this.toggleAuth}) : super(key: key);
 
   @override
-  State<RegistrationScreen> createState() => _RegistrationScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _RegistrationScreenState extends State<RegistrationScreen> {
-  // controllers
+class _LoginScreenState extends State<LoginScreen> {
+  // Controllers
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController rePasswordController = TextEditingController();
 
-  // form key
-  final formKey = GlobalKey<FormState>();
-
-  // focus nodes
+  // Focus Nodes
   FocusNode emailFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
-  FocusNode rePasswordFocusNode = FocusNode();
+
+  // Form key
+  final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-    rePasswordController.dispose();
 
     emailFocusNode.dispose();
     passwordFocusNode.dispose();
-    rePasswordFocusNode.dispose();
 
     super.dispose();
   }
@@ -54,10 +52,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 20.height,
-                Text('Register on Hobbyzhub', style: AppTextStyle.headings),
+                Text('Welcome Back', style: AppTextStyle.headings),
                 20.height,
                 Text(
-                  'Lets create you an account',
+                  'Lets get back to connect you to LetsCom, shall we',
                   style: AppTextStyle.subHeading,
                 ),
                 20.height,
@@ -74,18 +72,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   hintText: "Enter your password",
                 ),
                 20.height,
-                PasswordFieldWidget(
-                  labelText: 'RE-PASSWORD',
-                  controller: rePasswordController,
-                  hintText: "Re-enter your password",
+                // Forgot password
+                TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Forgot password?",
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: AppFonts.poppins,
+                      decoration: TextDecoration.underline,
+                      fontSize: AppPixels.subHeading,
+                    ),
+                  ),
                 ),
-                20.height,
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       PrimaryButtonWidget(
-                          caption: "Register",
+                          caption: "Login",
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               print('validated');
@@ -100,12 +106,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Already have an account?'),
+                    const Text('New here?'),
                     TextButton(
                       onPressed: () {
                         widget.toggleAuth();
                       },
-                      child: Text("Login", style: AppTextStyle.button),
+                      child: Text("Register", style: AppTextStyle.button),
                     ),
                   ],
                 ),

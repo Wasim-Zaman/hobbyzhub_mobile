@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 
 class DineScreen extends StatefulWidget {
   const DineScreen({super.key});

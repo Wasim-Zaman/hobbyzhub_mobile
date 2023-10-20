@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/global/themes/app_theme.dart';
-import 'package:hobbyzhub/views/splash_screen/splash_screen.dart';
+import 'package:hobbyzhub/views/auth/auth_landing_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 void main() async {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'HobbyzHub',
       theme: AppTheme.light,
       navigatorKey: navigatorKey,
-      home: const SplashScreen(),
+      home: const AuthLandingScreen(),
     );
   }
 }

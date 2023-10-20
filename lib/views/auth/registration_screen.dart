@@ -53,8 +53,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               20.height,
               Text('Register on Hobbyzhub', style: AppTextStyle.headings),
               20.height,
-              Text('Lets create you an account',
-                  style: AppTextStyle.subHeading),
+              Text(
+                'Lets create you an account',
+                style: AppTextStyle.subHeading,
+              ),
               20.height,
               TextFieldWidget(
                 labelText: 'EMAIL',

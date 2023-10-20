@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/global/fonts/app_fonts.dart';
+import 'package:hobbyzhub/global/pixels/app_pixels.dart';
 
 class PrimaryButtonWidget extends StatelessWidget {
   const PrimaryButtonWidget({
@@ -32,10 +34,10 @@ class PrimaryButtonWidget extends StatelessWidget {
         ),
         child: Text(
           caption,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18.01,
-            fontFamily: 'Poppins',
+          style: TextStyle(
+            color: AppColors.white,
+            fontSize: AppPixels.button,
+            fontFamily: AppFonts.poppins,
             fontWeight: FontWeight.w600,
           ),
         ),

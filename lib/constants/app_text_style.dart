@@ -18,7 +18,7 @@ class AppTextStyle {
   );
 
   static var textField = TextStyle(
-    fontSize: AppPixels.normal,
+    fontSize: AppPixels.subHeading,
     color: AppColors.black,
     fontFamily: AppFonts.jost,
   );

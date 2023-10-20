@@ -7,6 +7,10 @@ class AppColors {
   // Danger Colors
   static const dangerColor = Color.fromRGBO(215, 0, 0, 1);
 
+  // Grey Colors
+  static const borderGrey = Color.fromRGBO(220, 220, 220, 1);
+  static const darkGrey = Color.fromRGBO(103, 103, 103, 1);
+
   // Other Colors
   static const black = Color.fromRGBO(0, 0, 0, 1);
   static const white = Color.fromRGBO(255, 255, 255, 1);

@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/views/widgets/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);

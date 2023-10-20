@@ -10,4 +10,16 @@ class AppTextStyle {
     color: AppColors.black,
     fontFamily: AppFonts.jost,
   );
+
+  static var subHeading = TextStyle(
+    fontSize: AppPixels.subHeading,
+    color: AppColors.darkGrey,
+    fontFamily: AppFonts.jost,
+  );
+
+  static var textField = TextStyle(
+    fontSize: AppPixels.normal,
+    color: AppColors.black,
+    fontFamily: AppFonts.jost,
+  );
 }

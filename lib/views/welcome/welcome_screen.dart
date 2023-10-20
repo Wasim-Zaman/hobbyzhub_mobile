@@ -3,17 +3,18 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/views/welcome/welcome_screen.dart';
+import 'package:hobbyzhub/views/auth/registration_screen.dart';
+import 'package:hobbyzhub/views/widgets/buttons/outlined_button.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 
-class DineScreen extends StatefulWidget {
-  const DineScreen({super.key});
+class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({super.key});
 
   @override
-  State<DineScreen> createState() => _DineScreenState();
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _DineScreenState extends State<DineScreen> {
+class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +26,7 @@ class _DineScreenState extends State<DineScreen> {
             ),
             Expanded(
               flex: 3,
-              child: Image.asset(ImageAssets.dineImage),
+              child: Image.asset(ImageAssets.loginImage),
             ),
             Expanded(
                 flex: 2,
@@ -36,7 +37,7 @@ class _DineScreenState extends State<DineScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Dive into Hobbyzhub's World",
+                        "Welcome to HobbyzHub",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Color(0xFF181818),
@@ -49,7 +50,7 @@ class _DineScreenState extends State<DineScreen> {
                         height: 10,
                       ),
                       Text(
-                        "Dive in and explore a world of endless hobbies, connect with enthusiasts, and unleash your creativity.",
+                        "A place where hobbyist meet, expound and support eachother.",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Color(0xFF979797),
@@ -62,41 +63,32 @@ class _DineScreenState extends State<DineScreen> {
                   ),
                 )),
             Padding(
-                padding: EdgeInsets.all(20),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (builder) => WelcomeScreen()));
-                  },
-                  child: Container(
-                    height: 60,
-                    width: MediaQuery.of(context).size.width / 2,
-                    decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(50)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 84,
-                          child: Text(
-                            'Dive In ',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.01,
-                              fontFamily: 'Poppins',
-                            ),
-                          ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        )
-                      ],
-                    ),
-                  ),
-                )),
+              padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+              child: PrimaryButtonWidget(
+                  width: MediaQuery.of(context).size.width,
+                  caption: 'Registration',
+                  onPressed: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (builder) => RegistrationScreen()),
+                        (route) => false);
+                  }),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 30, left: 30, right: 30),
+              child: OutlinedButtonWidget(
+                  width: MediaQuery.of(context).size.width,
+                  caption: 'Login',
+                  onPressed: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (builder) => RegistrationScreen()),
+                        (route) => false);
+                  }),
+            ),
             SizedBox(
               height: 30,
             )

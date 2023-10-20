@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
+import 'package:hobbyzhub/views/auth/login_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/password_field_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class RegistrationScreen extends StatefulWidget {
-  final VoidCallback toggleAuth;
-  const RegistrationScreen({Key? key, required this.toggleAuth})
-      : super(key: key);
+  const RegistrationScreen({Key? key}) : super(key: key);
 
   @override
   State<RegistrationScreen> createState() => _RegistrationScreenState();
@@ -103,7 +103,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     const Text('Already have an account?'),
                     TextButton(
                       onPressed: () {
-                        widget.toggleAuth();
+                        AppNavigator.goToPage(
+                          context: context,
+                          screen: const LoginScreen(),
+                        );
                       },
                       child: Text("Login", style: AppTextStyle.button),
                     ),

@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
-import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/auth/registration_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/outlined_button.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';

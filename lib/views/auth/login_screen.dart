@@ -10,8 +10,7 @@ import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class LoginScreen extends StatefulWidget {
-  final VoidCallback toggleAuth;
-  const LoginScreen({Key? key, required this.toggleAuth}) : super(key: key);
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -109,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Text('New here?'),
                     TextButton(
                       onPressed: () {
-                        widget.toggleAuth();
+                        context.pop();
                       },
                       child: Text("Register", style: AppTextStyle.button),
                     ),

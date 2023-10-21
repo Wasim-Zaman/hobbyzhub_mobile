@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'timer_cubit_state.dart';
 
@@ -8,10 +8,10 @@ class OtpTimerCubit extends Cubit<OtpTimerState> {
   int i = 30;
   late Timer timer;
 
-  OtpTimerCubit() : super(OtpTimerInitial());
+  OtpTimerCubit() : super(const OtpTimerInitial());
 
   startOtpIntervals() async {
-    emit(OtpTimerInitial());
+    emit(const OtpTimerInitial());
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       emit(OtpTimerRunning(secondsValue: i));
       i--;
@@ -25,7 +25,7 @@ class OtpTimerCubit extends Cubit<OtpTimerState> {
 
   pauseTimer() {
     timer.cancel();
-    emit(OtpTimerInitial());
+    emit(const OtpTimerInitial());
   }
 
   stopTimer() {

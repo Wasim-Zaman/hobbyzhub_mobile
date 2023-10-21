@@ -49,7 +49,7 @@ class _OtpScreenState extends State<OtpScreen> {
   Widget build(BuildContext context) {
     const focusedBorderColor = AppColors.primary;
 
-    const borderColor = AppColors.primary;
+    const borderColor = AppColors.borderGrey;
 
     final defaultPinTheme = PinTheme(
       width: 56,

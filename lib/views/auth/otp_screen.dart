@@ -150,10 +150,12 @@ class _OtpScreenState extends State<OtpScreen> {
                       vertical: 20.h,
                     ),
                     onPressed: () {
-                      AppNavigator.goToPage(
-                        context: context,
-                        screen: RecoveryPasswordScreen(),
-                      );
+                      if (formKey.currentState!.validate()) {
+                        AppNavigator.goToPage(
+                          context: context,
+                          screen: RecoveryPasswordScreen(),
+                        );
+                      }
                     },
                     caption: 'Send OTP',
                   ),

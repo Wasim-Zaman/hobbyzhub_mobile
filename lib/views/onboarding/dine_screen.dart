@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/welcome/welcome_screen.dart';
-import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 
 class DineScreen extends StatefulWidget {
   const DineScreen({super.key});
@@ -35,29 +35,16 @@ class _DineScreenState extends State<DineScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Dive into Hobbyzhub's World",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xFF181818),
-                          fontSize: 28,
-                          fontFamily: 'Jost',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      Text("Dive into Hobbyzhub's World",
+                          textAlign: TextAlign.center,
+                          style: AppTextStyle.headings),
                       SizedBox(
                         height: 10,
                       ),
                       Text(
-                        "Dive in and explore a world of endless hobbies, connect with enthusiasts, and unleash your creativity.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xFF979797),
-                          fontSize: 18,
-                          fontFamily: 'Jost',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
+                          "Dive in and explore a world of endless hobbies, connect with enthusiasts, and unleash your creativity.",
+                          textAlign: TextAlign.center,
+                          style: AppTextStyle.subHeading),
                     ],
                   ),
                 )),
@@ -79,15 +66,9 @@ class _DineScreenState extends State<DineScreen> {
                       children: [
                         SizedBox(
                           width: 84,
-                          child: Text(
-                            'Dive In ',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.01,
-                              fontFamily: 'Poppins',
-                            ),
-                          ),
+                          child: Text('Dive In ',
+                              textAlign: TextAlign.center,
+                              style: AppTextStyle.whiteButtonTextStyle),
                         ),
                         Icon(
                           Icons.arrow_forward,

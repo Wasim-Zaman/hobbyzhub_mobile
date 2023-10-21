@@ -27,4 +27,15 @@ class AppTextStyle {
     color: AppColors.primary,
     fontWeight: FontWeight.bold,
   );
+  static var whiteButtonTextStyle = const TextStyle(
+    color: AppColors.white,
+    fontWeight: FontWeight.bold,
+    fontSize: AppPixels.subHeading,
+  );
+
+  static var outlinedButtonTextStyle = const TextStyle(
+    color: AppColors.black,
+    fontWeight: FontWeight.bold,
+    fontSize: AppPixels.subHeading,
+  );
 }

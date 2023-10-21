@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/onboarding/dine_screen.dart';
@@ -75,29 +76,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          contents[i].title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color(0xFF181818),
-                            fontSize: 28,
-                            fontFamily: 'Jost',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        Text(contents[i].title,
+                            textAlign: TextAlign.center,
+                            style: AppTextStyle.headings),
                         SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          contents[i].subtitle,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color(0xFF979797),
-                            fontSize: 18,
-                            fontFamily: 'Jost',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
+                        Text(contents[i].subtitle,
+                            textAlign: TextAlign.center,
+                            style: AppTextStyle.subHeading),
                       ],
                     ),
                   );
@@ -111,7 +98,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 children: [
                   Row(
                     mainAxisSize: MainAxisSize.min,
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

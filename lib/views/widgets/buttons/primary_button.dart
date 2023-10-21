@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/global/fonts/app_fonts.dart';
-import 'package:hobbyzhub/global/pixels/app_pixels.dart';
 
 class PrimaryButtonWidget extends StatelessWidget {
   const PrimaryButtonWidget({
@@ -32,15 +31,7 @@ class PrimaryButtonWidget extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(50)),
           ),
         ),
-        child: Text(
-          caption,
-          style: TextStyle(
-            color: AppColors.white,
-            fontSize: AppPixels.button,
-            fontFamily: AppFonts.poppins,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        child: Text(caption, style: AppTextStyle.whiteButtonTextStyle),
       ),
     );
   }

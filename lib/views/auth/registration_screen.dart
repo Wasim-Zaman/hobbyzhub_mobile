@@ -94,6 +94,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     labelText: 'PASSWORD',
                     controller: passwordController,
                     hintText: "Enter your password",
+                    validator: AppValidators.password,
                   ),
                   20.height,
                   PasswordFieldWidget(
@@ -110,7 +111,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   20.height,
                   // take the available height of the page
                   SizedBox(
-                    height: context.height() * 0.5,
+                    height: context.height() * 0.3,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [

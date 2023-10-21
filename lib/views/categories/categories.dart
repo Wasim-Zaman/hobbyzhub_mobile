@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
+import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/categories/sub_categories.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -18,6 +19,7 @@ class _MainCategoryScreenState extends State<MainCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         leading: Padding(
           padding: EdgeInsets.all(8.w),

@@ -4,18 +4,22 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/auth/otp_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/text_fields/password_field_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-class ForgetPasswordScreen extends StatefulWidget {
-  const ForgetPasswordScreen({super.key});
+class RecoveryPasswordScreen extends StatefulWidget {
+  const RecoveryPasswordScreen({super.key});
 
   @override
-  State<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
+  State<RecoveryPasswordScreen> createState() => _RecoveryPasswordScreenState();
 }
 
-class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
-  final TextEditingController phoneController = TextEditingController();
+class _RecoveryPasswordScreenState extends State<RecoveryPasswordScreen> {
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,16 +56,22 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 20.height,
-                Text('Forgot password', style: AppTextStyle.headings),
+                Text('Recovery Password', style: AppTextStyle.headings),
                 30.height,
                 Text(
-                    'Please enter your phone number below to receive your OTP ',
+                    'Enter your new and confirm password to reset your password.',
                     style: AppTextStyle.subHeading),
                 50.height,
-                TextFieldWidget(
-                  controller: phoneController,
-                  labelText: "Phone Number",
-                  hintText: "Phone Number",
+                PasswordFieldWidget(
+                  controller: passwordController,
+                  labelText: "Password",
+                  hintText: "Password",
+                ),
+                30.height,
+                PasswordFieldWidget(
+                  controller: confirmPasswordController,
+                  labelText: "Re-Password",
+                  hintText: "Re-Password",
                 ),
               ],
             ),
@@ -73,7 +83,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (builder) => const OtpScreen()));
                 },
-                caption: 'Send OTP',
+                caption: 'Reset Password',
               ),
             ),
           ],

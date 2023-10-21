@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/timer_cubit/timer_cubit_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/views/auth/recovery_password.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pinput/pinput.dart';
@@ -62,6 +63,7 @@ class _OtpScreenState extends State<OtpScreen> {
       ),
     );
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         leading: Padding(
           padding: EdgeInsets.all(8.w),
@@ -136,7 +138,6 @@ class _OtpScreenState extends State<OtpScreen> {
                 30.height,
                 BlocBuilder<OtpTimerCubit, OtpTimerState>(
                   builder: (context, state) {
-                    print(state);
                     if (state is OtpTimerRunning) {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -200,7 +201,10 @@ class _OtpScreenState extends State<OtpScreen> {
                   PrimaryButtonWidget(
                     margin:
                         EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (builder) => RecoveryPasswordScreen()));
+                    },
                     caption: 'Send OTP',
                   ),
                   20.height,

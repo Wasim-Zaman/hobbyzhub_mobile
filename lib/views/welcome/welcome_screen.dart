@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/views/auth/registration_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/outlined_button.dart';
@@ -35,29 +36,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Welcome to HobbyzHub",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xFF181818),
-                          fontSize: 28,
-                          fontFamily: 'Jost',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      Text("Welcome to HobbyzHub",
+                          textAlign: TextAlign.center,
+                          style: AppTextStyle.headings),
                       SizedBox(
                         height: 10,
                       ),
                       Text(
-                        "A place where hobbyist meet, expound and support eachother.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xFF979797),
-                          fontSize: 18,
-                          fontFamily: 'Jost',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
+                          "A place where hobbyist meet, expound and support eachother.",
+                          textAlign: TextAlign.center,
+                          style: AppTextStyle.subHeading),
                     ],
                   ),
                 )),

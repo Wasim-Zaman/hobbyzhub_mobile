@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/global/fonts/app_fonts.dart';
-import 'package:hobbyzhub/global/pixels/app_pixels.dart';
+import 'package:hobbyzhub/constants/app_text_style.dart';
 
 class OutlinedButtonWidget extends StatelessWidget {
   const OutlinedButtonWidget({
@@ -32,12 +30,7 @@ class OutlinedButtonWidget extends StatelessWidget {
         ),
         child: Text(
           caption,
-          style: TextStyle(
-            color: AppColors.black,
-            fontSize: AppPixels.button,
-            fontFamily: AppFonts.poppins,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyle.outlinedButtonTextStyle,
         ),
       ),
     );

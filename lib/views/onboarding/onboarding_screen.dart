@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/onboarding/dine_screen.dart';
@@ -32,14 +34,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       duration: const Duration(milliseconds: 200),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(
-          Radius.circular(50),
+          Radius.circular(5.r),
         ),
         color: _currentPage == index ? AppColors.primary : Colors.grey.shade400,
       ),
-      margin: EdgeInsets.only(right: 5),
-      height: 10,
+      margin: EdgeInsets.only(right: 5.w),
+      height: 10.h,
       curve: Curves.easeIn,
-      width: _currentPage == index ? 30 : 10,
+      width: _currentPage == index ? 30.w : 10.w,
     );
   }
 
@@ -51,7 +53,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: 30,
+              height: 30.h,
             ),
             Expanded(
               flex: 3,
@@ -70,34 +72,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 itemCount: contents.length,
                 itemBuilder: (context, i) {
                   return Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: EdgeInsets.all(20.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          contents[i].title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color(0xFF181818),
-                            fontSize: 28,
-                            fontFamily: 'Jost',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          contents[i].subtitle,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color(0xFF979797),
-                            fontSize: 18,
-                            fontFamily: 'Jost',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
+                        Text(contents[i].title,
+                            textAlign: TextAlign.center,
+                            style: AppTextStyle.headings),
+                        SizedBox(height: 10.h),
+                        Text(contents[i].subtitle,
+                            textAlign: TextAlign.center,
+                            style: AppTextStyle.subHeading),
                       ],
                     ),
                   );
@@ -111,7 +97,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 children: [
                   Row(
                     mainAxisSize: MainAxisSize.min,
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -122,7 +107,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 20),
+                      SizedBox(width: 20.w),
                       Padding(
                         padding: EdgeInsets.all(20),
                         child: PrimaryButtonWidget(

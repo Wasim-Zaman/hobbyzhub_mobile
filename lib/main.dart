@@ -3,9 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/bloc_provider.dart';
 import 'package:hobbyzhub/global/themes/app_theme.dart';
-import 'package:hobbyzhub/views/auth/forget_password.dart';
-import 'package:hobbyzhub/views/categories/categories.dart';
-import 'package:hobbyzhub/views/onboarding/dine_screen.dart';
 import 'package:hobbyzhub/views/splash_screen/splash_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
 

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
@@ -21,7 +22,7 @@ class _DineScreenState extends State<DineScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: 30,
+              height: 30.h,
             ),
             Expanded(
               flex: 3,
@@ -30,7 +31,7 @@ class _DineScreenState extends State<DineScreen> {
             Expanded(
                 flex: 2,
                 child: Padding(
-                  padding: EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(20.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -39,7 +40,7 @@ class _DineScreenState extends State<DineScreen> {
                           textAlign: TextAlign.center,
                           style: AppTextStyle.headings),
                       SizedBox(
-                        height: 10,
+                        height: 10.h,
                       ),
                       Text(
                           "Dive in and explore a world of endless hobbies, connect with enthusiasts, and unleash your creativity.",
@@ -49,14 +50,14 @@ class _DineScreenState extends State<DineScreen> {
                   ),
                 )),
             Padding(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.w),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (builder) => WelcomeScreen()));
                   },
                   child: Container(
-                    height: 60,
+                    height: 60.h,
                     width: MediaQuery.of(context).size.width / 2,
                     decoration: BoxDecoration(
                         color: AppColors.primary,
@@ -65,7 +66,7 @@ class _DineScreenState extends State<DineScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: 84,
+                          width: 84.w,
                           child: Text('Dive In ',
                               textAlign: TextAlign.center,
                               style: AppTextStyle.whiteButtonTextStyle),
@@ -79,7 +80,7 @@ class _DineScreenState extends State<DineScreen> {
                   ),
                 )),
             SizedBox(
-              height: 30,
+              height: 30.h,
             )
           ],
         ),

@@ -29,6 +29,19 @@ class AppTextStyle {
     color: AppColors.primary,
     fontWeight: FontWeight.bold,
   );
+
+  static var resentOtpTextStyle = TextStyle(
+    decoration: TextDecoration.underline,
+    decorationColor: AppColors.primary,
+    color: Color(0xFF26A4FF),
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
+  static var codeTextStyle = TextStyle(
+    color: AppColors.primary,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
   static var whiteButtonTextStyle = const TextStyle(
     color: AppColors.white,
     fontWeight: FontWeight.bold,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/constants/bloc_provider.dart';
 import 'package:hobbyzhub/global/themes/app_theme.dart';
+import 'package:hobbyzhub/views/auth/forget_password.dart';
 import 'package:hobbyzhub/views/categories/categories.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -22,16 +25,19 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    return ScreenUtilInit(
-        designSize: Size(width, height),
-        builder: (context, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'HobbyzHub',
-            theme: AppTheme.light,
-            navigatorKey: navigatorKey,
-            home: const MainCategoryScreen(),
-          );
-        });
+    return MultiBlocProvider(
+      providers: BlocProviders.providers,
+      child: ScreenUtilInit(
+          designSize: Size(width, height),
+          builder: (context, child) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'HobbyzHub',
+              theme: AppTheme.light,
+              navigatorKey: navigatorKey,
+              home: const ForgetPasswordScreen(),
+            );
+          }),
+    );
   }
 }

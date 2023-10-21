@@ -4,6 +4,7 @@ import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/global/fonts/app_fonts.dart';
 import 'package:hobbyzhub/global/pixels/app_pixels.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
+import 'package:hobbyzhub/views/auth/forget_password.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/password_field_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
@@ -73,7 +74,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 20.height,
                 // Forgot password
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (builder) => const ForgetPasswordScreen()));
+                  },
                   child: Text(
                     "Forgot password?",
                     style: TextStyle(

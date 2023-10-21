@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/timer_cubit/timer_cubit_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/auth/recovery_password.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -52,11 +53,11 @@ class _OtpScreenState extends State<OtpScreen> {
     const borderColor = AppColors.borderGrey;
 
     final defaultPinTheme = PinTheme(
-      width: 56,
-      height: 56,
+      width: 70,
+      height: 80,
       textStyle: const TextStyle(
         fontSize: 22,
-        color: Color.fromRGBO(30, 60, 87, 1),
+        color: AppColors.darkGrey,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(19),
@@ -67,7 +68,7 @@ class _OtpScreenState extends State<OtpScreen> {
       backgroundColor: AppColors.white,
       appBar: BackAppbarWidget(),
       body: Padding(
-        padding: EdgeInsets.all(12.w),
+        padding: EdgeInsets.all(20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -91,6 +92,8 @@ class _OtpScreenState extends State<OtpScreen> {
                       focusNode: focusNode,
                       showCursor: false,
                       defaultPinTheme: defaultPinTheme,
+                      length: 4,
+                      pinAnimationType: PinAnimationType.scale,
                       separatorBuilder: (index) => const SizedBox(width: 8),
                       onCompleted: (pin) {
                         debugPrint('onCompleted: $pin');
@@ -161,8 +164,10 @@ class _OtpScreenState extends State<OtpScreen> {
                               padding: EdgeInsets.only(
                                 bottom: 1.h,
                               ),
-                              child: Text('Click here to resend code',
-                                  style: AppTextStyle.codeTextStyle),
+                              child: Text(
+                                'Click here to resend code',
+                                style: AppTextStyle.codeTextStyle,
+                              ),
                             ),
                           )
                         ],
@@ -179,18 +184,24 @@ class _OtpScreenState extends State<OtpScreen> {
               child: Column(
                 children: [
                   PrimaryButtonWidget(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 20.h,
+                    ),
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (builder) => RecoveryPasswordScreen()));
+                      AppNavigator.goToPage(
+                        context: context,
+                        screen: RecoveryPasswordScreen(),
+                      );
                     },
                     caption: 'Send OTP',
                   ),
                   20.height,
-                  Text('Resend OTP',
-                      textAlign: TextAlign.center,
-                      style: AppTextStyle.resentOtpTextStyle)
+                  Text(
+                    'Resend OTP',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.resentOtpTextStyle,
+                  )
                 ],
               ),
             ),

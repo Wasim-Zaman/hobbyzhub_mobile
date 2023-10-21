@@ -10,8 +10,8 @@ import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/auth/recovery_password.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/text_fields/otp_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:pinput/pinput.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -48,22 +48,6 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const focusedBorderColor = AppColors.primary;
-
-    const borderColor = AppColors.borderGrey;
-
-    final defaultPinTheme = PinTheme(
-      width: 70,
-      height: 80,
-      textStyle: const TextStyle(
-        fontSize: 22,
-        color: AppColors.darkGrey,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(19),
-        border: Border.all(color: borderColor),
-      ),
-    );
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: BackAppbarWidget(),
@@ -87,34 +71,9 @@ class _OtpScreenState extends State<OtpScreen> {
                   child: Directionality(
                     // Specify direction if desired
                     textDirection: TextDirection.ltr,
-                    child: Pinput(
-                      controller: pinController,
+                    child: OtpWidget(
+                      pinController: pinController,
                       focusNode: focusNode,
-                      showCursor: false,
-                      defaultPinTheme: defaultPinTheme,
-                      length: 4,
-                      pinAnimationType: PinAnimationType.scale,
-                      separatorBuilder: (index) => const SizedBox(width: 8),
-                      onCompleted: (pin) {
-                        debugPrint('onCompleted: $pin');
-                      },
-                      onChanged: (value) {
-                        debugPrint('onChanged: $value');
-                      },
-                      cursor: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 9),
-                            width: 50,
-                            height: 1,
-                            color: focusedBorderColor,
-                          ),
-                        ],
-                      ),
-                      focusedPinTheme: defaultPinTheme,
-                      submittedPinTheme: defaultPinTheme,
-                      errorPinTheme: defaultPinTheme,
                     ),
                   ),
                 ),

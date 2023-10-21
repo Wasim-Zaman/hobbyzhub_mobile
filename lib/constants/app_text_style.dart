@@ -67,4 +67,9 @@ class AppTextStyle {
     fontFamily: AppFonts.jost,
     fontWeight: FontWeight.w500,
   );
+
+  static var pinput = TextStyle(
+    fontSize: 22,
+    color: AppColors.darkGrey,
+  );
 }

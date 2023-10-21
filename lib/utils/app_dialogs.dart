@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 
 class AppDialogs {
   static BuildContext? dialogueContext;
@@ -8,7 +9,7 @@ class AppDialogs {
       barrierDismissible: false,
       builder: (ctx) {
         dialogueContext = ctx;
-        return const CircularProgressIndicator();
+        return const LoadingWidget();
       },
     );
   }

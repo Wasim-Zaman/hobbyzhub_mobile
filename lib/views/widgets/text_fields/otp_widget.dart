@@ -72,6 +72,7 @@ class _OtpWidgetState extends State<OtpWidget> {
       controller: widget.pinController,
       focusNode: widget.focusNode,
       showCursor: true,
+      closeKeyboardWhenCompleted: true,
       validator: widget.validator,
       defaultPinTheme: PinTheme(
         width: 70,

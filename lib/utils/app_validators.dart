@@ -21,4 +21,12 @@ class AppValidators {
       return "Password does not match";
     }
   };
+
+  static var otp = (String? value) {
+    if (value!.isEmpty) {
+      return "Please provide OTP";
+    } else if (value.length != 4) {
+      return "Invalid or Incorrect OTP. Try again";
+    }
+  };
 }

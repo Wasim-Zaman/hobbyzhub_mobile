@@ -7,6 +7,7 @@ import 'package:hobbyzhub/blocs/timer_cubit/timer_cubit_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/views/auth/recovery_password.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -74,6 +75,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     child: OtpWidget(
                       pinController: pinController,
                       focusNode: focusNode,
+                      validator: AppValidators.otp,
                     ),
                   ),
                 ),

@@ -7,4 +7,18 @@ class AppValidators {
     }
     return null;
   };
+
+  static var password = (String? value) {
+    if (value!.isEmpty) {
+      return "Password cannot be empty";
+    }
+    return null;
+  };
+  static var reEnterPassword = (String? value, String old) {
+    if (value!.isEmpty) {
+      return "Password cannot be empty";
+    } else if (value != old) {
+      return "Password does not match";
+    }
+  };
 }

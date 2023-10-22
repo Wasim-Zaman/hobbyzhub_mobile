@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/controllers/auth/auth_controller.dart';
 import 'package:hobbyzhub/models/auth/auth_model.dart';
+import 'package:hobbyzhub/models/user/user_model.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -65,6 +66,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (networkStatus == true) {
           final response = await AuthController.verifyAccount(event.email);
           emit(AuthVerificationState(response: response));
+        } else {
+          throw Exception("No Internet Connection");
+        }
+      } catch (e) {
+        emit(AuthStateFailure(message: e.toString()));
+      }
+    });
+
+    // Handle complete profile event
+    on<AuthEventCompleteProfile>((event, emit) async {
+      emit(AuthLoadingState());
+      try {
+        bool networkStatus = await isNetworkAvailable();
+        if (networkStatus == true) {
+          final response = await AuthController.completeProfile(
+            user: event.user,
+            token: event.token,
+          );
+          emit(AuthCompleteProfileState(response: response));
         } else {
           throw Exception("No Internet Connection");
         }

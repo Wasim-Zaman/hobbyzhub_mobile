@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:hobbyzhub/constants/api_manager.dart';
 import 'package:hobbyzhub/constants/app_url.dart';
 import 'package:hobbyzhub/models/auth/auth_model.dart';
+import 'package:hobbyzhub/models/user/user_model.dart';
 
 abstract class AuthController {
   static Future<AuthModel> _getResponse(var response) async {
@@ -48,6 +49,24 @@ abstract class AuthController {
 
     try {
       final response = await ApiManager.bodyLessPut(url);
+      return _getResponse(response);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  static Future<AuthModel> completeProfile({
+    required UserModel user,
+    required String token,
+  }) async {
+    const url = AuthUrl.completeProfile;
+    try {
+      print(user.toJson());
+      final response = await ApiManager.putRequest(
+        user.toJson(),
+        url,
+        headers: {"Authorization": token},
+      );
       return _getResponse(response);
     } catch (_) {
       rethrow;

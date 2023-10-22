@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/auth/auth_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/user/user_model.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/dropdowns/dropdown_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
@@ -11,7 +12,9 @@ import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CompleteProfileScreen2 extends StatefulWidget {
-  const CompleteProfileScreen2({Key? key}) : super(key: key);
+  final UserModel userModel;
+  const CompleteProfileScreen2({Key? key, required this.userModel})
+      : super(key: key);
 
   @override
   State<CompleteProfileScreen2> createState() => _CompleteProfileScreen2State();

@@ -28,6 +28,13 @@ class AuthEventVerifyEmail extends AuthEvent {
   AuthEventVerifyEmail({required this.email});
 }
 
+class AuthEventCompleteProfile extends AuthEvent {
+  final UserModel user;
+  final String token;
+
+  AuthEventCompleteProfile({required this.user, required this.token});
+}
+
 // States
 abstract class AuthState {}
 
@@ -53,6 +60,11 @@ class AuthVerificationState extends AuthState {
 class AuthLoginState extends AuthState {
   final AuthModel response;
   AuthLoginState({required this.response});
+}
+
+class AuthCompleteProfileState extends AuthState {
+  final AuthModel response;
+  AuthCompleteProfileState({required this.response});
 }
 
 class AuthStateFailure extends AuthState {

@@ -29,4 +29,10 @@ class AppValidators {
       return "Invalid or Incorrect OTP. Try again";
     }
   };
+
+  static var notEmpty = (String? value) {
+    if (value!.isEmpty) {
+      return "The field cannot be empty";
+    }
+  };
 }

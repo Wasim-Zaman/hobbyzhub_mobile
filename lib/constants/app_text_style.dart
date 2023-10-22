@@ -72,4 +72,20 @@ class AppTextStyle {
     fontSize: 22,
     color: AppColors.darkGrey,
   );
+
+  static var normal = TextStyle(
+    fontSize: 18.0,
+    color: AppColors.darkGrey,
+  );
+
+  static var dialogHeader = TextStyle(
+    fontSize: 20.8,
+    color: AppColors.darkGrey,
+    fontWeight: FontWeight.bold,
+  );
+
+  static var dialogNormal = TextStyle(
+    fontSize: 12.8,
+    color: AppColors.darkGrey,
+  );
 }

@@ -71,16 +71,12 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
           } else if (state is AuthSendVerificationState) {
             toast(state.response.message);
           } else if (state is AuthVerificationState) {
-            AppDialogs.otpSuccessDialog(
-              context,
-              onPressed: () {
-                context.pop();
-                AppNavigator.goToPageWithReplacement(
-                  context: context,
-                  screen: LoginScreen(),
-                );
-              },
-            );
+            AppDialogs.otpSuccessDialog(context).then((value) {
+              AppNavigator.goToPageWithReplacement(
+                context: context,
+                screen: LoginScreen(),
+              );
+            });
           } else if (state is AuthStateFailure) {
             toast(state.message);
           }

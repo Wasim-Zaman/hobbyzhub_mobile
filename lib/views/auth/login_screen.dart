@@ -50,8 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is AuthLoadingState) {
+              print('loading');
             } else if (state is AuthLoginState) {
               toast("Navigate to home");
+            } else if (state is AuthStateFailure) {
+              toast(state.message);
             }
           },
           builder: (context, state) {
@@ -108,7 +111,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           PrimaryButtonWidget(
                               caption: "Login",
                               onPressed: () {
-                                if (formKey.currentState!.validate()) {}
+                                if (formKey.currentState!.validate()) {
+                                  context.read<AuthBloc>().add(
+                                        AuthEventLogin(
+                                          email: emailController.text.trim(),
+                                          password:
+                                              passwordController.text.trim(),
+                                        ),
+                                      );
+                                }
                               }),
                         ],
                       ),

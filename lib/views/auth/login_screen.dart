@@ -113,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             height: context.height() * 0.3,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,

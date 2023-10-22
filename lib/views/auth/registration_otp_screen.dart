@@ -8,7 +8,9 @@ import 'package:hobbyzhub/blocs/timer_cubit/timer_cubit_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
+import 'package:hobbyzhub/views/auth/login_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/otp_widget.dart';
@@ -64,10 +66,21 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
       appBar: BackAppbarWidget(),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is AuthStateLoading) {
+          if (state is AuthLoadingState) {
             toast("Loading");
           } else if (state is AuthSendVerificationState) {
             toast(state.response.message);
+          } else if (state is AuthVerificationState) {
+            AppDialogs.otpSuccessDialog(
+              context,
+              onPressed: () {
+                context.pop();
+                AppNavigator.goToPageWithReplacement(
+                  context: context,
+                  screen: LoginScreen(),
+                );
+              },
+            );
           } else if (state is AuthStateFailure) {
             toast(state.message);
           }
@@ -88,7 +101,7 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
                       Text('OTP Verification', style: AppTextStyle.headings),
                       30.height,
                       Text(
-                          'A 4 digit code has been sent to your email example@gmail.com',
+                          'A 4 digit code has been sent to your email ${widget.email}',
                           style: AppTextStyle.subHeading),
                       50.height,
                       Center(
@@ -172,9 +185,12 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
                             horizontal: 20.w,
                             vertical: 20.h,
                           ),
-                          onPressed: () {
-                            AppDialogs.otpSuccessDialog(context);
-                            if (formKey.currentState!.validate()) {}
+                          onPressed: () async {
+                            if (formKey.currentState!.validate()) {
+                              context.read<AuthBloc>().add(
+                                    AuthEventVerifyEmail(email: widget.email),
+                                  );
+                            }
                           },
                           caption: 'Verify',
                         ),

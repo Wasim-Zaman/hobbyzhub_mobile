@@ -2,18 +2,18 @@ import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/controllers/auth/auth_controller.dart';
-import 'package:hobbyzhub/models/auth/registration_model.dart';
+import 'package:hobbyzhub/models/auth/auth_model.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 part 'auth_events_states.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthStateInitial()) {
+  AuthBloc() : super(AuthInitialState()) {
     // Handle Events
 
     // Handle Register Event
     on<AuthEventRegister>((event, emit) async {
-      emit(AuthStateLoading());
+      emit(AuthLoadingState());
       try {
         bool networkStatus = await isNetworkAvailable();
         if (networkStatus == true) {
@@ -32,7 +32,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     // Send Verification Message Event
     on<AuthEventSendVerificationEmail>((event, emit) async {
-      emit(AuthStateLoading());
+      emit(AuthLoadingState());
       try {
         bool networkStatus = await isNetworkAvailable();
         if (networkStatus == true) {
@@ -51,9 +51,37 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
+    // Handle email verification
+    on<AuthEventVerifyEmail>((event, emit) async {
+      emit(AuthLoadingState());
+      try {
+        bool networkStatus = await isNetworkAvailable();
+        if (networkStatus == true) {
+          final response = await AuthController.verifyAccount(event.email);
+          emit(AuthVerificationState(response: response));
+        } else {
+          throw Exception("No Internet Connection");
+        }
+      } catch (e) {
+        emit(AuthStateFailure(message: e.toString()));
+      }
+    });
+
     // Handle Login Event
-    on<AuthEventLogin>((event, emit) {
-      emit(AuthStateLoading());
+    on<AuthEventLogin>((event, emit) async {
+      emit(AuthLoadingState());
+      try {
+        bool networkStatus = await isNetworkAvailable();
+        if (networkStatus == true) {
+          final response =
+              await AuthController.login(event.email, event.password);
+          emit(AuthLoginState(response: response));
+        } else {
+          throw Exception("No Internet Connection");
+        }
+      } catch (e) {
+        emit(AuthStateFailure(message: e.toString()));
+      }
     });
   }
 }

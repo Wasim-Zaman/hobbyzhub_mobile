@@ -10,6 +10,9 @@ class TextFieldWidget extends StatefulWidget {
   final TextInputType? keyboardType;
   final Function()? onEditingComplete;
   final TextInputAction? textInputAction;
+  final int? maxLines;
+  final bool? readOnly;
+  final Widget? prefixIcon;
 
   const TextFieldWidget({
     Key? key,
@@ -21,6 +24,9 @@ class TextFieldWidget extends StatefulWidget {
     this.keyboardType,
     this.onEditingComplete,
     this.textInputAction,
+    this.maxLines,
+    this.readOnly,
+    this.prefixIcon,
   }) : super(key: key);
 
   @override
@@ -34,6 +40,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       controller: widget.controller,
       validator: widget.validator,
       focusNode: widget.focusNode,
+      maxLines: widget.maxLines ?? 1,
       textInputAction: widget.textInputAction ??
           (widget.focusNode == null
               ? TextInputAction.done
@@ -49,9 +56,12 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             }
           },
       keyboardType: widget.keyboardType,
+      readOnly: widget.readOnly ?? false,
       decoration: InputDecoration(
         labelText: widget.labelText,
         hintText: widget.hintText,
+        prefixIcon: widget.prefixIcon,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
         labelStyle: AppTextStyle.textField,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/controllers/auth/auth_controller.dart';
 import 'package:hobbyzhub/models/auth/auth_model.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 part 'auth_events_states.dart';
@@ -38,6 +39,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (networkStatus == true) {
           // generate 4 digits random otp
           final otp = Random.secure().nextInt(9999);
+          // storing otp in the local database
+          await UserSecureStorage.setOtp(otp.toString());
           final response = await AuthController.sendVerificaionMail(
             event.email,
             otp,

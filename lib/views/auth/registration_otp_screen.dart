@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +10,7 @@ import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/auth/login_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -52,6 +53,16 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
     initBlocs();
   }
 
+  verifyOtp() async {
+    final otp = await UserSecureStorage.fetchOtp();
+    if (pinController.text == otp) {
+      context.read<AuthBloc>().add(AuthEventVerifyEmail(email: widget.email));
+      await UserSecureStorage.deleteOtp();
+    } else {
+      toast('Invalid OTP');
+    }
+  }
+
   @override
   void dispose() {
     pinController.dispose();
@@ -67,10 +78,12 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthLoadingState) {
-            toast("Loading");
+            AppDialogs.loadingDialog(context);
           } else if (state is AuthSendVerificationState) {
+            AppDialogs.closeDialog();
             toast(state.response.message);
           } else if (state is AuthVerificationState) {
+            AppDialogs.closeDialog();
             AppDialogs.otpSuccessDialog(context).then((value) {
               AppNavigator.goToPageWithReplacement(
                 context: context,
@@ -183,9 +196,7 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
                           ),
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
-                              context.read<AuthBloc>().add(
-                                    AuthEventVerifyEmail(email: widget.email),
-                                  );
+                              await verifyOtp();
                             }
                           },
                           caption: 'Verify',

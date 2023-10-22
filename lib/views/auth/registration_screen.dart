@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/auth/auth_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/views/auth/login_screen.dart';
+import 'package:hobbyzhub/views/auth/registration_otp_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/password_field_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
@@ -64,7 +66,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       body: BlocListener<AuthBloc, AuthState>(
         bloc: authBloc,
         listener: (context, state) {
-          if (state is AuthRegistrationSuccessState) {
+          if (state is AuthLoadingState) {
+            AppDialogs.loadingDialog(context);
+          } else if (state is AuthRegistrationSuccessState) {
+            AppDialogs.closeDialog();
+            AppNavigator.goToPage(
+              context: context,
+              screen: RegistrationOtpScreen(
+                email: emailController.text.trim(),
+              ),
+            );
             AppToast.normal(state.response.message);
           } else if (state is AuthStateFailure) {
             AppToast.danger(state.message);
@@ -97,12 +108,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     controller: passwordController,
                     hintText: "Enter your password",
                     validator: AppValidators.password,
+                    focusNode: passwordFocusNode,
                   ),
                   20.height,
                   PasswordFieldWidget(
                     labelText: 'RE-PASSWORD',
                     controller: rePasswordController,
                     hintText: "Re-enter your password",
+                    focusNode: rePasswordFocusNode,
                     validator: (p0) {
                       return AppValidators.reEnterPassword(
                         p0,
@@ -122,7 +135,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
                                 initBloc();
-                              } else {}
+                              }
                             }),
                         20.height,
                         Row(

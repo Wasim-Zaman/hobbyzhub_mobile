@@ -10,4 +10,6 @@ abstract class AuthUrl {
   static const String emailVerification =
       "${AppUrl.baseUrl}/api/auth/verify-account";
   static const String login = "${AppUrl.baseUrl}/api/auth/login";
+  static const String sendVerificationEmail =
+      "${AppUrl.baseUrl}/api/auth/send-email";
 }

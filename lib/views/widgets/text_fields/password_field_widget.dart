@@ -47,11 +47,9 @@ class _PasswordFieldWidgetState extends State<PasswordFieldWidget> {
             if (widget.focusNode != null) {
               // change focus to next field
               widget.focusNode!.nextFocus();
-              print('next focus');
             } else {
               // Unfocus the current field
               FocusScope.of(context).unfocus();
-              print('unfocus');
             }
           },
       keyboardType: widget.keyboardType,

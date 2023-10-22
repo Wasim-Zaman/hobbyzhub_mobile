@@ -1,18 +1,18 @@
-class RegistrationModel {
+class AuthModel {
   String? apiVersion;
   String? organizationName;
   String? message;
   int? responseCode;
   Data? data;
 
-  RegistrationModel(
+  AuthModel(
       {this.apiVersion,
       this.organizationName,
       this.message,
       this.responseCode,
       this.data});
 
-  RegistrationModel.fromJson(Map<String, dynamic> json) {
+  AuthModel.fromJson(Map<String, dynamic> json) {
     apiVersion = json['apiVersion'];
     organizationName = json['organizationName'];
     message = json['message'];

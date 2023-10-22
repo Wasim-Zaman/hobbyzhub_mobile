@@ -97,11 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       PrimaryButtonWidget(
                           caption: "Login",
                           onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              print('validated');
-                            } else {
-                              print('not validated');
-                            }
+                            if (formKey.currentState!.validate()) {}
                           }),
                     ],
                   ),

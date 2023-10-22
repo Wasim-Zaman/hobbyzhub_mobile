@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/controllers/auth/auth_controller.dart';
 import 'package:hobbyzhub/models/auth/registration_model.dart';
@@ -20,6 +22,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             event.password,
           );
           emit(AuthRegistrationSuccessState(response: response));
+        } else {
+          throw Exception("No Internet Connection");
+        }
+      } catch (e) {
+        emit(AuthStateFailure(message: e.toString()));
+      }
+    });
+
+    // Send Verification Message Event
+    on<AuthEventSendVerificationEmail>((event, emit) async {
+      emit(AuthStateLoading());
+      try {
+        bool networkStatus = await isNetworkAvailable();
+        if (networkStatus == true) {
+          // generate 4 digits random otp
+          final otp = Random.secure().nextInt(9999);
+          final response = await AuthController.sendVerificaionMail(
+            event.email,
+            otp,
+          );
+          emit(AuthSendVerificationState(response: response));
         } else {
           throw Exception("No Internet Connection");
         }

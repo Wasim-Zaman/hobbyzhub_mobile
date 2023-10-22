@@ -3,12 +3,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 
 class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({Key? key}) : super(key: key);
+  final Color? color;
+  const LoadingWidget({Key? key, this.color}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: SpinKitChasingDots(
-        color: AppColors.primary,
+        color: color ?? AppColors.primary,
         size: 30.0,
       ),
     );

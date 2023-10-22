@@ -27,4 +27,10 @@ class ApiManager {
         body: jsonEncode(body),
         headers: headers ?? {'Content-Type': 'application/json'});
   }
+
+  static Future<Response> bodyLessPost(var url, {dynamic headers}) async {
+    // Perform a POST request with the specified body and return the response.
+    return await post(Uri.parse(url),
+        headers: headers ?? {'Content-Type': 'application/json'});
+  }
 }

@@ -16,6 +16,12 @@ class AuthEventRegister extends AuthEvent {
   AuthEventRegister({required this.email, required this.password});
 }
 
+class AuthEventSendVerificationEmail extends AuthEvent {
+  final String email;
+
+  AuthEventSendVerificationEmail({required this.email});
+}
+
 abstract class AuthState {}
 
 class AuthStateInitial extends AuthState {}
@@ -23,8 +29,13 @@ class AuthStateInitial extends AuthState {}
 class AuthStateLoading extends AuthState {}
 
 class AuthRegistrationSuccessState extends AuthState {
-  final RegistrationModel response;
+  final AuthModel response;
   AuthRegistrationSuccessState({required this.response});
+}
+
+class AuthSendVerificationState extends AuthState {
+  final AuthModel response;
+  AuthSendVerificationState({required this.response});
 }
 
 class AuthStateFailure extends AuthState {

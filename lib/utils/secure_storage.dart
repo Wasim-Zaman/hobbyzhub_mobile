@@ -6,6 +6,8 @@ class UserSecureStorage {
   static const _keyToken = 'token';
   static const _keyNewUser = 'newUser';
   static const _keyOtp = 'otp';
+  static const _keyUserId = 'userId';
+  static const _expiryTime = 'expiryTime';
 
   static Future setToken(String token) async {
     await _storage.write(key: _keyToken, value: token);
@@ -38,5 +40,21 @@ class UserSecureStorage {
 
   static Future deleteOtp() async {
     await _storage.delete(key: _keyOtp);
+  }
+
+  static Future setUserId(String userId) async {
+    await _storage.write(key: _keyUserId, value: userId);
+  }
+
+  static Future<String?> fetchUserId() async {
+    return await _storage.read(key: _keyUserId);
+  }
+
+  static Future setExpiryTime(String expiryTime) async {
+    await _storage.write(key: _expiryTime, value: expiryTime);
+  }
+
+  static Future<String?> fetchExpiryTime() async {
+    return await _storage.read(key: _expiryTime);
   }
 }

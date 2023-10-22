@@ -8,6 +8,7 @@ import 'package:hobbyzhub/global/pixels/app_pixels.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/auth/forget_password.dart';
 import 'package:hobbyzhub/views/auth/registration_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -34,6 +35,12 @@ class _LoginScreenState extends State<LoginScreen> {
   // Form key
   final formKey = GlobalKey<FormState>();
 
+  initLocalStorage(var response) async {
+    await UserSecureStorage.setToken(response.data!.accessToken!);
+    await UserSecureStorage.setUserId(response.data!.user!.id!);
+    await UserSecureStorage.setExpiryTime(response.data!.accessTokenExpiry!);
+  }
+
   @override
   void dispose() {
     emailController.dispose();
@@ -51,11 +58,12 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: AppColors.white,
       body: SafeArea(
         child: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is AuthLoadingState) {
               AppDialogs.loadingDialog(context);
             } else if (state is AuthLoginState) {
               AppDialogs.closeDialog();
+              await initLocalStorage(state.response);
               toast("Navigate to home");
             } else if (state is AuthStateFailure) {
               AppDialogs.closeDialog();

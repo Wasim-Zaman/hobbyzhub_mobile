@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/views/auth/login_screen.dart';
 import 'package:hobbyzhub/views/auth/registration_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/outlined_button.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -55,10 +57,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   width: MediaQuery.of(context).size.width,
                   caption: 'Registration',
                   onPressed: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (builder) => RegistrationScreen()),
-                        (route) => false);
+                    AppNavigator.goToPageWithReplacement(
+                      context: context,
+                      screen: RegistrationScreen(),
+                    );
                   }),
             ),
             SizedBox(
@@ -70,10 +72,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   width: MediaQuery.of(context).size.width,
                   caption: 'Login',
                   onPressed: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (builder) => RegistrationScreen()),
-                        (route) => false);
+                    AppNavigator.goToPageWithReplacement(
+                      context: context,
+                      screen: LoginScreen(),
+                    );
                   }),
             ),
             SizedBox(

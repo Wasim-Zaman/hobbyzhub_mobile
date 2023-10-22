@@ -165,6 +165,7 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     otpTimerCubit.startOtpIntervals();
+                                    initBlocs();
                                   },
                                   child: Container(
                                     padding: EdgeInsets.only(

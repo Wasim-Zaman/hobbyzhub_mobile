@@ -9,6 +9,7 @@ import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/views/auth/forget_password.dart';
+import 'package:hobbyzhub/views/auth/registration_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/password_field_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
@@ -143,10 +144,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               const Text('New here?'),
                               TextButton(
                                 onPressed: () {
-                                  context.pop();
+                                  AppNavigator.goToPageWithReplacement(
+                                    context: context,
+                                    screen: const RegistrationScreen(),
+                                  );
                                 },
-                                child: Text("Register",
-                                    style: AppTextStyle.button),
+                                child: Text(
+                                  "Register",
+                                  style: AppTextStyle.button,
+                                ),
                               ),
                             ],
                           ),

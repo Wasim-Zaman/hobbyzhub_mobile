@@ -144,7 +144,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             const Text('Already have an account?'),
                             TextButton(
                               onPressed: () {
-                                AppNavigator.goToPage(
+                                AppNavigator.goToPageWithReplacement(
                                   context: context,
                                   screen: const LoginScreen(),
                                 );

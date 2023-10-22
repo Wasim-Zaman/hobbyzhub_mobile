@@ -17,5 +17,5 @@ class AppToast {
 
 void _appToast(message, color, [ToastGravity? gravity]) {
   toast(message,
-      bgColor: color, length: Toast.LENGTH_LONG, gravity: ToastGravity.TOP);
+      bgColor: color, length: Toast.LENGTH_LONG, gravity: ToastGravity.BOTTOM);
 }

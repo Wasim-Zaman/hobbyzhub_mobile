@@ -91,6 +91,7 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
               );
             });
           } else if (state is AuthStateFailure) {
+            AppDialogs.closeDialog();
             toast(state.message);
           }
         },

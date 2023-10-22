@@ -78,6 +78,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             );
             AppToast.normal(state.response.message);
           } else if (state is AuthStateFailure) {
+            AppDialogs.closeDialog();
             AppToast.danger(state.message);
           }
         },

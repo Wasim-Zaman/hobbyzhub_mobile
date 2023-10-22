@@ -38,7 +38,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         bool networkStatus = await isNetworkAvailable();
         if (networkStatus == true) {
           // generate 4 digits random otp
-          final otp = Random.secure().nextInt(9999);
+          Random random = Random();
+          int randomNumber = random.nextInt(9999) + 1;
+          String formattedNumber = randomNumber.toString().padLeft(4, '0');
+          int otp = int.parse(formattedNumber);
           // storing otp in the local database
           await UserSecureStorage.setOtp(otp.toString());
           final response = await AuthController.sendVerificaionMail(

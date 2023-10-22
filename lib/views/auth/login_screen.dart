@@ -35,10 +35,12 @@ class _LoginScreenState extends State<LoginScreen> {
   // Form key
   final formKey = GlobalKey<FormState>();
 
-  initLocalStorage(var response) async {
-    await UserSecureStorage.setToken(response.data!.accessToken!);
-    await UserSecureStorage.setUserId(response.data!.user!.id!);
-    await UserSecureStorage.setExpiryTime(response.data!.accessTokenExpiry!);
+  initLocalStorage(var data) async {
+    Future.wait([
+      UserSecureStorage.setToken(data?.accessToken),
+      UserSecureStorage.setUserId(data?.userId),
+      UserSecureStorage.setExpiryTime(data?.tokenExpiresAt),
+    ]);
   }
 
   @override
@@ -60,11 +62,13 @@ class _LoginScreenState extends State<LoginScreen> {
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) async {
             if (state is AuthLoadingState) {
+              // unfocus keyboard
+              FocusScope.of(context).unfocus();
+              // show loading
               AppDialogs.loadingDialog(context);
             } else if (state is AuthLoginState) {
               AppDialogs.closeDialog();
-              await initLocalStorage(state.response);
-              toast("Navigate to home");
+              await initLocalStorage(state.response.data);
             } else if (state is AuthStateFailure) {
               AppDialogs.closeDialog();
               toast(state.message);
@@ -118,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fontWeight: FontWeight.bold,
                                 fontFamily: AppFonts.poppins,
                                 decoration: TextDecoration.underline,
+                                decorationColor: AppColors.primary,
                                 fontSize: AppPixels.subHeading,
                               ),
                             ),
@@ -149,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text('New here?'),
+                              const Text("Don't have an account?"),
                               TextButton(
                                 onPressed: () {
                                   AppNavigator.goToPageWithReplacement(

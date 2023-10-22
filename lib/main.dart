@@ -34,7 +34,8 @@ class _MyAppState extends State<MyApp> {
               title: 'HobbyzHub',
               theme: AppTheme.light,
               navigatorKey: navigatorKey,
-              home: const RegistrationOtpScreen(),
+              home:
+                  const RegistrationOtpScreen(email: 'wasimxaman13@gmail.com'),
             );
           }),
     );

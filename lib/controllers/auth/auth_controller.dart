@@ -27,10 +27,9 @@ abstract class AuthController {
   static Future<AuthModel> sendVerificaionMail(String email, int otp) async {
     final url = "${AuthUrl.sendVerificationEmail}/$email/$otp";
     try {
-      final response = await ApiManager.bodyLessPost(url);
-
-      print(response.statusCode);
-      print(response.body);
+      final response = await ApiManager.bodyLessPost(url, headers: {
+        "Intent": "Verify-Email",
+      });
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         var body = jsonDecode(response.body);

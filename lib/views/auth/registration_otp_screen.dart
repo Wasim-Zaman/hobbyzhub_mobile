@@ -14,7 +14,8 @@ import 'package:hobbyzhub/views/widgets/text_fields/otp_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class RegistrationOtpScreen extends StatefulWidget {
-  const RegistrationOtpScreen({super.key});
+  final String email;
+  const RegistrationOtpScreen({super.key, required this.email});
 
   @override
   State<RegistrationOtpScreen> createState() => _RegistrationOtpScreenState();
@@ -37,9 +38,7 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
 
   initBlocs() {
     authBloc = context.read<AuthBloc>()
-      ..add(
-        AuthEventSendVerificationEmail(email: "wasim.xaman13@gmail.com"),
-      );
+      ..add(AuthEventSendVerificationEmail(email: widget.email));
   }
 
   @override

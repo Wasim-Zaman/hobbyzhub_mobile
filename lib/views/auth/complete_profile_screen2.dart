@@ -1,19 +1,23 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/auth/auth_bloc.dart';
+import 'package:hobbyzhub/blocs/image_picker/image_picker_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/user/user_model.dart';
+import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/dropdowns/dropdown_widget.dart';
-import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
+import 'package:hobbyzhub/views/widgets/text_fields/dop_widget.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CompleteProfileScreen2 extends StatefulWidget {
-  final UserModel userModel;
-  const CompleteProfileScreen2({Key? key, required this.userModel})
+  final UserModel user;
+  const CompleteProfileScreen2({Key? key, required this.user})
       : super(key: key);
 
   @override
@@ -35,6 +39,9 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
   ];
 
   String? selectedGender;
+
+  // other variables
+  File? image;
 
   @override
   void initState() {
@@ -79,7 +86,6 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
                           20.height,
                           // Date picker widget
                           DobWidget(dobController: dobController),
-
                           20.height,
                           SizedBox(
                             height: context.height() * 0.3,
@@ -109,50 +115,17 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
   }
 }
 
-class DobWidget extends StatelessWidget {
-  const DobWidget({
-    super.key,
-    required this.dobController,
-  });
-
-  final TextEditingController dobController;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFieldWidget(
-      labelText: "DATE OF BIRTH",
-      controller: dobController,
-      hintText: 'Select your birth date',
-      readOnly: true,
-      prefixIcon: IconButton(
-        icon: const Icon(
-          Ionicons.calendar_outline,
-          color: AppColors.darkGrey,
-        ),
-        onPressed: () {
-          // show date picker
-          showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(1900),
-            lastDate: DateTime.now(),
-          ).then((value) {
-            if (value != null) {
-              // set date to controller
-              dobController.text = value.toString().split(' ')[0];
-            }
-          });
-        },
-      ),
-    );
-  }
-}
-
-class PickImageWidget extends StatelessWidget {
+class PickImageWidget extends StatefulWidget {
   const PickImageWidget({
     super.key,
   });
 
+  @override
+  State<PickImageWidget> createState() => _PickImageWidgetState();
+}
+
+class _PickImageWidgetState extends State<PickImageWidget> {
+  ImagePickerBloc imageBloc = ImagePickerBloc();
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -166,12 +139,33 @@ class PickImageWidget extends StatelessWidget {
               color: AppColors.lightGrey,
               borderRadius: BorderRadius.circular(40),
             ),
-            child: const Center(
-              child: Icon(
-                LineIcons.user,
-                size: 80,
-                color: AppColors.darkGrey,
-              ),
+            child: BlocConsumer<ImagePickerBloc, ImagePickerState>(
+              bloc: imageBloc,
+              listener: (context, state) {
+                if (state is ImagePickerPickedImageState) {
+                } else if (state is ImagePickerFailureState) {
+                  AppToast.normal('No Image Selected');
+                }
+              },
+              builder: (context, state) {
+                if (state is ImagePickerPickedImageState) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: Image.file(
+                      state.image!,
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                } else {
+                  return const Center(
+                    child: Icon(
+                      LineIcons.user,
+                      size: 80,
+                      color: AppColors.darkGrey,
+                    ),
+                  );
+                }
+              },
             ),
           ),
           Positioned(
@@ -187,7 +181,9 @@ class PickImageWidget extends StatelessWidget {
                   color: AppColors.white,
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                imageBloc = imageBloc..add(ImagePickerPickImageEvent());
+              },
             ),
           ),
         ],

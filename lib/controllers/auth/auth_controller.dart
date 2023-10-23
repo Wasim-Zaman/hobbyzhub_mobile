@@ -4,6 +4,7 @@ import 'package:hobbyzhub/constants/api_manager.dart';
 import 'package:hobbyzhub/constants/app_url.dart';
 import 'package:hobbyzhub/models/auth/auth_model.dart';
 import 'package:hobbyzhub/models/user/user_model.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 
 abstract class AuthController {
   static Future<AuthModel> _getResponse(var response) async {
@@ -80,6 +81,44 @@ abstract class AuthController {
         'email': email,
         'password': password,
       }, url);
+
+      return _getResponse(response);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  static Future<AuthModel> sendVerificaionMailForPasswordChange(
+    String email,
+    int otp,
+  ) async {
+    // get the token from local database
+    final token = await UserSecureStorage.fetchToken();
+    final url = "${AuthUrl.sendVerificationMailForPasswordReset}/$email/$otp";
+    final response =
+        await ApiManager.bodyLessPost(url, headers: <String, String>{
+      "Authorization": token!,
+      "Intent": "Reset-Password",
+      "Content-Type": "application/json"
+    });
+    return _getResponse(response);
+  }
+
+  static Future<AuthModel> changePassword(
+    String userId,
+    String password,
+  ) async {
+    const url = AuthUrl.changePassword;
+    // get the token from local database
+    final token = await UserSecureStorage.fetchToken();
+
+    try {
+      final response = await ApiManager.putRequest(
+          {"userId": userId, "password": password}, url,
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token,
+          });
 
       return _getResponse(response);
     } catch (_) {

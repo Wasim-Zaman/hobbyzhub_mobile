@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/views/auth/otp_screen.dart';
+import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/password_field_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -23,28 +23,7 @@ class _RecoveryPasswordScreenState extends State<RecoveryPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: AppBar(
-        leading: Padding(
-          padding: EdgeInsets.all(8.w),
-          child: Container(
-            decoration: ShapeDecoration(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(width: 1, color: Color(0x33A0A2B3)),
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-            ),
-            width: 30.w,
-            height: 30.h,
-            child: Center(
-              child: Icon(
-                Icons.navigate_before,
-                size: 30.sp,
-              ),
-            ),
-          ),
-        ),
-      ),
+      appBar: const BackAppbarWidget(),
       body: Padding(
         padding: EdgeInsets.all(12.w),
         child: Column(
@@ -79,8 +58,8 @@ class _RecoveryPasswordScreenState extends State<RecoveryPasswordScreen> {
               child: PrimaryButtonWidget(
                 margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (builder) => const OtpScreen()));
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (builder) =>  OtpScreen()));
                 },
                 caption: 'Reset Password',
               ),

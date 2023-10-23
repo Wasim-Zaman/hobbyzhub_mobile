@@ -35,6 +35,14 @@ class AuthEventCompleteProfile extends AuthEvent {
   AuthEventCompleteProfile({required this.user, required this.token});
 }
 
+class AuthEventSendVerificationForPasswordReset extends AuthEvent {
+  final String email;
+
+  AuthEventSendVerificationForPasswordReset({required this.email});
+}
+
+class AuthEventImagePicker extends AuthEvent {}
+
 // States
 abstract class AuthState {}
 
@@ -65,6 +73,16 @@ class AuthLoginState extends AuthState {
 class AuthCompleteProfileState extends AuthState {
   final AuthModel response;
   AuthCompleteProfileState({required this.response});
+}
+
+class AuthSendVerificationForPasswordResetState extends AuthState {
+  final AuthModel response;
+  AuthSendVerificationForPasswordResetState({required this.response});
+}
+
+class AuthImagePickerState extends AuthState {
+  final File? image;
+  AuthImagePickerState({required this.image});
 }
 
 class AuthStateFailure extends AuthState {

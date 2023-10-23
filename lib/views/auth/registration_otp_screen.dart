@@ -32,17 +32,15 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
   final formKey = GlobalKey<FormState>();
   late OtpTimerCubit otpTimerCubit;
 
-  // Blocs
-  AuthBloc authBloc = AuthBloc();
-
   initCubits() {
     otpTimerCubit = context.read<OtpTimerCubit>();
     otpTimerCubit.startOtpIntervals();
   }
 
   initBlocs() {
-    authBloc = context.read<AuthBloc>()
-      ..add(AuthEventSendVerificationEmail(email: widget.email));
+    context
+        .read<AuthBloc>()
+        .add(AuthEventSendVerificationEmail(email: widget.email));
   }
 
   @override

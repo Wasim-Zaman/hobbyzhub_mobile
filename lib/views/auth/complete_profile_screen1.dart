@@ -49,7 +49,9 @@ class _CompleteProfileScreen1State extends State<CompleteProfileScreen1> {
 
     AppNavigator.goToPage(
       context: context,
-      screen: CompleteProfileScreen2(userModel: userModel),
+      screen: CompleteProfileScreen2(
+        user: userModel,
+      ),
     );
   }
 

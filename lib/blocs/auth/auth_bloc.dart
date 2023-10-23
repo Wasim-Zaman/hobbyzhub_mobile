@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/controllers/auth/auth_controller.dart';
 import 'package:hobbyzhub/models/auth/auth_model.dart';
 import 'package:hobbyzhub/models/user/user_model.dart';
+import 'package:hobbyzhub/utils/media_utils.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -108,6 +110,45 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } catch (e) {
         emit(AuthStateFailure(message: e.toString()));
       }
+    });
+
+    // Handle forget password event
+    on<AuthEventSendVerificationForPasswordReset>((event, emit) async {
+      emit(AuthLoadingState());
+      try {
+        bool networkStatus = await isNetworkAvailable();
+        if (networkStatus == true) {
+          // generate 4 digits random otp
+          Random random = Random();
+          int randomNumber = random.nextInt(9999) + 1;
+          String formattedNumber = randomNumber.toString().padLeft(4, '0');
+          int otp = int.parse(formattedNumber);
+          // storing otp in the local database
+          await UserSecureStorage.setOtp(otp.toString());
+          final response =
+              await AuthController.sendVerificaionMailForPasswordChange(
+            event.email,
+            otp,
+          );
+          emit(AuthSendVerificationForPasswordResetState(response: response));
+        } else {
+          throw Exception("No Internet Connection");
+        }
+      } catch (e) {
+        emit(AuthStateFailure(message: e.toString()));
+      }
+    });
+
+    // Pick image event
+    on<AuthEventImagePicker>((event, emit) {
+      MediaUtils.pickImage().then((value) {
+        if (value != null) {
+          final File img = value;
+          emit(AuthImagePickerState(image: img));
+        } else {
+          emit(AuthImagePickerState(image: null));
+        }
+      });
     });
   }
 }

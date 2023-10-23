@@ -35,15 +35,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   FocusNode passwordFocusNode = FocusNode();
   FocusNode rePasswordFocusNode = FocusNode();
 
-  // blocs
-  AuthBloc authBloc = AuthBloc();
-
   initBloc() {
-    authBloc = authBloc
-      ..add(AuthEventRegister(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      ));
+    context.read<AuthBloc>().add(AuthEventRegister(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        ));
   }
 
   @override
@@ -64,7 +60,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: BlocListener<AuthBloc, AuthState>(
-        bloc: authBloc,
         listener: (context, state) {
           if (state is AuthLoadingState) {
             AppDialogs.loadingDialog(context);

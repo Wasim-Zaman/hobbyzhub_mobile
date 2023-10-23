@@ -21,7 +21,7 @@ abstract class AuthUrl {
       "${AppUrl.baseUrl}/api/auth/reset-password";
 }
 
-abstract class MediaUploadHandling {
+abstract class MediaUrl {
   static const mediaService = "/media-service/";
   static String baseUrl = AppUrl.liveBaseUrl + mediaService;
   static final uploadProfilePicture = "$baseUrl/media/profile";

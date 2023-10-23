@@ -10,6 +10,8 @@ class ImagePickerBloc extends Bloc<ImagePickerEvent, ImagePickerState> {
     on<ImagePickerPickImageEvent>((event, emit) async {
       try {
         final image = await MediaUtils.pickImage();
+        // if user cancel the pick
+        if (image == null) return;
         emit(ImagePickerPickedImageState(image: image));
       } catch (e) {
         emit(ImagePickerFailureState(message: e.toString()));

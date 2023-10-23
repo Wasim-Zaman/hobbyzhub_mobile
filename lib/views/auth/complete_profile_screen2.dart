@@ -8,6 +8,7 @@ import 'package:hobbyzhub/blocs/image_picker/image_picker_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/user/user_model.dart';
+import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/dropdowns/dropdown_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/dop_widget.dart';
@@ -141,7 +142,10 @@ class _PickImageWidgetState extends State<PickImageWidget> {
             child: BlocConsumer<ImagePickerBloc, ImagePickerState>(
               bloc: imageBloc,
               listener: (context, state) {
-                if (state is ImagePickerPickedImageState) {}
+                if (state is ImagePickerPickedImageState) {
+                } else if (state is ImagePickerFailureState) {
+                  AppToast.normal('No Image Selected');
+                }
               },
               builder: (context, state) {
                 if (state is ImagePickerPickedImageState) {

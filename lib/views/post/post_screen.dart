@@ -156,7 +156,7 @@ class _PostScreenState extends State<PostScreen> {
                                             shape: OvalBorder(
                                               side: BorderSide(
                                                   width: 0.50,
-                                                  color: Color(0xFF26A4FF)),
+                                                  color: AppColors.primary),
                                             ),
                                           ),
                                         ),
@@ -211,24 +211,10 @@ class _PostScreenState extends State<PostScreen> {
                                   SizedBox(
                                     height: 3.h,
                                   ),
-                                  Text(
-                                    'Jane Smith',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 12,
-                                      fontFamily: 'Jost',
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    '2 minutes',
-                                    style: TextStyle(
-                                      color: Color(0xFF8C8C8C),
-                                      fontSize: 8,
-                                      fontFamily: 'Jost',
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )
+                                  Text('Jane Smith',
+                                      style: AppTextStyle.normalFontTextStyle),
+                                  Text('2 minutes',
+                                      style: AppTextStyle.normalFontTextStyle)
                                 ],
                               ),
                             ),
@@ -249,46 +235,18 @@ class _PostScreenState extends State<PostScreen> {
                             TextSpan(
                               children: [
                                 TextSpan(
-                                  text:
-                                      'This Thanksgiving, Store-bought is just fine. Head to the link in bio ',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontFamily: 'Jost',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                ),
+                                    text:
+                                        'This Thanksgiving, Store-bought is just fine. Head to the link in bio ',
+                                    style: AppTextStyle.normalFontTextStyle),
                                 TextSpan(
-                                  text: '@JaneSmith',
-                                  style: TextStyle(
-                                    color: Color(0xFF26A4FF),
-                                    fontSize: 12,
-                                    fontFamily: 'Jost',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                ),
+                                    text: '@JaneSmith',
+                                    style: AppTextStyle.likeByTextStyle),
                                 TextSpan(
-                                  text: ' . Check my newest recipies.',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontFamily: 'Jost',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                ),
+                                    text: ' . Check my newest recipies.',
+                                    style: AppTextStyle.normalFontTextStyle),
                                 TextSpan(
-                                  text: ' ',
-                                  style: TextStyle(
-                                    color: Color(0xFF26A4FF),
-                                    fontSize: 12,
-                                    fontFamily: 'Jost',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                ),
+                                    text: ' ',
+                                    style: AppTextStyle.likeByTextStyle),
                               ],
                             ),
                           ),
@@ -339,15 +297,8 @@ class _PostScreenState extends State<PostScreen> {
                                 SizedBox(
                                   width: 5.w,
                                 ),
-                                Text(
-                                  '247',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontFamily: 'Jost',
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
+                                Text('247',
+                                    style: AppTextStyle.normalFontTextStyle),
                                 SizedBox(
                                   width: 20.w,
                                 ),
@@ -358,15 +309,8 @@ class _PostScreenState extends State<PostScreen> {
                                 SizedBox(
                                   width: 5.w,
                                 ),
-                                Text(
-                                  '150',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontFamily: 'Jost',
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
+                                Text('150',
+                                    style: AppTextStyle.normalFontTextStyle),
                               ],
                             ),
                           ],
@@ -381,55 +325,20 @@ class _PostScreenState extends State<PostScreen> {
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: 'Liked by ',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 10,
-                                        fontFamily: 'Jost',
-                                        fontWeight: FontWeight.w400,
-                                        height: 0,
-                                      ),
-                                    ),
+                                        text: 'Liked by ',
+                                        style: AppTextStyle.likeByTextStyle),
                                     TextSpan(
-                                      text: 'HarryStyles',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 10,
-                                        fontFamily: 'Jost',
-                                        fontWeight: FontWeight.w600,
-                                        height: 0,
-                                      ),
-                                    ),
+                                        text: 'HarryStyles',
+                                        style: AppTextStyle.likeByTextStyle),
                                     TextSpan(
-                                      text: ' and ',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 10,
-                                        fontFamily: 'Jost',
-                                        fontWeight: FontWeight.w400,
-                                        height: 0,
-                                      ),
-                                    ),
+                                        text: ' and ',
+                                        style: AppTextStyle.likeByTextStyle),
                                     TextSpan(
-                                      text: '100+',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 10,
-                                        fontFamily: 'Jost',
-                                        fontWeight: FontWeight.w600,
-                                        height: 0,
-                                      ),
-                                    ),
+                                        text: '100+',
+                                        style: AppTextStyle.likeByTextStyle),
                                     TextSpan(
-                                      text: ' others',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 10,
-                                        fontFamily: 'Jost',
-                                        fontWeight: FontWeight.w400,
-                                        height: 0,
-                                      ),
-                                    ),
+                                        text: ' others',
+                                        style: AppTextStyle.likeByTextStyle),
                                   ],
                                 ),
                               ),
@@ -444,16 +353,8 @@ class _PostScreenState extends State<PostScreen> {
                             SizedBox(
                               child: Opacity(
                                 opacity: 0.50,
-                                child: Text(
-                                  'View all 57 comments',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 10,
-                                    fontFamily: 'Jost',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                ),
+                                child: Text('View all 57 comments',
+                                    style: AppTextStyle.likeByTextStyle),
                               ),
                             ),
                           ],

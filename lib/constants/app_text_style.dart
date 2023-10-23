@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/global/fonts/app_fonts.dart';
 import 'package:hobbyzhub/global/pixels/app_pixels.dart';
@@ -87,5 +88,11 @@ class AppTextStyle {
   static var dialogNormal = TextStyle(
     fontSize: 12.8,
     color: AppColors.darkGrey,
+  );
+
+  static var normalFontTextStyle = TextStyle(
+    fontSize: 12.sp,
+    fontFamily: AppFonts.jost,
+    fontWeight: FontWeight.w400,
   );
 }

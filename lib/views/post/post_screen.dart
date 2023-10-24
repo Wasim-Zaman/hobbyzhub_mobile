@@ -7,6 +7,7 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/notification/notification_screen.dart';
+import 'package:hobbyzhub/views/post/comments/comment_screen.dart';
 
 class PostScreen extends StatefulWidget {
   const PostScreen({super.key});
@@ -357,16 +358,22 @@ class _PostScreenState extends State<PostScreen> {
                         SizedBox(
                           height: 10.h,
                         ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              child: Opacity(
-                                opacity: 0.50,
-                                child: Text('View all 57 comments',
-                                    style: AppTextStyle.likeByTextStyle),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (builder) => CommentScreen()));
+                          },
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                child: Opacity(
+                                  opacity: 0.50,
+                                  child: Text('View all 57 comments',
+                                      style: AppTextStyle.likeByTextStyle),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         )
                       ],
                     ),

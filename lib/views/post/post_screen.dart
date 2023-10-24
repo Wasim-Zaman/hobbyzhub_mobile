@@ -203,7 +203,8 @@ class _PostScreenState extends State<PostScreen> {
                                     height: 3.h,
                                   ),
                                   Text('Jane Smith',
-                                      style: AppTextStyle.normalFontTextStyle),
+                                      style: AppTextStyle
+                                          .notificationTitleTextStyle),
                                   Text('2 minutes',
                                       style: AppTextStyle.normalFontTextStyle)
                                 ],

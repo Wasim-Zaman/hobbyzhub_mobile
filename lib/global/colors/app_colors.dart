@@ -8,7 +8,7 @@ class AppColors {
   static const dangerColor = Color.fromRGBO(215, 0, 0, 1);
 
   // Grey Colors
-  static const borderGrey = Color.fromRGBO(220, 220, 220, 1);
+  static const borderGrey = Color(0xFFDCDCDC);
   static const darkGrey = Color.fromRGBO(103, 103, 103, 1);
   static const lightGrey = Color.fromRGBO(242, 242, 242, 1);
   static const iconGrey = Color.fromRGBO(57, 72, 81, 1);

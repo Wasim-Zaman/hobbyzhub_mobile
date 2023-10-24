@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/views/notification/notification_screen.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -25,7 +26,7 @@ class BasicAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
       leading: isBackButton == false
           ? null
           : Padding(
-              padding: EdgeInsets.all(8.w),
+              padding: const EdgeInsets.all(5.0),
               child: GestureDetector(
                 onTap: () {
                   context.pop();
@@ -50,11 +51,17 @@ class BasicAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
       actions: [
-        Padding(
-          padding: EdgeInsets.all(8.w),
-          child: Icon(
-            LineIcons.bell,
-            size: 30.sp,
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (builder) => NotificationScreen()));
+          },
+          child: Padding(
+            padding: EdgeInsets.all(8.w),
+            child: Icon(
+              LineIcons.bell,
+              size: 30.sp,
+            ),
           ),
         ),
       ],

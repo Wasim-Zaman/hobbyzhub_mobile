@@ -10,8 +10,7 @@ import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
-import 'package:hobbyzhub/utils/secure_storage.dart';
-import 'package:hobbyzhub/views/auth/login_screen.dart';
+import 'package:hobbyzhub/views/auth/complete_profile_screen1.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/otp_widget.dart';
@@ -51,14 +50,11 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
     initBlocs();
   }
 
-  verifyOtp() async {
-    final otp = await UserSecureStorage.fetchOtp();
-    if (pinController.text == otp) {
-      context.read<AuthBloc>().add(AuthEventVerifyEmail(email: widget.email));
-      await UserSecureStorage.deleteOtp();
-    } else {
-      toast('Invalid OTP');
-    }
+  verifyOtp() {
+    context.read<AuthBloc>().add(AuthEventVerifyOtp(
+          email: widget.email,
+          otp: pinController.text.trim(),
+        ));
   }
 
   @override
@@ -81,12 +77,17 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
             AppDialogs.closeDialog();
             toast(state.response.message);
           } else if (state is AuthVerificationState) {
+            AppNavigator.goToPageWithReplacement(
+              context: context,
+              screen: CompleteProfileScreen1(),
+            );
+          } else if (state is AuthVerifyOtpState) {
             AppDialogs.closeDialog();
-            AppDialogs.otpSuccessDialog(context).then((value) {
-              AppNavigator.goToPageWithReplacement(
-                context: context,
-                screen: LoginScreen(),
-              );
+            AppDialogs.otpSuccessDialog(context, onPressed: () {
+              // verify email
+              context
+                  .read<AuthBloc>()
+                  .add(AuthEventVerifyEmail(email: widget.email));
             });
           } else if (state is AuthStateFailure) {
             AppDialogs.closeDialog();
@@ -196,7 +197,7 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
                           ),
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
-                              await verifyOtp();
+                              verifyOtp();
                             }
                           },
                           caption: 'Verify',

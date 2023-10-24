@@ -60,6 +60,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       decoration: InputDecoration(
         labelText: widget.labelText,
         hintText: widget.hintText,
+        hintStyle: AppTextStyle.textField,
         prefixIcon: widget.prefixIcon,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         labelStyle: AppTextStyle.textField,

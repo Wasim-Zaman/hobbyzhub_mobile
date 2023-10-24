@@ -22,6 +22,13 @@ class AuthEventSendVerificationEmail extends AuthEvent {
   AuthEventSendVerificationEmail({required this.email});
 }
 
+class AuthEventVerifyOtp extends AuthEvent {
+  final String email;
+  final String otp;
+
+  AuthEventVerifyOtp({required this.email, required this.otp});
+}
+
 class AuthEventVerifyEmail extends AuthEvent {
   final String email;
 
@@ -78,6 +85,11 @@ class AuthCompleteProfileState extends AuthState {
 class AuthSendVerificationForPasswordResetState extends AuthState {
   final AuthModel response;
   AuthSendVerificationForPasswordResetState({required this.response});
+}
+
+class AuthVerifyOtpState extends AuthState {
+  final AuthModel response;
+  AuthVerifyOtpState({required this.response});
 }
 
 class AuthImagePickerState extends AuthState {

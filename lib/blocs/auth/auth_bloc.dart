@@ -40,18 +40,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         bool networkStatus = await isNetworkAvailable();
         if (networkStatus == true) {
-          // generate 4 digits random otp
-          Random random = Random();
-          int randomNumber = random.nextInt(9999) + 1;
-          String formattedNumber = randomNumber.toString().padLeft(4, '0');
-          int otp = int.parse(formattedNumber);
-          // storing otp in the local database
-          await UserSecureStorage.setOtp(otp.toString());
-          final response = await AuthController.sendVerificaionMail(
-            event.email,
-            otp,
-          );
+          final response =
+              await AuthController.sendVerificaionMail(event.email);
           emit(AuthSendVerificationState(response: response));
+        } else {
+          throw Exception("No Internet Connection");
+        }
+      } catch (e) {
+        emit(AuthStateFailure(message: e.toString()));
+      }
+    });
+
+    on<AuthEventVerifyOtp>((event, emit) async {
+      emit(AuthLoadingState());
+      try {
+        bool networkStatus = await isNetworkAvailable();
+        if (networkStatus == true) {
+          final response =
+              await AuthController.verifyOtp(event.email, event.otp);
+          emit(AuthVerifyOtpState(response: response));
         } else {
           throw Exception("No Internet Connection");
         }

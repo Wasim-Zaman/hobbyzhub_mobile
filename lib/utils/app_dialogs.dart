@@ -23,8 +23,10 @@ class AppDialogs {
   }
 
   // Otp success dialog
-  static Future<dynamic> otpSuccessDialog(BuildContext context,
-      {VoidCallback? onPressed}) {
+  static Future<dynamic> otpSuccessDialog(
+    BuildContext context, {
+    VoidCallback? onPressed,
+  }) {
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -61,9 +63,10 @@ class AppDialogs {
               const SizedBox(height: 20),
               PrimaryButtonWidget(
                 caption: "Continue",
-                onPressed: () {
-                  context.pop();
-                },
+                onPressed: onPressed ??
+                    () {
+                      context.pop();
+                    },
               )
             ],
           ),

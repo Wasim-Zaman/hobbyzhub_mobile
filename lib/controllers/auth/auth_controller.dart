@@ -31,13 +31,25 @@ abstract class AuthController {
     }
   }
 
-  static Future<AuthModel> sendVerificaionMail(String email, int otp) async {
-    final url = "${AuthUrl.sendVerificationEmail}/$email/$otp";
+  static Future<AuthModel> sendVerificaionMail(String email) async {
+    final url = "${AuthUrl.sendVerificationEmail}/$email";
 
     try {
       final response = await ApiManager.bodyLessPost(url, headers: {
         "Intent": "Verify-Email",
       });
+
+      return _getResponse(response);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  static Future<AuthModel> verifyOtp(String email, String otp) async {
+    final url = "${AuthUrl.verifyOtp}/$email/$otp";
+
+    try {
+      final response = await ApiManager.bodyLessPut(url);
 
       return _getResponse(response);
     } catch (_) {

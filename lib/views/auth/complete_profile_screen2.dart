@@ -12,7 +12,7 @@ import 'package:hobbyzhub/models/user/user_model.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/dropdowns/dropdown_widget.dart';
-import 'package:hobbyzhub/views/widgets/text_fields/dop_widget.dart';
+import 'package:hobbyzhub/views/widgets/text_fields/dob_widget.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 

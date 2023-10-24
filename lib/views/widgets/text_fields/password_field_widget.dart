@@ -57,6 +57,8 @@ class _PasswordFieldWidgetState extends State<PasswordFieldWidget> {
         labelText: widget.labelText,
         hintText: widget.hintText,
         labelStyle: AppTextStyle.textField,
+        hintStyle: AppTextStyle.textField,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: IconButton(
           onPressed: () {
             setState(() {

@@ -11,7 +11,7 @@ abstract class AuthUrl {
       "${AppUrl.baseUrl}/api/auth/verify-account";
   static const String login = "${AppUrl.baseUrl}/api/auth/login";
   static const String sendVerificationEmail =
-      "${AppUrl.baseUrl}/api/auth/send-email";
+      "${AppUrl.baseUrl}/api/auth/send-otp";
   static const String verifyEmail = "${AppUrl.baseUrl}/api/auth/verify-account";
   static const String completeProfile =
       "${AppUrl.baseUrl}/api/user/finish-setup";
@@ -19,6 +19,7 @@ abstract class AuthUrl {
       "${AppUrl.baseUrl}/api/auth/send-email";
   static const String changePassword =
       "${AppUrl.baseUrl}/api/auth/reset-password";
+  static const String verifyOtp = "${AppUrl.baseUrl}/api/auth/verify-otp";
 }
 
 abstract class MediaUrl {

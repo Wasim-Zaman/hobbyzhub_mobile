@@ -7,10 +7,13 @@ import 'package:nb_utils/nb_utils.dart';
 
 class BasicAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final bool? isBackButton;
+  final bool isBackButton;
 
-  const BasicAppbarWidget({Key? key, required this.title, this.isBackButton})
-      : super(key: key);
+  const BasicAppbarWidget({
+    Key? key,
+    required this.title,
+    required this.isBackButton,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

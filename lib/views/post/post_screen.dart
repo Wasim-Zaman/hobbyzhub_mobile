@@ -20,156 +20,157 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BasicAppbarWidget(title: 'Feeds', isBackButton: false),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(8.w),
-            child: Row(
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 100.w,
-                      height: 120.h,
-                      child: Stack(
-                        children: [
-                          Container(
-                            width: 100.w,
-                            height: 120.h,
-                            decoration: ShapeDecoration(
-                              color: Color(0xFFF2F2F2),
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    width: 0.50, color: Color(0xFFEDEDED)),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 40.w,
-                            top: 90.h,
-                            child: Container(
-                              width: 25.w,
-                              height: 25.h,
-                              decoration: ShapeDecoration(
-                                color: AppColors.primary,
-                                shape: OvalBorder(
-                                  side: BorderSide(
-                                    width: 0.50,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                              ),
-                              child: Icon(
-                                Icons.add,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15.h,
-                    ),
-                    Text('Your Story',
-                        textAlign: TextAlign.center,
-                        style: AppTextStyle.normalFontTextStyle),
-                  ],
-                ),
-                SizedBox(
-                  width: 3.w,
-                ),
-                SizedBox(
-                  width: 280.w,
-                  height: 150.h,
-                  child: ListView.builder(
-                      itemCount: 5,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      physics: AlwaysScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: SizedBox(
-                            width: 100.w,
-                            height: 120.h,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 100.w,
-                                  height: 120.h,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        top: 0,
-                                        child: Container(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8.w),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 20.w,
+                    height: 150.h,
+                    child: ListView.builder(
+                        itemCount: 5,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: SizedBox(
+                              child: index != 0
+                                  ? Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
                                           width: 100.w,
                                           height: 120.h,
-                                          decoration: ShapeDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage(
-                                                  "https://via.placeholder.com/70x100"),
-                                              fit: BoxFit.fill,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                left: 0,
+                                                top: 0,
+                                                child: Container(
+                                                  width: 100.w,
+                                                  height: 120.h,
+                                                  decoration: ShapeDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          "https://via.placeholder.com/70x100"),
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                left: 40.w,
+                                                top: 90.h,
+                                                child: Container(
+                                                  width: 25.w,
+                                                  height: 25.h,
+                                                  decoration: ShapeDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          "https://via.placeholder.com/25x25"),
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                    shape: OvalBorder(
+                                                      side: BorderSide(
+                                                          width: 0.50,
+                                                          color: AppColors
+                                                              .primary),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ),
-                                      Positioned(
-                                        left: 40.w,
-                                        top: 90.h,
-                                        child: Container(
-                                          width: 25.w,
-                                          height: 25.h,
-                                          decoration: ShapeDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage(
-                                                  "https://via.placeholder.com/25x25"),
-                                              fit: BoxFit.fill,
-                                            ),
-                                            shape: OvalBorder(
-                                              side: BorderSide(
-                                                  width: 0.50,
-                                                  color: Color(0xFF26A4FF)),
-                                            ),
+                                        Text('Chris',
+                                            textAlign: TextAlign.center,
+                                            style: AppTextStyle
+                                                .normalFontTextStyle),
+                                      ],
+                                    )
+                                  : Column(
+                                      children: [
+                                        SizedBox(
+                                          width: 100.w,
+                                          height: 120.h,
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                left: 0,
+                                                top: 0,
+                                                child: Container(
+                                                  width: 100.w,
+                                                  height: 120.h,
+                                                  decoration: ShapeDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          "https://via.placeholder.com/70x100"),
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                left: 40.w,
+                                                top: 90.h,
+                                                child: Container(
+                                                  width: 25.w,
+                                                  height: 25.h,
+                                                  decoration: ShapeDecoration(
+                                                    color: AppColors.primary,
+                                                    shape: OvalBorder(
+                                                      side: BorderSide(
+                                                        width: 0.50,
+                                                        color:
+                                                            AppColors.primary,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    color: AppColors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                Text('Chris',
-                                    textAlign: TextAlign.center,
-                                    style: AppTextStyle.normalFontTextStyle),
-                              ],
+                                        Text('Your Story',
+                                            textAlign: TextAlign.center,
+                                            style: AppTextStyle
+                                                .normalFontTextStyle),
+                                      ],
+                                    ),
                             ),
-                          ),
-                        );
-                      }),
-                )
-              ],
+                          );
+                        }),
+                  )
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 20.h,
-          ),
-          Expanded(
-            child: ListView.builder(
+            ListView.builder(
                 itemCount: 10,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),

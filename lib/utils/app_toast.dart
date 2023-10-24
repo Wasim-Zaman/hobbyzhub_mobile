@@ -15,7 +15,7 @@ class AppToast {
   }
 }
 
-void _appToast(message, color, [ToastGravity? gravity]) {
-  toast(message,
+void _appToast(String message, color, [ToastGravity? gravity]) {
+  toast(message.replaceAll("Exception:", ""),
       bgColor: color, length: Toast.LENGTH_LONG, gravity: ToastGravity.BOTTOM);
 }

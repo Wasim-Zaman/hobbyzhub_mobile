@@ -62,7 +62,6 @@ abstract class AuthController {
   }) async {
     const url = AuthUrl.completeProfile;
     try {
-      print(user.toJson());
       final response = await ApiManager.putRequest(
         user.toJson(),
         url,

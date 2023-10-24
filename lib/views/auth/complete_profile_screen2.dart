@@ -114,6 +114,7 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
                                     if (state is MediaUploadSuccess) {
                                       // save the name of the image
                                       saveFilePath(state.response);
+                                      AppToast.success(state.response.message);
                                     } else if (state is MediaUploadFailure) {
                                       AppToast.danger(state.error);
                                     }

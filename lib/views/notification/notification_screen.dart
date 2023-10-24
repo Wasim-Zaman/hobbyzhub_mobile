@@ -1,10 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
-import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/views/widgets/appbars/basic_appbar_widget.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -17,43 +16,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        leading: Padding(
-          padding: EdgeInsets.all(8.w),
-          child: Container(
-            decoration: ShapeDecoration(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(width: 1, color: Color(0x33A0A2B3)),
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-            ),
-            width: 30.w,
-            height: 30.h,
-            child: Center(
-              child: Icon(
-                Icons.navigate_before,
-                size: 30.sp,
-              ),
-            ),
-          ),
-        ),
-        centerTitle: true,
-        title: Text(
-          'Notifications',
-          style: AppTextStyle.headings,
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.all(8.w),
-            child: Icon(
-              Icons.delete_outline,
-              size: 30.sp,
-            ),
-          ),
-        ],
-      ),
+      appBar: BasicAppbarWidget(title: "Notifications", isBackButton: true),
       body: Column(
         children: [
           SizedBox(

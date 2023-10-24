@@ -95,4 +95,10 @@ class AppTextStyle {
     fontFamily: AppFonts.jost,
     fontWeight: FontWeight.w400,
   );
+
+  static var likeByTextStyle = TextStyle(
+    fontSize: 10.sp,
+    fontFamily: AppFonts.jost,
+    fontWeight: FontWeight.w400,
+  );
 }

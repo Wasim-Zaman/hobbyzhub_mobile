@@ -101,4 +101,10 @@ class AppTextStyle {
     fontFamily: AppFonts.jost,
     fontWeight: FontWeight.w400,
   );
+  static var notificationTitleTextStyle = TextStyle(
+    color: Colors.black,
+    fontSize: 15,
+    fontFamily: AppFonts.jost,
+    fontWeight: FontWeight.w600,
+  );
 }

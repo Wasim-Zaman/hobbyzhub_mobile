@@ -4,8 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/bloc_provider.dart';
 import 'package:hobbyzhub/global/themes/app_theme.dart';
 import 'package:hobbyzhub/views/auth/complete_profile_screen1.dart';
-import 'package:hobbyzhub/views/bottom_nav_bar/main_tabs_screen.dart';
-import 'package:hobbyzhub/views/post/post_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 void main() async {
@@ -31,13 +29,16 @@ class _MyAppState extends State<MyApp> {
       child: ScreenUtilInit(
           designSize: Size(width, height),
           builder: (context, child) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'HobbyzHub',
-              theme: AppTheme.light,
-              navigatorKey: navigatorKey,
-              home: MainTabScreen(
-                index: 0,
+            return GestureDetector(
+              onTap: () {
+                hideKeyboard(context);
+              },
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'HobbyzHub',
+                theme: AppTheme.light,
+                navigatorKey: navigatorKey,
+                home: const CompleteProfileScreen1(),
               ),
             );
           }),

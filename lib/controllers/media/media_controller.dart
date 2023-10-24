@@ -7,7 +7,6 @@ import 'package:hobbyzhub/models/upload_media/upload_pp_model.dart';
 import 'package:http/http.dart';
 
 class MediaController {
-  //ApiResponse<UploadPPModel>
   static Future<ApiResponse<UploadPPModel>> uploadUserProfilePic(
     String userId,
     File file,
@@ -30,7 +29,6 @@ class MediaController {
 
     // send request
     var response = await request.send();
-
     if (response.statusCode == 200) {
       // success
       ApiResponse<UploadPPModel> model = ApiResponse.fromJson(
@@ -39,10 +37,8 @@ class MediaController {
       return model;
     } else {
       // error
-      ApiResponse<UploadPPModel> model = ApiResponse.fromJson(
-          jsonDecode(await response.stream.bytesToString()),
-          (data) => UploadPPModel.fromJson(data));
-      return model;
+      var body = jsonDecode(await response.stream.bytesToString());
+      throw Exception(body['message']);
     }
   }
 }

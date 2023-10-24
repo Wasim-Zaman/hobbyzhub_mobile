@@ -23,6 +23,10 @@ class _CompleteProfileScreen1State extends State<CompleteProfileScreen1> {
   TextEditingController nameController = TextEditingController();
   TextEditingController bioController = TextEditingController();
 
+  // Focus node
+  FocusNode nameFocusNode = FocusNode();
+  FocusNode bioFocusNode = FocusNode();
+
   // form key
   final formKey = GlobalKey<FormState>();
 
@@ -66,63 +70,66 @@ class _CompleteProfileScreen1State extends State<CompleteProfileScreen1> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Form(
-                key: formKey,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      20.height,
-                      Text('Let’s personalize your experience',
-                          style: AppTextStyle.headings),
-                      20.height,
-                      Text(
-                        'What can we call you? Could be your name, a nickname or something funny',
-                        style: AppTextStyle.subHeading,
+        child: ListView(
+          shrinkWrap: true,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          children: [
+            Form(
+              key: formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    20.height,
+                    Text('Let’s personalize your experience',
+                        style: AppTextStyle.headings),
+                    20.height,
+                    Text(
+                      'What can we call you? Could be your name, a nickname or something funny',
+                      style: AppTextStyle.subHeading,
+                    ),
+                    20.height,
+                    TextFieldWidget(
+                      labelText: 'NAME',
+                      controller: nameController,
+                      hintText: "Enter your name",
+                      validator: AppValidators.notEmpty,
+                      focusNode: nameFocusNode,
+                    ),
+                    20.height,
+                    TextFieldWidget(
+                      labelText: 'BIO',
+                      controller: bioController,
+                      hintText: "Enter your bio",
+                      validator: AppValidators.notEmpty,
+                      focusNode: bioFocusNode,
+                      maxLines: 5,
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.newline,
+                    ),
+                    20.height,
+                    SizedBox(
+                      height: context.height() * 0.3,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          PrimaryButtonWidget(
+                              caption: "Next",
+                              onPressed: () async {
+                                if (formKey.currentState!.validate()) {
+                                  await onClick();
+                                }
+                              }),
+                        ],
                       ),
-                      20.height,
-                      TextFieldWidget(
-                        labelText: 'NAME',
-                        controller: nameController,
-                        hintText: "Enter your name",
-                        validator: AppValidators.notEmpty,
-                      ),
-                      20.height,
-                      TextFieldWidget(
-                        labelText: 'BIO',
-                        controller: bioController,
-                        hintText: "Enter your bio",
-                        validator: AppValidators.notEmpty,
-                        maxLines: 5,
-                        keyboardType: TextInputType.multiline,
-                      ),
-                      20.height,
-                      SizedBox(
-                        height: context.height() * 0.3,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            PrimaryButtonWidget(
-                                caption: "Next",
-                                onPressed: () async {
-                                  if (formKey.currentState!.validate()) {
-                                    await onClick();
-                                  }
-                                }),
-                          ],
-                        ),
-                      ),
-                      30.height,
-                    ],
-                  ),
+                    ),
+                    30.height,
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

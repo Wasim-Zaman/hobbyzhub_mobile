@@ -6,8 +6,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/views/notification/notification_screen.dart';
+
 import 'package:hobbyzhub/views/post/comments/comment_screen.dart';
+
+import 'package:hobbyzhub/views/widgets/appbars/basic_appbar_widget.dart';
 
 class PostScreen extends StatefulWidget {
   const PostScreen({super.key});
@@ -20,28 +22,7 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        title: Text(
-          'Feeds',
-          style: AppTextStyle.headings,
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.all(8.w),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (builder) => NotificationScreen()));
-              },
-              child: Icon(
-                Icons.notifications_outlined,
-                size: 30.sp,
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: BasicAppbarWidget(title: 'Feeds', isBackButton: false),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

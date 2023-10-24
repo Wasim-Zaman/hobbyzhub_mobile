@@ -9,6 +9,7 @@ import 'package:hobbyzhub/blocs/media/media_upload_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/user/user_model.dart';
+import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/dropdowns/dropdown_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/dop_widget.dart';
@@ -52,6 +53,31 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
     super.initState();
   }
 
+  void uploadImage() {
+    // upload image
+    if (image != null) {
+      mediaUploadBloc = mediaUploadBloc
+        ..add(MediaUploadStartedEvent(
+          userId: widget.user.userId.toString(),
+          file: image!,
+        ));
+    }
+  }
+
+  void saveFilePath(var response) {
+    widget.user.profilePicB64 = response.data.filePath;
+    print(widget.user.profilePicB64);
+  }
+
+  @override
+  void dispose() {
+    imageBloc.close();
+    mediaUploadBloc.close();
+
+    dobController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +111,12 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
                                 BlocListener<MediaUploadBloc, MediaUploadState>(
                                   bloc: mediaUploadBloc,
                                   listener: (context, state) {
-                                    if (state is MediaUploadSuccess) {}
+                                    if (state is MediaUploadSuccess) {
+                                      // save the name of the image
+                                      saveFilePath(state.response);
+                                    } else if (state is MediaUploadFailure) {
+                                      AppToast.danger(state.error);
+                                    }
                                   },
                                   child: Container(
                                     margin: const EdgeInsets.only(bottom: 20),
@@ -101,13 +132,7 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
                                       listener: (context, state) async {
                                         if (state
                                             is ImagePickerPickedImageState) {
-                                          // upload image
-                                          mediaUploadBloc = mediaUploadBloc
-                                            ..add(MediaUploadStartedEvent(
-                                              userId:
-                                                  widget.user.userId.toString(),
-                                              file: state.image!,
-                                            ));
+                                          image = state.image;
                                         } else if (state
                                             is ImagePickerFailureState) {}
                                       },
@@ -176,7 +201,11 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
                                 PrimaryButtonWidget(
                                     caption: "Next",
                                     onPressed: () {
-                                      if (formKey.currentState!.validate()) {}
+                                      if (formKey.currentState!.validate()) {
+                                        // AppDialogs.loadingDialog(context);
+                                        uploadImage();
+                                        // AppDialogs.closeDialog();
+                                      }
                                     }),
                               ],
                             ),

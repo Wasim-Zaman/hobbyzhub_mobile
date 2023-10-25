@@ -36,7 +36,7 @@ class AuthEventVerifyEmail extends AuthEvent {
 }
 
 class AuthEventCompleteProfile extends AuthEvent {
-  final UserModel user;
+  final RegisterUserModel user;
   final String token;
 
   AuthEventCompleteProfile({required this.user, required this.token});

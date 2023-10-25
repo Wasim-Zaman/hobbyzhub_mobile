@@ -97,6 +97,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     controller: emailController,
                     hintText: "Enter your email",
                     validator: AppValidators.email,
+                    focusNode: emailFocusNode,
                   ),
                   20.height,
                   PasswordFieldWidget(

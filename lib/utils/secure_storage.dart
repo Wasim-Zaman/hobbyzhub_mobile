@@ -8,6 +8,7 @@ class UserSecureStorage {
   static const _keyOtp = 'otp';
   static const _keyUserId = 'userId';
   static const _expiryTime = 'expiryTime';
+  static const _isRegistering = 'isRegistering';
 
   static Future setToken(String token) async {
     await _storage.write(key: _keyToken, value: token);
@@ -56,5 +57,17 @@ class UserSecureStorage {
 
   static Future<String?> fetchExpiryTime() async {
     return await _storage.read(key: _expiryTime);
+  }
+
+  static Future setIsRegistering(String isRegistering) async {
+    await _storage.write(key: _isRegistering, value: isRegistering);
+  }
+
+  static Future<String?> fetchIsRegistering() async {
+    return await _storage.read(key: _isRegistering);
+  }
+
+  static Future deleteIsRegistering() async {
+    await _storage.delete(key: _isRegistering);
   }
 }

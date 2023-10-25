@@ -7,10 +7,15 @@ class DropdownWidget extends StatefulWidget {
   final List items;
   final String? value;
   final String? hint;
+  final Function? onChanged;
 
-  const DropdownWidget(
-      {Key? key, required this.items, required this.value, this.hint})
-      : super(key: key);
+  const DropdownWidget({
+    Key? key,
+    required this.items,
+    required this.value,
+    this.hint,
+    this.onChanged,
+  }) : super(key: key);
 
   @override
   State<DropdownWidget> createState() => _DropdownWidgetState();
@@ -28,9 +33,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
       }).toList(),
       value: widget.value,
       onChanged: (value) {
-        setState(() {
-          value = value.toString();
-        });
+        widget.onChanged!(value);
       },
       hint: Text(widget.hint.toString()),
       icon: const Icon(Ionicons.arrow_down),

@@ -10,7 +10,8 @@ import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
-import 'package:hobbyzhub/views/auth/complete_profile_screen1.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/auth/login_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/otp_widget.dart';
@@ -45,7 +46,7 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
   @override
   void initState() {
     super.initState();
-
+    Future.wait([UserSecureStorage.setIsRegistering('true')]);
     initCubits();
     initBlocs();
   }
@@ -77,9 +78,9 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
             AppDialogs.closeDialog();
             toast(state.response.message);
           } else if (state is AuthVerificationState) {
-            AppNavigator.goToPageWithReplacement(
+            AppNavigator.goToPage(
               context: context,
-              screen: CompleteProfileScreen1(),
+              screen: LoginScreen(),
             );
           } else if (state is AuthVerifyOtpState) {
             AppDialogs.closeDialog();

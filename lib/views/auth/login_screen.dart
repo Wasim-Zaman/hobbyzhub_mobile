@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/auth/auth_bloc.dart';
@@ -11,10 +13,13 @@ import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/auth/forget_password.dart';
 import 'package:hobbyzhub/views/auth/registration_screen.dart';
+import 'package:hobbyzhub/views/bottom_nav_bar/main_tabs_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/password_field_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
+
+import 'complete_profile_screen1.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -34,6 +39,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Form key
   final formKey = GlobalKey<FormState>();
+
+  // other variables
+  String? isRegistering;
+
+  @override
+  void initState() {
+    UserSecureStorage.fetchIsRegistering().then((value) {
+      isRegistering = value;
+    });
+    super.initState();
+  }
 
   initLocalStorage(var data) async {
     Future.wait([
@@ -68,6 +84,17 @@ class _LoginScreenState extends State<LoginScreen> {
             } else if (state is AuthLoginState) {
               AppDialogs.closeDialog();
               await initLocalStorage(state.response.data);
+              if ("true" == "true") {
+                AppNavigator.goToPageWithReplacement(
+                  context: context,
+                  screen: const CompleteProfileScreen1(),
+                );
+              } else {
+                AppNavigator.goToPageWithReplacement(
+                  context: context,
+                  screen: const MainTabScreen(index: 0),
+                );
+              }
             } else if (state is AuthStateFailure) {
               AppDialogs.closeDialog();
               toast(state.message);

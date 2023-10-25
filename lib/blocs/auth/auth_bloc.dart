@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/controllers/auth/auth_controller.dart';
 import 'package:hobbyzhub/models/auth/auth_model.dart';
-import 'package:hobbyzhub/models/user/user_model.dart';
+import 'package:hobbyzhub/models/user/register_user_model.dart';
 import 'package:hobbyzhub/utils/media_utils.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:nb_utils/nb_utils.dart';

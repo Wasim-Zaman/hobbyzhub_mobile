@@ -1,25 +1,22 @@
-class UserModel {
+class RegisterUserModel {
   String? userId;
-  String? firstName;
-  String? lastName;
+  String? name;
   String? birthdate;
   String? gender;
   String? pushToken;
   String? profilePicB64;
 
-  UserModel(
+  RegisterUserModel(
       {this.userId,
-      this.firstName,
-      this.lastName,
+      this.name,
       this.birthdate,
       this.gender,
       this.pushToken,
       this.profilePicB64});
 
-  UserModel.fromJson(Map<String, dynamic> json) {
+  RegisterUserModel.fromJson(Map<String, dynamic> json) {
     userId = json['userId'];
-    firstName = json['firstName'];
-    lastName = json['lastName'];
+    name = json['name'];
     birthdate = json['birthdate'];
     gender = json['gender'];
     pushToken = json['pushToken'];
@@ -29,8 +26,7 @@ class UserModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['userId'] = userId;
-    data['firstName'] = firstName;
-    data['lastName'] = lastName;
+    data['name'] = name;
     data['birthdate'] = birthdate;
     data['gender'] = gender;
     data['pushToken'] = pushToken;

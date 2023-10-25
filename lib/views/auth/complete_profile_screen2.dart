@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,8 +10,12 @@ import 'package:hobbyzhub/blocs/image_picker/image_picker_bloc.dart';
 import 'package:hobbyzhub/blocs/media/media_upload_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/models/user/user_model.dart';
+import 'package:hobbyzhub/models/user/register_user_model.dart';
+import 'package:hobbyzhub/utils/app_dialogs.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/bottom_nav_bar/main_tabs_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/dropdowns/dropdown_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/dob_widget.dart';
@@ -17,7 +23,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CompleteProfileScreen2 extends StatefulWidget {
-  final UserModel user;
+  final RegisterUserModel user;
   const CompleteProfileScreen2({Key? key, required this.user})
       : super(key: key);
 
@@ -47,10 +53,23 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
 
   // other variables
   File? image;
+  String? token;
+  String? userId;
 
   @override
   void initState() {
+    getLocalStorageData();
     super.initState();
+  }
+
+  void getLocalStorageData() {
+    // get token and user id from secure storage
+    UserSecureStorage.fetchToken().then((value) {
+      token = value;
+    });
+    UserSecureStorage.fetchUserId().then((value) {
+      userId = value;
+    });
   }
 
   void uploadImage() {
@@ -58,7 +77,7 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
     if (image != null) {
       mediaUploadBloc = mediaUploadBloc
         ..add(MediaUploadStartedEvent(
-          userId: widget.user.userId.toString(),
+          userId: userId.toString(),
           file: image!,
         ));
     }
@@ -66,7 +85,17 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
 
   void saveFilePath(var response) {
     widget.user.profilePicB64 = response.data.filePath;
-    print(widget.user.profilePicB64);
+  }
+
+  void completeProfile() async {
+    // adding user id and token to the user model
+    widget.user.userId = userId;
+    widget.user.birthdate = dobController.text.trim();
+    widget.user.gender = selectedGender;
+    context.read<AuthBloc>().add(AuthEventCompleteProfile(
+          user: widget.user,
+          token: token.toString(),
+        ));
   }
 
   @override
@@ -75,152 +104,186 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
     mediaUploadBloc.close();
 
     dobController.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) async {},
-          builder: (context, state) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  Form(
-                    key: formKey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          20.height,
-                          Text("Set up your profile",
-                              style: AppTextStyle.headings),
-                          20.height,
-                          Text(
-                            "Update your profile to connect with your fellow hobbies-ts with better impression.",
-                            style: AppTextStyle.subHeading,
-                          ),
-                          20.height,
-                          // Pick image
-                          Center(
-                            child: Stack(
-                              children: [
-                                BlocListener<MediaUploadBloc, MediaUploadState>(
-                                  bloc: mediaUploadBloc,
-                                  listener: (context, state) {
-                                    if (state is MediaUploadSuccess) {
-                                      // save the name of the image
-                                      saveFilePath(state.response);
-                                      AppToast.success(state.response.message);
-                                    } else if (state is MediaUploadFailure) {
-                                      AppToast.danger(state.error);
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<ImagePickerBloc, ImagePickerState>(
+            listener: (context, state) async {
+              if (state is ImagePickerPickedImageState) {
+                image = state.image;
+              } else if (state is ImagePickerFailureState) {}
+            },
+          ),
+          BlocListener<MediaUploadBloc, MediaUploadState>(
+            bloc: mediaUploadBloc,
+            listener: (context, state) {
+              if (state is MediaUploadSuccess) {
+                // save the name of the image
+                saveFilePath(state.response);
+                AppToast.success(state.response.message);
+                completeProfile();
+              } else if (state is MediaUploadFailure) {
+                AppToast.danger(state.error);
+              }
+            },
+          ),
+          // Auth bloc listener
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthLoadingState) {
+                AppDialogs.loadingDialog(context);
+              } else if (state is AuthCompleteProfileState) {
+                AppDialogs.closeDialog();
+                AppNavigator.goToPageWithReplacement(
+                  context: context,
+                  screen: const MainTabScreen(index: 0),
+                );
+              } else if (state is AuthStateFailure) {
+                AppDialogs.closeDialog();
+                AppToast.danger(state.message);
+              } else {
+                AppDialogs.closeDialog();
+              }
+            },
+          ),
+        ],
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Form(
+                  key: formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        20.height,
+                        Text("Set up your profile",
+                            style: AppTextStyle.headings),
+                        20.height,
+                        Text(
+                          "Update your profile to connect with your fellow hobbies-ts with better impression.",
+                          style: AppTextStyle.subHeading,
+                        ),
+                        20.height,
+                        // Pick image
+                        const ImagePickWidget(),
+                        30.height,
+                        // Drop down for selecting gender
+                        DropdownWidget(
+                          items: gender,
+                          value: selectedGender,
+                          hint: "Select Your Gender",
+                          onChanged: (value) {
+                            selectedGender = value;
+                          },
+                        ),
+                        20.height,
+                        // Date picker widget
+                        DobWidget(dobController: dobController),
+                        20.height,
+                        SizedBox(
+                          height: context.height() * 0.3,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              PrimaryButtonWidget(
+                                  caption: "Next",
+                                  onPressed: () {
+                                    if (formKey.currentState!.validate()) {
+                                      uploadImage();
                                     }
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.only(bottom: 20),
-                                    height: 140.h,
-                                    width: 130.w,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.lightGrey,
-                                      borderRadius: BorderRadius.circular(40),
-                                    ),
-                                    child: BlocConsumer<ImagePickerBloc,
-                                        ImagePickerState>(
-                                      bloc: imageBloc,
-                                      listener: (context, state) async {
-                                        if (state
-                                            is ImagePickerPickedImageState) {
-                                          image = state.image;
-                                        } else if (state
-                                            is ImagePickerFailureState) {}
-                                      },
-                                      builder: (context, state) {
-                                        if (state
-                                            is ImagePickerPickedImageState) {
-                                          return ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(40),
-                                            child: Image.file(
-                                              state.image!,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          );
-                                        } else {
-                                          return const Center(
-                                            child: Icon(
-                                              LineIcons.user,
-                                              size: 80,
-                                              color: AppColors.darkGrey,
-                                            ),
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: -5,
-                                  right: 0,
-                                  left: 0,
-                                  child: IconButton(
-                                    icon: const CircleAvatar(
-                                      backgroundColor: AppColors.iconGrey,
-                                      child: Icon(
-                                        Ionicons.camera,
-                                        size: 20,
-                                        color: AppColors.white,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      imageBloc = imageBloc
-                                        ..add(ImagePickerPickImageEvent());
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
+                                  }),
+                            ],
                           ),
-                          30.height,
-                          // Drop down for selecting gender
-                          DropdownWidget(
-                            items: gender,
-                            value: selectedGender,
-                            hint: "Select Your Gender",
-                          ),
-                          20.height,
-                          // Date picker widget
-                          DobWidget(dobController: dobController),
-                          20.height,
-                          SizedBox(
-                            height: context.height() * 0.3,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                PrimaryButtonWidget(
-                                    caption: "Next",
-                                    onPressed: () {
-                                      if (formKey.currentState!.validate()) {
-                                        // AppDialogs.loadingDialog(context);
-                                        uploadImage();
-                                        // AppDialogs.closeDialog();
-                                      }
-                                    }),
-                              ],
-                            ),
-                          ),
-                          30.height,
-                        ],
-                      ),
+                        ),
+                        30.height,
+                      ],
                     ),
                   ),
-                ],
-              ),
-            );
-          },
+                ),
+              ],
+            ),
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class ImagePickWidget extends StatefulWidget {
+  const ImagePickWidget({Key? key}) : super(key: key);
+
+  @override
+  State<ImagePickWidget> createState() => _ImagePickWidgetState();
+}
+
+class _ImagePickWidgetState extends State<ImagePickWidget> {
+  initBloc() {
+    context.read<ImagePickerBloc>().add(ImagePickerPickImageEvent());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Stack(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(bottom: 20),
+            height: 140.h,
+            width: 130.w,
+            decoration: BoxDecoration(
+              color: AppColors.lightGrey,
+              borderRadius: BorderRadius.circular(40),
+            ),
+            child: BlocBuilder<ImagePickerBloc, ImagePickerState>(
+              builder: (context, state) {
+                if (state is ImagePickerPickedImageState) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: Image.file(
+                      state.image!,
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                } else {
+                  return const Center(
+                    child: Icon(
+                      LineIcons.user,
+                      size: 80,
+                      color: AppColors.darkGrey,
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+          Positioned(
+            bottom: -5,
+            right: 0,
+            left: 0,
+            child: IconButton(
+              icon: const CircleAvatar(
+                backgroundColor: AppColors.iconGrey,
+                child: Icon(
+                  Ionicons.camera,
+                  size: 20,
+                  color: AppColors.white,
+                ),
+              ),
+              onPressed: () {
+                initBloc();
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -16,7 +16,11 @@ class ApiManager {
   static Future<Response> putRequest(var body, var url,
       {dynamic headers}) async {
     // Perform a PUT request with the specified body and return the response.
-    return await put(Uri.parse(url), body: body, headers: headers);
+    return await put(
+      Uri.parse(url),
+      body: jsonEncode(body),
+      headers: headers ?? {'Content-Type': 'application/json'},
+    );
   }
 
   // Static method for making a POST request.

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
-import 'package:hobbyzhub/models/user/user_model.dart';
+import 'package:hobbyzhub/models/user/register_user_model.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
@@ -30,24 +30,18 @@ class _CompleteProfileScreen1State extends State<CompleteProfileScreen1> {
   // form key
   final formKey = GlobalKey<FormState>();
 
-  // other variables
-  String? userId;
-  String? token;
-  late UserModel userModel;
+  late RegisterUserModel userModel;
 
   @override
   void initState() {
+    UserSecureStorage.deleteIsRegistering();
     super.initState();
   }
 
-  onClick() async {
-    userId = await UserSecureStorage.fetchUserId();
-    token = await UserSecureStorage.fetchToken();
-
-    userModel = UserModel(
-      userId: userId,
-      firstName: nameController.text.trim().split(' ')[0],
-      lastName: nameController.text.trim().split(' ')[1],
+  onClick() {
+    userModel = RegisterUserModel(
+      name: nameController.text.trim(),
+      // bio: bioController.text.trim(),
       pushToken: "sample-push-token",
     );
 

@@ -47,8 +47,10 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
   void initState() {
     super.initState();
     Future.wait([UserSecureStorage.setIsRegistering('true')]);
-    initCubits();
-    initBlocs();
+    Future.delayed(Duration(seconds: 2), () {
+      initCubits();
+      initBlocs();
+    });
   }
 
   verifyOtp() {
@@ -62,6 +64,7 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
   void dispose() {
     pinController.dispose();
     focusNode.dispose();
+
     super.dispose();
   }
 
@@ -73,9 +76,10 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthLoadingState) {
+            AppDialogs.closeDialog(context);
             AppDialogs.loadingDialog(context);
           } else if (state is AuthSendVerificationState) {
-            AppDialogs.closeDialog();
+            AppDialogs.closeDialog(context);
             toast(state.response.message);
           } else if (state is AuthVerificationState) {
             AppNavigator.goToPage(
@@ -83,7 +87,7 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
               screen: LoginScreen(),
             );
           } else if (state is AuthVerifyOtpState) {
-            AppDialogs.closeDialog();
+            AppDialogs.closeDialog(context);
             AppDialogs.otpSuccessDialog(context, onPressed: () {
               // verify email
               context
@@ -91,7 +95,7 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
                   .add(AuthEventVerifyEmail(email: widget.email));
             });
           } else if (state is AuthStateFailure) {
-            AppDialogs.closeDialog();
+            AppDialogs.closeDialog(context);
             toast(state.message);
           }
         },

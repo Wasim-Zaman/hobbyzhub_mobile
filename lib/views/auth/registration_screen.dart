@@ -42,6 +42,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ));
   }
 
+  pageNavigation() {
+    // remove focus from all the text fields
+    emailFocusNode.unfocus();
+    hideKeyboard(context);
+    Future.delayed(const Duration(seconds: 1), () {
+      AppNavigator.goToPage(
+        context: context,
+        screen: RegistrationOtpScreen(
+          email: emailController.text.trim(),
+        ),
+      );
+    });
+  }
+
   @override
   void dispose() {
     emailController.dispose();
@@ -64,16 +78,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           if (state is AuthLoadingState) {
             AppDialogs.loadingDialog(context);
           } else if (state is AuthRegistrationSuccessState) {
-            AppDialogs.closeDialog();
-            AppNavigator.goToPage(
-              context: context,
-              screen: RegistrationOtpScreen(
-                email: emailController.text.trim(),
-              ),
-            );
+            AppDialogs.closeDialog(context);
+            pageNavigation();
+
             AppToast.normal(state.response.message);
           } else if (state is AuthStateFailure) {
-            AppDialogs.closeDialog();
+            AppDialogs.closeDialog(context);
             AppToast.danger(state.message);
           }
         },

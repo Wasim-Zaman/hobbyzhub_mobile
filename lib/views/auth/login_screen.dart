@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
               // show loading
               AppDialogs.loadingDialog(context);
             } else if (state is AuthLoginState) {
-              AppDialogs.closeDialog();
+              AppDialogs.closeDialog(context);
               await initLocalStorage(state.response.data);
               if ("true" == "true") {
                 AppNavigator.goToPageWithReplacement(
@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
               }
             } else if (state is AuthStateFailure) {
-              AppDialogs.closeDialog();
+              AppDialogs.closeDialog(context);
               toast(state.message);
             }
           },

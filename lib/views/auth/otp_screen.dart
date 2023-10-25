@@ -164,13 +164,13 @@ class _OtpScreenState extends State<OtpScreen> {
                       AppDialogs.loadingDialog(context);
                     } else if (state
                         is AuthSendVerificationForPasswordResetState) {
-                      AppDialogs.closeDialog();
+                      AppDialogs.closeDialog(context);
                       AppToast.normal(state.response.message);
                     } else if (state is AuthStateFailure) {
-                      AppDialogs.closeDialog();
+                      AppDialogs.closeDialog(context);
                       AppToast.danger(state.message);
                     } else {
-                      AppDialogs.closeDialog();
+                      AppDialogs.closeDialog(context);
                     }
                   },
                   builder: (context, state) {

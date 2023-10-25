@@ -10,16 +10,25 @@ class AppDialogs {
   static Future<dynamic> loadingDialog(BuildContext context) {
     return showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (ctx) {
-        dialogueContext = ctx;
-        return const LoadingWidget();
+      barrierDismissible:
+          false, // Prevent dismissing the dialog by tapping outside
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              LoadingWidget(), // You can replace this with your own loading widget
+              SizedBox(height: 16),
+              Text('Please Wait...'),
+            ],
+          ),
+        );
       },
     );
   }
 
-  static void closeDialog() {
-    Navigator.pop(dialogueContext!);
+  static void closeDialog(BuildContext context) {
+    context.pop();
   }
 
   // Otp success dialog

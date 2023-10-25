@@ -127,16 +127,16 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
               if (state is MediaUploadLoading) {
                 AppDialogs.loadingDialog(context);
               } else if (state is MediaUploadSuccess) {
-                AppDialogs.closeDialog();
+                AppDialogs.closeDialog(context);
                 // save the name of the image
                 saveFilePath(state.response);
                 AppToast.success(state.response.message);
                 completeProfile();
               } else if (state is MediaUploadFailure) {
-                AppDialogs.closeDialog();
+                AppDialogs.closeDialog(context);
                 AppToast.danger(state.error);
               } else {
-                AppDialogs.closeDialog();
+                AppDialogs.closeDialog(context);
               }
             },
           ),
@@ -146,16 +146,16 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
               if (state is AuthLoadingState) {
                 AppDialogs.loadingDialog(context);
               } else if (state is AuthCompleteProfileState) {
-                AppDialogs.closeDialog();
+                AppDialogs.closeDialog(context);
                 AppNavigator.goToPageWithReplacement(
                   context: context,
                   screen: const MainTabScreen(index: 0),
                 );
               } else if (state is AuthStateFailure) {
-                AppDialogs.closeDialog();
+                AppDialogs.closeDialog(context);
                 AppToast.danger(state.message);
               } else {
-                AppDialogs.closeDialog();
+                AppDialogs.closeDialog(context);
               }
             },
           ),

@@ -69,6 +69,13 @@ class AppTextStyle {
     fontWeight: FontWeight.w500,
   );
 
+  static var storyTitleTextStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 15.sp,
+    fontFamily: AppFonts.jost,
+    fontWeight: FontWeight.w900,
+  );
+
   static var pinput = TextStyle(
     fontSize: 22,
     color: AppColors.darkGrey,

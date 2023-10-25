@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
             } else if (state is AuthLoginState) {
               AppDialogs.closeDialog(context);
               await initLocalStorage(state.response.data);
-              if ("true" == "true") {
+              if (isRegistering == "true") {
                 AppNavigator.goToPageWithReplacement(
                   context: context,
                   screen: const CompleteProfileScreen1(),

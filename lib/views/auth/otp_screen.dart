@@ -7,9 +7,11 @@ import 'package:hobbyzhub/blocs/auth/auth_bloc.dart';
 import 'package:hobbyzhub/blocs/timer_cubit/timer_cubit_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/auth/recovery_password.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/otp_widget.dart';
@@ -35,22 +37,29 @@ class _OtpScreenState extends State<OtpScreen> {
     otpTimerCubit.startOtpIntervals();
   }
 
-  initBlocs() {
-    context.read<AuthBloc>().add(
-          AuthEventSendVerificationForPasswordReset(email: widget.email),
-        );
+  verifyOtpBloc() {
+    context.read<AuthBloc>().add(AuthEventVerifyOtp(
+          email: widget.email,
+          otp: pinController.text.trim(),
+        ));
+  }
+
+  resendOtp() {
+    context.read<AuthBloc>().add(AuthEventSendVerificationForPasswordReset(
+          email: widget.email,
+        ));
   }
 
   @override
   void initState() {
-    initCubits();
-    initBlocs();
-
+    verifyOtpBloc();
     super.initState();
   }
 
   void verifyOtp() {
-    if (formKey.currentState!.validate()) {}
+    if (formKey.currentState!.validate()) {
+      verifyOtpBloc();
+    }
   }
 
   @override
@@ -135,7 +144,7 @@ class _OtpScreenState extends State<OtpScreen> {
                             GestureDetector(
                               onTap: () {
                                 otpTimerCubit.startOtpIntervals();
-                                initBlocs();
+                                resendOtp();
                               },
                               child: Container(
                                 padding: EdgeInsets.only(
@@ -162,10 +171,13 @@ class _OtpScreenState extends State<OtpScreen> {
                   listener: (context, state) {
                     if (state is AuthLoadingState) {
                       AppDialogs.loadingDialog(context);
-                    } else if (state
-                        is AuthSendVerificationForPasswordResetState) {
+                    } else if (state is AuthVerifyOtpState) {
                       AppDialogs.closeDialog(context);
                       AppToast.normal(state.response.message);
+                      AppNavigator.goToPage(
+                        context: context,
+                        screen: RecoveryPasswordScreen(),
+                      );
                     } else if (state is AuthStateFailure) {
                       AppDialogs.closeDialog(context);
                       AppToast.danger(state.message);
@@ -189,7 +201,7 @@ class _OtpScreenState extends State<OtpScreen> {
                           builder: (context, st) => TextButton(
                             onPressed: () {
                               otpTimerCubit.startOtpIntervals();
-                              initBlocs();
+                              resendOtp();
                             },
                             child: Text(
                               'Resend OTP',

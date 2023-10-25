@@ -50,6 +50,14 @@ class AuthEventSendVerificationForPasswordReset extends AuthEvent {
 
 class AuthEventImagePicker extends AuthEvent {}
 
+class AuthEventChangePasswordAfterOtpVerification extends AuthEvent {
+  final String userId;
+  final String password;
+
+  AuthEventChangePasswordAfterOtpVerification(
+      {required this.userId, required this.password});
+}
+
 // States
 abstract class AuthState {}
 
@@ -90,6 +98,11 @@ class AuthSendVerificationForPasswordResetState extends AuthState {
 class AuthVerifyOtpState extends AuthState {
   final AuthModel response;
   AuthVerifyOtpState({required this.response});
+}
+
+class AuthChangePasswordAfterOtpVerificationState extends AuthState {
+  final AuthModel response;
+  AuthChangePasswordAfterOtpVerificationState({required this.response});
 }
 
 class AuthImagePickerState extends AuthState {

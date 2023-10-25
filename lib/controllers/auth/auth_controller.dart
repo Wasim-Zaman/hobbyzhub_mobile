@@ -50,7 +50,7 @@ abstract class AuthController {
 
     try {
       final response = await ApiManager.bodyLessPut(url);
-
+      print(response.body);
       return _getResponse(response);
     } catch (_) {
       rethrow;
@@ -104,11 +104,10 @@ abstract class AuthController {
 
   static Future<AuthModel> sendVerificaionMailForPasswordChange(
     String email,
-    int otp,
   ) async {
     // get the token from local database
     final token = await UserSecureStorage.fetchToken();
-    final url = "${AuthUrl.sendVerificationMailForPasswordReset}/$email/$otp";
+    final url = "${AuthUrl.sendVerificationMailForPasswordReset}/$email";
     final response =
         await ApiManager.bodyLessPost(url, headers: <String, String>{
       "Authorization": token!,
@@ -129,9 +128,9 @@ abstract class AuthController {
     try {
       final response = await ApiManager.putRequest(
           {"userId": userId, "password": password}, url,
-          headers: {
+          headers: <String, String>{
             "Content-Type": "application/json",
-            "Authorization": token,
+            "Authorization": token.toString(),
           });
 
       return _getResponse(response);

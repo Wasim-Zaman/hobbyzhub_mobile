@@ -55,6 +55,7 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
   File? image;
   String? token;
   String? userId;
+  String? dob;
 
   @override
   void initState() {
@@ -123,13 +124,19 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
           BlocListener<MediaUploadBloc, MediaUploadState>(
             bloc: mediaUploadBloc,
             listener: (context, state) {
-              if (state is MediaUploadSuccess) {
+              if (state is MediaUploadLoading) {
+                AppDialogs.loadingDialog(context);
+              } else if (state is MediaUploadSuccess) {
+                AppDialogs.closeDialog();
                 // save the name of the image
                 saveFilePath(state.response);
                 AppToast.success(state.response.message);
                 completeProfile();
               } else if (state is MediaUploadFailure) {
+                AppDialogs.closeDialog();
                 AppToast.danger(state.error);
+              } else {
+                AppDialogs.closeDialog();
               }
             },
           ),

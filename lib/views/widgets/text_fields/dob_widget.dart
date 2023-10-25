@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -16,6 +17,7 @@ class DobWidget extends StatelessWidget {
     return TextFieldWidget(
       labelText: "DATE OF BIRTH",
       controller: dobController,
+      validator: AppValidators.notEmpty,
       hintText: 'Select your birth date',
       readOnly: true,
       prefixIcon: IconButton(
@@ -33,7 +35,7 @@ class DobWidget extends StatelessWidget {
           ).then((value) {
             if (value != null) {
               // set date to controller
-              dobController.text = value.toString().split(' ')[0];
+              dobController.text = value.toIso8601String();
             }
           });
         },

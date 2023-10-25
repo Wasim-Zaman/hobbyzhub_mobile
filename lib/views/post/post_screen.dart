@@ -8,6 +8,7 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 
 import 'package:hobbyzhub/views/post/comments/comment_screen.dart';
+import 'package:hobbyzhub/views/post/story/story_screen.dart';
 
 import 'package:hobbyzhub/views/widgets/appbars/basic_appbar_widget.dart';
 
@@ -44,127 +45,138 @@ class _PostScreenState extends State<PostScreen> {
                             padding: const EdgeInsets.only(left: 8.0),
                             child: SizedBox(
                               child: index != 0
-                                  ? Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: 100.w,
-                                          height: 120.h,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 0,
-                                                top: 0,
-                                                child: Container(
-                                                  width: 100.w,
-                                                  height: 120.h,
-                                                  decoration: ShapeDecoration(
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          "https://via.placeholder.com/70x100"),
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 40.w,
-                                                top: 90.h,
-                                                child: Container(
-                                                  width: 25.w,
-                                                  height: 25.h,
-                                                  decoration: ShapeDecoration(
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          "https://via.placeholder.com/25x25"),
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                    shape: OvalBorder(
-                                                      side: BorderSide(
-                                                          width: 0.50,
-                                                          color: AppColors
-                                                              .primary),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Text('Chris',
-                                            textAlign: TextAlign.center,
-                                            style: AppTextStyle
-                                                .normalFontTextStyle),
-                                      ],
-                                    )
-                                  : Column(
-                                      children: [
-                                        SizedBox(
-                                          width: 100.w,
-                                          height: 120.h,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 0,
-                                                top: 0,
-                                                child: Container(
-                                                  width: 100.w,
-                                                  height: 120.h,
-                                                  decoration: ShapeDecoration(
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          "https://via.placeholder.com/70x100"),
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 40.w,
-                                                top: 90.h,
-                                                child: Container(
-                                                  width: 25.w,
-                                                  height: 25.h,
-                                                  decoration: ShapeDecoration(
-                                                    color: AppColors.primary,
-                                                    shape: OvalBorder(
-                                                      side: BorderSide(
-                                                        width: 0.50,
-                                                        color:
-                                                            AppColors.primary,
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (builder) =>
+                                                    StoryScreen()));
+                                      },
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: 100.w,
+                                            height: 120.h,
+                                            child: Stack(
+                                              children: [
+                                                Positioned(
+                                                  left: 0,
+                                                  top: 0,
+                                                  child: Container(
+                                                    width: 100.w,
+                                                    height: 120.h,
+                                                    decoration: ShapeDecoration(
+                                                      image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            "https://via.placeholder.com/70x100"),
+                                                        fit: BoxFit.fill,
+                                                      ),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
                                                       ),
                                                     ),
                                                   ),
-                                                  child: Icon(
-                                                    Icons.add,
-                                                    color: AppColors.white,
+                                                ),
+                                                Positioned(
+                                                  left: 40.w,
+                                                  top: 90.h,
+                                                  child: Container(
+                                                    width: 25.w,
+                                                    height: 25.h,
+                                                    decoration: ShapeDecoration(
+                                                      image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            "https://via.placeholder.com/25x25"),
+                                                        fit: BoxFit.fill,
+                                                      ),
+                                                      shape: OvalBorder(
+                                                        side: BorderSide(
+                                                            width: 0.50,
+                                                            color: AppColors
+                                                                .primary),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Text('Your Story',
-                                            textAlign: TextAlign.center,
-                                            style: AppTextStyle
-                                                .normalFontTextStyle),
-                                      ],
+                                          Text('Chris',
+                                              textAlign: TextAlign.center,
+                                              style: AppTextStyle
+                                                  .normalFontTextStyle),
+                                        ],
+                                      ),
+                                    )
+                                  : GestureDetector(
+                                      onTap: () {},
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            width: 100.w,
+                                            height: 120.h,
+                                            child: Stack(
+                                              children: [
+                                                Positioned(
+                                                  left: 0,
+                                                  top: 0,
+                                                  child: Container(
+                                                    width: 100.w,
+                                                    height: 120.h,
+                                                    decoration: ShapeDecoration(
+                                                      image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            "https://via.placeholder.com/70x100"),
+                                                        fit: BoxFit.fill,
+                                                      ),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  left: 40.w,
+                                                  top: 90.h,
+                                                  child: Container(
+                                                    width: 25.w,
+                                                    height: 25.h,
+                                                    decoration: ShapeDecoration(
+                                                      color: AppColors.primary,
+                                                      shape: OvalBorder(
+                                                        side: BorderSide(
+                                                          width: 0.50,
+                                                          color:
+                                                              AppColors.primary,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.add,
+                                                      color: AppColors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Text('Your Story',
+                                              textAlign: TextAlign.center,
+                                              style: AppTextStyle
+                                                  .normalFontTextStyle),
+                                        ],
+                                      ),
                                     ),
                             ),
                           );

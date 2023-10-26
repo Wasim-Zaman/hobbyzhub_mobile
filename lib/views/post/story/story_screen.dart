@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
+import 'package:hobbyzhub/global/colors/app_colors.dart';
 
 class StoryScreen extends StatefulWidget {
   const StoryScreen({super.key});
@@ -16,6 +17,78 @@ class _StoryScreenState extends State<StoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            backgroundColor: Colors.transparent,
+            onPressed: () {},
+            child: Container(
+                width: 100.w,
+                height: 100.h,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 1,
+                      strokeAlign: BorderSide.strokeAlignCenter,
+                      color: Colors.white.withOpacity(0.4000000059604645),
+                    ),
+                    borderRadius: BorderRadius.circular(30.50),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: AppColors.primaryShade,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        CupertinoIcons.share,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )),
+          ),
+          SizedBox(
+            width: 10.w,
+          ),
+          FloatingActionButton(
+            backgroundColor: Colors.transparent,
+            onPressed: () {},
+            child: Container(
+                width: 100.w,
+                height: 100.h,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 1,
+                      strokeAlign: BorderSide.strokeAlignCenter,
+                      color: Colors.white.withOpacity(0.4000000059604645),
+                    ),
+                    borderRadius: BorderRadius.circular(30.50),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: AppColors.primaryShade,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        CupertinoIcons.heart,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Stack(
           children: [
@@ -152,35 +225,35 @@ class _StoryScreenState extends State<StoryScreen> {
                 ),
               ),
             ),
-            Positioned(
-              left: 14.w,
-              top: MediaQuery.of(context).size.height - 130.h,
-              child: Container(
-                  decoration: ShapeDecoration(
-                    color: Color(0x7FCBCBCB),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x0C000000),
-                        blurRadius: 14,
-                        offset: Offset(0, 6),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                  width: MediaQuery.of(context).size.width - 30.h,
-                  height: 48.h,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(child: Icon(CupertinoIcons.heart)),
-                      Expanded(child: Icon(CupertinoIcons.share)),
-                    ],
-                  )),
-            ),
+            // Positioned(
+            //   left: 14.w,
+            //   top: MediaQuery.of(context).size.height - 130.h,
+            //   child: Container(
+            //       decoration: ShapeDecoration(
+            //         color: Color(0x7FCBCBCB),
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(24),
+            //         ),
+            //         shadows: [
+            //           BoxShadow(
+            //             color: Color(0x0C000000),
+            //             blurRadius: 14,
+            //             offset: Offset(0, 6),
+            //             spreadRadius: 0,
+            //           )
+            //         ],
+            //       ),
+            //       width: MediaQuery.of(context).size.width - 30.h,
+            //       height: 48.h,
+            //       child: Row(
+            //         mainAxisAlignment: MainAxisAlignment.end,
+            //         mainAxisSize: MainAxisSize.min,
+            //         children: [
+            //           Expanded(child: Icon(CupertinoIcons.heart)),
+            //           Expanded(child: Icon(CupertinoIcons.share)),
+            //         ],
+            //       )),
+            // ),
           ],
         ),
       ),

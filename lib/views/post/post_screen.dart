@@ -21,6 +21,7 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: BasicAppbarWidget(title: 'Feeds', isBackButton: false),
       body: SingleChildScrollView(
         child: Column(

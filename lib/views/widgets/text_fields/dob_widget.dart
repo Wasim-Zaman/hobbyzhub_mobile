@@ -8,9 +8,11 @@ class DobWidget extends StatelessWidget {
   const DobWidget({
     super.key,
     required this.dobController,
+    this.onChanged,
   });
 
   final TextEditingController dobController;
+  final Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class DobWidget extends StatelessWidget {
       controller: dobController,
       validator: AppValidators.notEmpty,
       hintText: 'Select your birth date',
+      onChanged: onChanged,
       readOnly: true,
       prefixIcon: IconButton(
         icon: const Icon(

@@ -13,6 +13,7 @@ class TextFieldWidget extends StatefulWidget {
   final int? maxLines;
   final bool? readOnly;
   final Widget? prefixIcon;
+  final Function(String)? onChanged;
 
   const TextFieldWidget({
     Key? key,
@@ -27,6 +28,7 @@ class TextFieldWidget extends StatefulWidget {
     this.maxLines,
     this.readOnly,
     this.prefixIcon,
+    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -40,6 +42,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       controller: widget.controller,
       validator: widget.validator,
       focusNode: widget.focusNode,
+      onChanged: widget.onChanged,
       maxLines: widget.maxLines ?? 1,
       textInputAction: widget.textInputAction ??
           (widget.focusNode == null
@@ -58,7 +61,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       keyboardType: widget.keyboardType,
       readOnly: widget.readOnly ?? false,
       decoration: InputDecoration(
-        labelText: widget.labelText,
+        labelText: widget.labelText.toUpperCase(),
         hintText: widget.hintText,
         hintStyle: AppTextStyle.textField,
         prefixIcon: widget.prefixIcon,
@@ -66,7 +69,11 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         labelStyle: AppTextStyle.textField,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.borderGrey),
+          borderSide: const BorderSide(color: AppColors.lightGrey),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.primary),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),

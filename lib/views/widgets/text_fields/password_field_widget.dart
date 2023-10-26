@@ -54,7 +54,7 @@ class _PasswordFieldWidgetState extends State<PasswordFieldWidget> {
           },
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
-        labelText: widget.labelText,
+        labelText: widget.labelText.toUpperCase(),
         hintText: widget.hintText,
         labelStyle: AppTextStyle.textField,
         hintStyle: AppTextStyle.textField,

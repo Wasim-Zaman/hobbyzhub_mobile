@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class BackAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
-  const BackAppbarWidget({Key? key}) : super(key: key);
+  final String? title;
+  const BackAppbarWidget({Key? key, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      title: title == null
+          ? null
+          : Text(title.toString(), style: AppTextStyle.headings),
+      centerTitle: true,
       leading: Padding(
         padding: EdgeInsets.all(8.w),
         child: GestureDetector(
@@ -38,5 +44,5 @@ class BackAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(50);
+  Size get preferredSize => const Size.fromHeight(60);
 }

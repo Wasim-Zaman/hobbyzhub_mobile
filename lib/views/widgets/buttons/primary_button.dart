@@ -12,6 +12,7 @@ class PrimaryButtonWidget extends StatelessWidget {
     this.height,
     this.margin,
     this.icon,
+    this.color,
   }) : super(key: key);
 
   final String caption;
@@ -19,6 +20,7 @@ class PrimaryButtonWidget extends StatelessWidget {
   final double? width, height;
   final EdgeInsets? margin;
   final IconData? icon;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class PrimaryButtonWidget extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
+          backgroundColor: color ?? AppColors.primary,
           foregroundColor: AppColors.white,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(50)),

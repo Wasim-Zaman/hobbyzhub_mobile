@@ -276,18 +276,25 @@ class _ImagePickWidgetState extends State<ImagePickWidget> {
             bottom: -5,
             right: 0,
             left: 0,
-            child: IconButton(
-              icon: const CircleAvatar(
-                backgroundColor: AppColors.iconGrey,
-                child: Icon(
-                  Ionicons.camera,
-                  size: 20,
-                  color: AppColors.white,
-                ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                border: Border.all(color: AppColors.white),
+                shape: BoxShape.circle,
               ),
-              onPressed: () {
-                initBloc();
-              },
+              child: IconButton(
+                icon: const CircleAvatar(
+                  backgroundColor: AppColors.iconGrey,
+                  child: Icon(
+                    Ionicons.camera,
+                    size: 20,
+                    color: AppColors.white,
+                  ),
+                ),
+                onPressed: () {
+                  initBloc();
+                },
+              ),
             ),
           ),
         ],

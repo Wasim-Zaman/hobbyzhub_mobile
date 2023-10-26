@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
+import 'package:hobbyzhub/views/auth/complete_profile_screen2.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/dropdowns/dropdown_widget.dart';
@@ -49,6 +50,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const ImagePickWidget(),
+                  20.height,
                   TextFieldWidget(
                     labelText: "Name",
                     controller: nameController,

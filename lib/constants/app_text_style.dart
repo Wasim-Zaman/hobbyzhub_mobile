@@ -109,9 +109,17 @@ class AppTextStyle {
     fontWeight: FontWeight.w400,
   );
   static var notificationTitleTextStyle = TextStyle(
-    color: Colors.black,
+    color: AppColors.black,
     fontSize: 15,
     fontFamily: AppFonts.jost,
     fontWeight: FontWeight.w600,
   );
+  static var listTileTitle = TextStyle(
+    color: AppColors.black,
+    fontSize: 16,
+    fontFamily: AppFonts.jost,
+    fontWeight: FontWeight.w400,
+  );
+
+  static var listTileSubHeading = listTileTitle.copyWith(fontSize: 12);
 }

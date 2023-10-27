@@ -5,6 +5,9 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
+import 'package:hobbyzhub/views/widgets/text/bio_text_widget.dart';
+import 'package:hobbyzhub/views/widgets/text/text_value_widget.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -27,33 +30,17 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  height: 100,
-                  width: 100,
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      width: 4,
-                      color: AppColors.borderGrey,
-                    ),
-                    image: const DecorationImage(
-                      image: AssetImage('assets/images/userprofile.png'),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
+                // profile image
+                const ProfileImageWidget(
+                  imageUrl: 'assets/images/userprofile.png',
                 ),
                 // Name
                 Text("Sara Stamp", style: AppTextStyle.subHeading),
                 20.height,
                 // Bio
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Text(
-                    'I just love the idea of not being what people expect me to be!',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyle.normal,
-                  ),
+                const BioTextWidget(
+                  bio:
+                      'I just love the idea of not being what people expect me to be!',
                 ),
                 20.height,
                 // Posts, following and followers in one row
@@ -155,21 +142,6 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class TextValueWidget extends StatelessWidget {
-  final String text, value;
-  const TextValueWidget({Key? key, required this.text, required this.value})
-      : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(value, style: AppTextStyle.normal),
-        Text(text, style: AppTextStyle.normal),
-      ],
     );
   }
 }

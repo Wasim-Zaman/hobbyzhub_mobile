@@ -3,9 +3,9 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
-import 'package:hobbyzhub/views/notification/notification_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/faq_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/help_center_screen.dart';
+import 'package:hobbyzhub/views/profile/settings/notification_settings_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/privacy_policy_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/two_buttons_appbar.dart';
 import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
@@ -28,7 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         // navigate to notification screen
         AppNavigator.goToPage(
           context: context,
-          screen: const NotificationScreen(),
+          screen: const NotificationSettingsScreen(),
         );
         break;
       case 2:
@@ -79,8 +79,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               decoration: const BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(70),
-                  topRight: Radius.circular(70),
+                  topLeft: Radius.elliptical(200, 20),
+                  topRight: Radius.elliptical(200, 20),
                 ),
               ),
               child: Padding(

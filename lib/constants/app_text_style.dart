@@ -18,6 +18,7 @@ class AppTextStyle {
     fontSize: AppPixels.subHeading,
     color: AppColors.darkGrey,
     fontFamily: AppFonts.jost,
+    fontWeight: FontWeight.w500,
   );
 
   static var textField = TextStyle(
@@ -82,8 +83,9 @@ class AppTextStyle {
   );
 
   static var normal = TextStyle(
-    fontSize: 18.0,
+    fontSize: AppPixels.normal14,
     color: AppColors.darkGrey,
+    fontFamily: AppFonts.jost,
   );
 
   static var dialogHeader = TextStyle(

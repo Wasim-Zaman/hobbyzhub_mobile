@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   // Primary Colors
   static const primary = Color(0xFF26A4FF);
+  static const primaryShade = Color(0xFF1F5D8B);
 
   // Danger Colors
   static const dangerColor = Color.fromRGBO(215, 0, 0, 1);

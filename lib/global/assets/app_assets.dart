@@ -11,4 +11,8 @@ class ImageAssets {
   static const String messageImage = "assets/images/message.png";
   static const String profileImage = "assets/images/profile.png";
   static const String userProfileImage = "assets/images/userprofile.png";
+  static const String homeUnselectedImage = "assets/images/home1_black.png";
+  static const String searchSelectedImage = "assets/images/search2.png";
+  static const String messageSelectedImage = "assets/images/Chat.png";
+  static const String profileSelectedImage = "assets/images/profile.png";
 }

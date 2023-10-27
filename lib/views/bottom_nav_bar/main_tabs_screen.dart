@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/views/explore/explore_screen.dart';
 import 'package:hobbyzhub/views/post/post_screen.dart';
 
 class MainTabScreen extends StatefulWidget {
@@ -28,7 +29,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
 
   final pages = [
     const PostScreen(),
-    const PostScreen(),
+    const ExploreScreen(),
     const PostScreen(),
     const PostScreen(),
     const PostScreen(),
@@ -49,14 +50,18 @@ class _MainTabScreenState extends State<MainTabScreen> {
           BottomNavigationBarItem(
             label: "",
             icon: Image.asset(
-              ImageAssets.homeImage,
+              pageIndex == 0
+                  ? ImageAssets.homeImage
+                  : ImageAssets.homeUnselectedImage,
               height: 30.h,
             ),
           ),
           BottomNavigationBarItem(
             label: "",
             icon: Image.asset(
-              ImageAssets.searchImage,
+              pageIndex == 1
+                  ? ImageAssets.searchSelectedImage
+                  : ImageAssets.searchImage,
               height: 30.h,
             ),
           ),
@@ -81,14 +86,18 @@ class _MainTabScreenState extends State<MainTabScreen> {
           BottomNavigationBarItem(
             label: "",
             icon: Image.asset(
-              ImageAssets.messageImage,
+              pageIndex == 3
+                  ? ImageAssets.messageSelectedImage
+                  : ImageAssets.messageImage,
               height: 30.h,
             ),
           ),
           BottomNavigationBarItem(
             label: "",
             icon: Image.asset(
-              ImageAssets.profileImage,
+              pageIndex == 4
+                  ? ImageAssets.profileSelectedImage
+                  : ImageAssets.profileImage,
               height: 30.h,
             ),
           ),

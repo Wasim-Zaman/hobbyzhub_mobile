@@ -4,6 +4,7 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/notification/notification_screen.dart';
+import 'package:hobbyzhub/views/profile/settings/help_center_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/privacy_policy_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/two_buttons_appbar.dart';
 import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
@@ -38,6 +39,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         break;
       case 3:
         // navigate to help center screen
+        AppNavigator.goToPage(
+          context: context,
+          screen: const HelpCenterScreen(),
+        );
         break;
       case 4:
         // navigate to FAQs screen
@@ -117,10 +122,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         onTap: () => navigate(2),
                       ),
                       // help center list tile widget
-                      const ListTileWidget(
+                      ListTileWidget(
                         title: "Help Center",
                         subtitle: "Help center, contact us",
                         icon: Ionicons.help_circle_outline,
+                        onTap: () => navigate(3),
                       ),
                       // FAQs list tile widget
                       const ListTileWidget(

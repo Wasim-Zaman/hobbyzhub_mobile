@@ -31,6 +31,45 @@ class AppDialogs {
     context.pop();
   }
 
+  static void logoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppColors.white,
+          title: Text(
+            'Log Out',
+            style: AppTextStyle.dialogHeader,
+          ),
+          content: Text(
+            'Are you sure you want to logout?',
+            style: AppTextStyle.dialogNormal,
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: Text(
+                'Cancel',
+                style: AppTextStyle.dialogNormal,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: Text(
+                'Ok',
+                style: AppTextStyle.dialogNormal,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // Otp success dialog
   static Future<dynamic> otpSuccessDialog(
     BuildContext context, {

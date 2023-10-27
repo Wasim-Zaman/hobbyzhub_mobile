@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/profile/settings/faq_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/help_center_screen.dart';
@@ -54,6 +55,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         break;
       case 6:
         // navigate to log out screen
+        AppDialogs.logoutDialog(context);
         break;
     }
   }

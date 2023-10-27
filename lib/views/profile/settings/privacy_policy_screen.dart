@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
+import 'package:hobbyzhub/views/widgets/text/content_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
@@ -139,36 +140,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
             20.height,
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ContentWidget extends StatelessWidget {
-  final String header, content;
-  const ContentWidget({Key? key, required this.header, required this.content})
-      : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: header,
-            style: AppTextStyle.normal.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-              color: AppColors.black,
-            ),
-          ),
-          TextSpan(
-            text: content,
-            style: AppTextStyle.normal.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-            ),
-          ),
-        ],
       ),
     );
   }

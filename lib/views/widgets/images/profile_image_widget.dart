@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class ProfileImageWidget extends StatelessWidget {
   final String imageUrl;
@@ -17,9 +19,10 @@ class ProfileImageWidget extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            height: 100,
-            width: 100,
+            height: 120.h,
+            width: 120.w,
             padding: const EdgeInsets.all(5),
+            margin: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -38,13 +41,18 @@ class ProfileImageWidget extends StatelessWidget {
             right: 0,
             child: IconButton(
               onPressed: onEditClicked ?? () {},
-              icon: const CircleAvatar(
-                radius: 15,
-                backgroundColor: AppColors.grey,
-                child: Icon(Icons.edit_outlined, size: 15),
+              icon: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: AppColors.white),
+                child: const CircleAvatar(
+                  radius: 15,
+                  backgroundColor: AppColors.grey,
+                  child: Icon(Icons.edit_outlined, size: 15),
+                ),
               ),
             ),
-          ),
+          ).visible(isEditable),
         ],
       ),
     );

@@ -4,6 +4,7 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/notification/notification_screen.dart';
+import 'package:hobbyzhub/views/profile/settings/faq_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/help_center_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/privacy_policy_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/two_buttons_appbar.dart';
@@ -46,6 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         break;
       case 4:
         // navigate to FAQs screen
+        AppNavigator.goToPage(context: context, screen: const FaqScreen());
         break;
       case 5:
         // navigate to about us screen
@@ -88,7 +90,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       const ProfileImageWidget(
                         imageUrl: ImageAssets.userProfileImage,
-                        isEditable: false,
+                        isEditable: true,
                       ),
                       20.height,
                       Text(
@@ -124,21 +126,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         onTap: () => navigate(3),
                       ),
                       // FAQs list tile widget
-                      const ListTileWidget(
+                      ListTileWidget(
                         title: "FAQs",
                         subtitle: "Frequently asked questions",
                         icon: Icons.abc_outlined,
+                        onTap: () => navigate(4),
                       ),
-                      const ListTileWidget(
+                      ListTileWidget(
                         title: "About us",
                         subtitle: "About hobbyzhub",
                         icon: Ionicons.information_circle_outline,
+                        onTap: () => navigate(5),
                       ),
                       // log out widget
-                      const ListTileWidget(
+                      ListTileWidget(
                         title: "Log out",
                         subtitle: "",
                         icon: Ionicons.log_out_outline,
+                        onTap: () => navigate(6),
                       ),
                     ],
                   ),

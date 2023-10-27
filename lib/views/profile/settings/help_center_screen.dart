@@ -49,44 +49,48 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       appBar: const BackAppbarWidget(title: "Help Center"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Expanded(child: Container()),
-            Expanded(
-              flex: 3,
-              child: Column(
-                children: [
-                  TextFieldWidget(
-                    labelText: "NAME",
-                    controller: nameController,
-                    focusNode: nameFocusNode,
-                    hintText: "Enter your name",
-                    validator: AppValidators.notEmpty,
-                  ),
-                  20.height,
-                  TextFieldWidget(
-                    labelText: "EMAIL",
-                    controller: emailController,
-                    hintText: "Enter your email",
-                    focusNode: emailFocusNode,
-                    validator: AppValidators.email,
-                  ),
-                  20.height,
-                  TextFieldWidget(
-                    labelText: "FEEDBACK",
-                    controller: feedBackController,
-                    hintText: "Go ahead, we are listening",
-                    focusNode: feedBackFocusNode,
-                    validator: AppValidators.notEmpty,
-                    maxLines: 5,
-                    textInputAction: TextInputAction.newline,
-                  ),
-                  20.height,
-                  PrimaryButtonWidget(caption: "Submit", onPressed: submit),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Image will come here
+              Container(
+                height: 200,
+                width: context.width(),
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-            ),
-          ],
+              20.height,
+              TextFieldWidget(
+                labelText: "NAME",
+                controller: nameController,
+                focusNode: nameFocusNode,
+                hintText: "Enter your name",
+                validator: AppValidators.notEmpty,
+              ),
+              20.height,
+              TextFieldWidget(
+                labelText: "EMAIL",
+                controller: emailController,
+                hintText: "Enter your email",
+                focusNode: emailFocusNode,
+                validator: AppValidators.email,
+              ),
+              20.height,
+              TextFieldWidget(
+                labelText: "FEEDBACK",
+                controller: feedBackController,
+                hintText: "Go ahead, we are listening",
+                focusNode: feedBackFocusNode,
+                validator: AppValidators.notEmpty,
+                maxLines: 5,
+                textInputAction: TextInputAction.newline,
+              ),
+              20.height,
+              PrimaryButtonWidget(caption: "Submit", onPressed: submit),
+            ],
+          ),
         ),
       ),
     );

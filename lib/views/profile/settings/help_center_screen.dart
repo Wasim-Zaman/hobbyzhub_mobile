@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -53,14 +54,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           child: Column(
             children: [
               // Image will come here
-              Container(
-                height: 200,
-                width: context.width(),
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+              Image.asset(ImageAssets.helpDesk),
               20.height,
               TextFieldWidget(
                 labelText: "NAME",

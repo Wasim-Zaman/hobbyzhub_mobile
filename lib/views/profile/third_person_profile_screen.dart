@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
+import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -32,7 +33,8 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
               children: [
                 // profile image
                 const ProfileImageWidget(
-                  imageUrl: 'assets/images/userprofile.png',
+                  imageUrl: ImageAssets.userProfileImage,
+                  isEditable: false,
                 ),
                 // Name
                 Text("Sara Stamp", style: AppTextStyle.subHeading),

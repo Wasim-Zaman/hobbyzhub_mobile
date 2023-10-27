@@ -59,11 +59,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: const TwoButtonsAppbar(
-      //   title: "Settings",
-      //   icon: Ionicons.search_outline,
-      //   color: AppColors.transparent,
-      // ),
       body: Stack(
         children: [
           Container(

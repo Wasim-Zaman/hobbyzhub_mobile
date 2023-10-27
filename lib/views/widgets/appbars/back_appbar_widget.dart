@@ -14,7 +14,10 @@ class BackAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: title == null
           ? null
-          : Text(title.toString(), style: AppTextStyle.headings),
+          : Text(title.toString(),
+              style: AppTextStyle.headings.copyWith(
+                fontSize: 24,
+              )),
       centerTitle: true,
       leading: Padding(
         padding: EdgeInsets.all(8.w),

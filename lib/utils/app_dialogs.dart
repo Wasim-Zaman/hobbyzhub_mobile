@@ -31,7 +31,7 @@ class AppDialogs {
     context.pop();
   }
 
-  static void logoutDialog(BuildContext context) {
+  static void logoutDialog(BuildContext context, {VoidCallback? logout}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -56,9 +56,10 @@ class AppDialogs {
               ),
             ),
             TextButton(
-              onPressed: () {
-                context.pop();
-              },
+              onPressed: logout ??
+                  () {
+                    context.pop();
+                  },
               child: Text(
                 'Ok',
                 style: AppTextStyle.dialogNormal,

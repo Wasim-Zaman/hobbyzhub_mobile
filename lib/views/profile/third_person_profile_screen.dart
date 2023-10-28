@@ -12,6 +12,8 @@ import 'package:hobbyzhub/views/widgets/text/text_value_widget.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+enum Page { posts, groups }
+
 class ThirdPersonProfileScreen extends StatefulWidget {
   const ThirdPersonProfileScreen({Key? key}) : super(key: key);
 
@@ -21,6 +23,9 @@ class ThirdPersonProfileScreen extends StatefulWidget {
 }
 
 class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
+  // posts and similar groups post controller
+  final PageController _pageController = PageController(initialPage: 0);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,95 +60,154 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                   ],
                 ),
                 20.height,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: PrimaryButtonWidget(
-                        caption: "Follow",
-                        onPressed: () {},
-                        icon: Ionicons.add,
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: GestureDetector(
-                        onTap: () {
-                          // Display a small menu after we click on three dots.
-                        },
-                        child: Container(
-                          height: 56,
-                          decoration: const BoxDecoration(
-                            color: AppColors.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            // three dots icon
-                            Ionicons.ellipsis_horizontal,
-                            color: AppColors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                const NonFollowedPersonWidget(),
                 20.height,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: PrimaryButtonWidget(
-                        caption: "Following",
-                        color: AppColors.grey,
-                        onPressed: () {},
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          height: 56,
-                          decoration: const BoxDecoration(
-                            color: AppColors.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Ionicons.chatbox_ellipses_outline,
-                            color: AppColors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          height: 56,
-                          decoration: const BoxDecoration(
-                            color: AppColors.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            // three dots icon
-                            Ionicons.ellipsis_horizontal,
-                            color: AppColors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ).visible(false),
-                20.height,
-                // Create two tabs for posts and common groups
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class FollowedPersonWidget extends StatelessWidget {
+  const FollowedPersonWidget({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          flex: 3,
+          child: PrimaryButtonWidget(
+            caption: "Following",
+            color: AppColors.grey,
+            onPressed: () {},
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: GestureDetector(
+            onTap: () {},
+            child: Container(
+              height: 56,
+              decoration: const BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Ionicons.chatbox_ellipses_outline,
+                color: AppColors.white,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: GestureDetector(
+            onTap: () {},
+            child: Container(
+              height: 56,
+              decoration: const BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                // three dots icon
+                Ionicons.ellipsis_horizontal,
+                color: AppColors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class NonFollowedPersonWidget extends StatelessWidget {
+  const NonFollowedPersonWidget({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          flex: 3,
+          child: PrimaryButtonWidget(
+            caption: "Follow",
+            onPressed: () {},
+            icon: Ionicons.add,
+          ),
+        ),
+        Expanded(
+            flex: 1,
+            child: PopupMenuButton(
+              color: AppColors.white,
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  child: ListTile(
+                    // i like icon
+                    leading: const Icon(
+                      Ionicons.information_circle_outline,
+                      color: AppColors.dangerColor,
+                    ),
+                    title: Text(
+                      "Report",
+                      style: AppTextStyle.normal
+                          .copyWith(color: AppColors.dangerColor),
+                    ),
+                  ),
+                ),
+                // report
+                PopupMenuItem(
+                  child: ListTile(
+                    // i like icon
+                    leading: const Icon(Icons.block_outlined),
+                    title: Text(
+                      "Block",
+                      style: AppTextStyle.normal,
+                    ),
+                  ),
+                ),
+                // share this profile
+                PopupMenuItem(
+                  child: ListTile(
+                    // i like icon
+                    leading: const Icon(Icons.share_outlined),
+                    title: Text(
+                      "Share this profile",
+                      style: AppTextStyle.normal,
+                    ),
+                  ),
+                ),
+                // Copy profile URL
+                PopupMenuItem(
+                  child: ListTile(
+                    // i like icon
+                    leading: const Icon(Icons.copy_outlined),
+                    title: Text(
+                      "Copy profile URL",
+                      style: AppTextStyle.normal,
+                    ),
+                  ),
+                ),
+              ],
+              child: Container(
+                height: 56,
+                decoration: const BoxDecoration(
+                  color: AppColors.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  // three dots icon
+                  Ionicons.ellipsis_horizontal,
+                  color: AppColors.white,
+                ),
+              ),
+            )),
+      ],
     );
   }
 }

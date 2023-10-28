@@ -55,10 +55,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         break;
       case 6:
         // navigate to log out screen
-        AppDialogs.logoutDialog(context);
+        AppDialogs.logoutDialog(context, logout: logout);
         break;
     }
   }
+
+  void logout() {}
 
   @override
   Widget build(BuildContext context) {

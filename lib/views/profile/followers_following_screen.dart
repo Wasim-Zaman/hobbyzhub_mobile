@@ -43,24 +43,24 @@ class FollowersScreen extends StatelessWidget {
     return const Column(
       children: [
         FollowerFollowingListTile(
+          name: "John Doe",
           activeStatus: true,
           imageUrl: "",
           lastSeen: "Active 2m ago",
-          name: "John Doe",
           isFollowed: true,
         ),
         FollowerFollowingListTile(
+          name: "Limited Edition",
           activeStatus: true,
           imageUrl: "",
           lastSeen: "Active 2m ago",
-          name: "John Doe",
           isFollowed: false,
         ),
         FollowerFollowingListTile(
+          name: "John Doe",
           activeStatus: false,
           imageUrl: "",
           lastSeen: "Active 2m ago",
-          name: "John Doe",
           isFollowed: true,
         ),
       ],
@@ -73,11 +73,30 @@ class FollowingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Followings',
-        style: TextStyle(fontSize: 20),
-      ),
+    return const Column(
+      children: [
+        FollowerFollowingListTile(
+          imageUrl: "",
+          activeStatus: true,
+          name: "Wasim Zaman",
+          lastSeen: "Active 3 days ago",
+          isFollowed: true,
+        ),
+        FollowerFollowingListTile(
+          imageUrl: "",
+          activeStatus: true,
+          name: "Limited Edition",
+          lastSeen: "Active 2m ago",
+          isFollowed: false,
+        ),
+        FollowerFollowingListTile(
+          imageUrl: "",
+          activeStatus: false,
+          name: "John Doe",
+          lastSeen: "Active 2m ago",
+          isFollowed: true,
+        ),
+      ],
     );
   }
 }
@@ -100,33 +119,19 @@ class FollowerFollowingListTile extends StatelessWidget {
       leading: Stack(
         children: [
           Image.asset(ImageAssets.userProfileImage),
-          activeStatus
-              ? Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    height: 15,
-                    width: 15,
-                    decoration: BoxDecoration(
-                      color: AppColors.success,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.white, width: 2),
-                    ),
-                  ),
-                )
-              : Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    height: 15,
-                    width: 15,
-                    decoration: BoxDecoration(
-                      color: AppColors.grey,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.white, width: 2),
-                    ),
-                  ),
-                ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              height: 15,
+              width: 15,
+              decoration: BoxDecoration(
+                color: activeStatus ? AppColors.success : AppColors.grey,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.white, width: 2),
+              ),
+            ),
+          )
         ],
       ),
       title: Text(name),

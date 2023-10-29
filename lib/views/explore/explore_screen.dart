@@ -1,10 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/views/widgets/appbars/basic_appbar_widget.dart';
 
@@ -16,18 +13,16 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-  var scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: BasicAppbarWidget(title: 'Explore', isBackButton: false),
-      body: SingleChildScrollView(
-        controller: scrollController,
-        child: Padding(
-          padding: EdgeInsets.all(8.w),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
+      body: Padding(
+        padding: EdgeInsets.all(8.w),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -37,7 +32,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 SizedBox(
                   height: 40.h,
                   child: ListView.builder(
-                      controller: scrollController,
+                      //  controller: scrollController,
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       itemCount: 10,
@@ -75,7 +70,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 ),
                 Text(
                   'People',
-                  style: AppTextStyle.normal,
+                  style: AppTextStyle.exploreSubHead,
                 ),
                 SizedBox(
                   height: 20.h,
@@ -83,7 +78,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 SizedBox(
                   height: 130.h,
                   child: ListView.builder(
-                      controller: scrollController,
+                      // controller: scrollController,
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       itemCount: 10,
@@ -122,29 +117,27 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 ),
                 Text(
                   'Hobbies',
-                  style: AppTextStyle.normal,
+                  style: AppTextStyle.exploreSubHead,
                 ),
                 SizedBox(
                   height: 20.h,
                 ),
-                MasonryGridView.count(
-                    shrinkWrap: true,
-                    controller: scrollController,
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 2,
-                    crossAxisSpacing: 4,
-                    itemBuilder: (context, index) {
-                      int randomHeight = Random().nextInt(6);
-                      return Container(
-                          width: double.infinity,
-                          height: (randomHeight % 5 + 2) * 100,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(
-                                      "https://picsum.photos/100/${(randomHeight % 5 + 2) * 100}"))));
-                    })
+                GridView.count(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  children: List<Widget>.generate(25, (index) {
+                    return GridTile(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.network(
+                          "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  }),
+                ),
               ],
             ),
           ),

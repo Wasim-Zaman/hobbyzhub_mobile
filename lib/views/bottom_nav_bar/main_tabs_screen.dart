@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/explore/explore_screen.dart';
+import 'package:hobbyzhub/views/messaging/chat_screen.dart';
 import 'package:hobbyzhub/views/post/post_screen.dart';
 
 class MainTabScreen extends StatefulWidget {
@@ -31,7 +32,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
     const PostScreen(),
     const ExploreScreen(),
     const PostScreen(),
-    const PostScreen(),
+    const ChatScreen(),
     const PostScreen(),
   ];
   @override

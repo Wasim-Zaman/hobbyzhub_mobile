@@ -16,4 +16,5 @@ class ImageAssets {
   static const String messageSelectedImage = "assets/images/Chat.png";
   static const String profileSelectedImage = "assets/images/profile.png";
   static const String helpDesk = "assets/images/helpdesk.png";
+  static const String addNewMessageImage = "assets/images/Vector.png";
 }

@@ -36,7 +36,6 @@ class _RecoveryPasswordScreenState extends State<RecoveryPasswordScreen> {
   void initState() {
     UserSecureStorage.fetchUserId().then((value) {
       userId = value;
-      print(userId);
     });
     super.initState();
   }

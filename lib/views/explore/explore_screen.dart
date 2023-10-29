@@ -26,7 +26,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         controller: scrollController,
         child: Padding(
           padding: EdgeInsets.all(8.w),
-          child: Container(
+          child: SizedBox(
             height: MediaQuery.of(context).size.height,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

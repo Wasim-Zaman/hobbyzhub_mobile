@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/notification/notification_screen.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -53,8 +54,10 @@ class BasicAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         GestureDetector(
           onTap: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (builder) => NotificationScreen()));
+            AppNavigator.goToPage(
+              context: context,
+              screen: const NotificationScreen(),
+            );
           },
           child: Padding(
             padding: EdgeInsets.all(8.w),

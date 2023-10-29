@@ -10,18 +10,23 @@ class TwoButtonsAppbar extends StatelessWidget implements PreferredSizeWidget {
   final IconData icon;
   final VoidCallback? onPressed;
   final Color? color;
+  final PreferredSizeWidget? bottom;
+  final double? size;
   const TwoButtonsAppbar({
     Key? key,
     required this.title,
     required this.icon,
     this.onPressed,
     this.color,
+    this.bottom,
+    this.size,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: color,
+      bottom: bottom,
       title: Text(title.toString(), style: AppTextStyle.headings),
       centerTitle: true,
       actions: [
@@ -58,5 +63,5 @@ class TwoButtonsAppbar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(60);
+  Size get preferredSize => Size.fromHeight(size ?? 60);
 }

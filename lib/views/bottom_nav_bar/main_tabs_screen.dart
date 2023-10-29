@@ -76,7 +76,6 @@ class _MainTabScreenState extends State<MainTabScreen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100)),
                 onPressed: () {
-                  // context.read<NewRequestProvider>().removeAllSelectedPhotos();
                   selectedIndex(1);
                 },
                 child: const Icon(Icons.add),
@@ -103,9 +102,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
           ),
         ],
         onTap: (value) {
-          // if (value != 1) {
           selectedIndex(value);
-          //}
         },
         currentIndex: pageIndex,
       ),

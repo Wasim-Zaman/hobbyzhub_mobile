@@ -88,6 +88,13 @@ class AppTextStyle {
     fontFamily: AppFonts.jost,
   );
 
+  static var exploreSubHead = TextStyle(
+    color: Colors.black,
+    fontSize: 17,
+    fontFamily: AppFonts.jost,
+    fontWeight: FontWeight.w400,
+  );
+
   static var dialogHeader = TextStyle(
     fontSize: 20.8,
     color: AppColors.darkGrey,

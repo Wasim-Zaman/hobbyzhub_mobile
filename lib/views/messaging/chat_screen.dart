@@ -7,8 +7,6 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/notification/notification_screen.dart';
-import 'package:ionicons/ionicons.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -30,10 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
             children: [
               GestureDetector(
                 onTap: () {
-                  AppNavigator.goToPage(
-                    context: context,
-                    screen: const NotificationScreen(),
-                  );
+                  _settingModalBottomSheet(context);
                 },
                 child: Padding(
                     padding: EdgeInsets.all(8.w),
@@ -70,7 +65,7 @@ class _ChatScreenState extends State<ChatScreen> {
             SizedBox(
               height: 20.h,
             ),
-            Container(
+            SizedBox(
               height: 70.h,
               child: ListView.builder(
                   shrinkWrap: true,
@@ -82,7 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Container(
+                        SizedBox(
                           width: 52.w,
                           //  height: 51.h,
                           child: Stack(
@@ -141,138 +136,122 @@ class _ChatScreenState extends State<ChatScreen> {
                   scrollDirection: Axis.vertical,
                   itemCount: 10,
                   itemBuilder: (context, index) {
-                    return Container(
-                      color: AppColors.lightGrey,
-                      width: double.infinity,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.h, bottom: 20.h, left: 10.w, right: 10.w),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 47.w,
-                                  height: 48.h,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        top: 0,
-                                        child: Container(
-                                          width: 45.w,
-                                          height: 45.h,
-                                          decoration: ShapeDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage(
-                                                  "https://via.placeholder.com/44x45"),
-                                              fit: BoxFit.fill,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                    return Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        color: AppColors.lightGrey,
+                        width: double.infinity,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.h, bottom: 20.h, left: 5.w, right: 5.w),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 47.w,
+                                    height: 48.h,
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                          left: 0,
+                                          top: 0,
+                                          child: Container(
+                                            width: 45.w,
+                                            height: 45.h,
+                                            decoration: ShapeDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                    "https://via.placeholder.com/44x45"),
+                                                fit: BoxFit.fill,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Positioned(
-                                        left: 35,
-                                        top: 36,
-                                        child: Container(
-                                          width: 12,
-                                          height: 12,
-                                          decoration: ShapeDecoration(
-                                            color: Color(0xFF12B669),
-                                            shape: OvalBorder(),
+                                        Positioned(
+                                          left: 35,
+                                          top: 36,
+                                          child: Container(
+                                            width: 12,
+                                            height: 12,
+                                            decoration: ShapeDecoration(
+                                              color: Color(0xFF12B669),
+                                              shape: OvalBorder(),
+                                            ),
                                           ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 19.w),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Jane Smith',
+                                        style: AppTextStyle.listTileTitle,
+                                      ),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      SizedBox(
+                                        width: 250.w,
+                                        child: Text(
+                                          'It is a long established fact that a read and will be distracted lisece.',
+                                          maxLines: 2,
+                                          style:
+                                              AppTextStyle.listTileSubHeading,
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                                SizedBox(width: 19.w),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Jane Smith',
-                                      style: TextStyle(
-                                        color: Color(0xFF35364F),
-                                        fontSize: 12.32,
-                                        fontFamily: 'Jost',
-                                        fontWeight: FontWeight.w500,
-                                        height: 0.19,
-                                        letterSpacing: 0.25,
+                                  SizedBox(
+                                    width: 20.w,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '22.51',
+                                        style: AppTextStyle.likeByTextStyle,
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 10.h,
-                                    ),
-                                    SizedBox(
-                                      width: 250.w,
-                                      child: Text(
-                                        'It is a long established fact that a read and will be distracted lisece.',
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                          color: Color(0x9E35354F),
-                                          fontSize: 11.44,
-                                          fontFamily: 'Jost',
-                                          fontWeight: FontWeight.w400,
+                                      SizedBox(
+                                        height: 10.h,
+                                      ),
+                                      Container(
+                                        width: 20.w,
+                                        height: 20.h,
+                                        decoration: ShapeDecoration(
+                                          color: Color(0xFF26A4FF),
+                                          shape: OvalBorder(),
                                         ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: 20.w,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '22.51',
-                                      style: TextStyle(
-                                        color: Color(0x8E35354F),
-                                        fontSize: 10.56,
-                                        fontFamily: 'Jost',
-                                        fontWeight: FontWeight.w500,
-                                        height: 0.25,
-                                        letterSpacing: 0.21,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 10.h,
-                                    ),
-                                    Container(
-                                      width: 20.w,
-                                      height: 20.h,
-                                      decoration: ShapeDecoration(
-                                        color: Color(0xFF26A4FF),
-                                        shape: OvalBorder(),
-                                      ),
-                                      child: Center(
+                                        child: Center(
                                           child: Text(
-                                        '3',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 8,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w500,
+                                            '3',
+                                            textAlign: TextAlign.center,
+                                            style: AppTextStyle
+                                                .subcategorySelectedTextStyle,
+                                          ),
                                         ),
-                                      )),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ],
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -283,4 +262,180 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+}
+
+void _settingModalBottomSheet(context) {
+  showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: 10.h,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SizedBox(
+                  height: 25.h,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(0),
+                      hintText: "Search",
+                      hintStyle: AppTextStyle.listTileSubHeading,
+                      prefixIcon: Image.asset(
+                        ImageAssets.searchImage,
+                        height: 10.h,
+                        width: 10.w,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Divider(),
+              SizedBox(
+                height: 10.h,
+              ),
+              Expanded(
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: 10.h, bottom: 10.h, left: 5.w, right: 5.w),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 47.w,
+                                      height: 48.h,
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            left: 0,
+                                            top: 0,
+                                            child: Container(
+                                              width: 45.w,
+                                              height: 45.h,
+                                              decoration: ShapeDecoration(
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      "https://via.placeholder.com/44x45"),
+                                                  fit: BoxFit.fill,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            left: 35,
+                                            top: 36,
+                                            child: Container(
+                                              width: 12,
+                                              height: 12,
+                                              decoration: ShapeDecoration(
+                                                color: Color(0xFF12B669),
+                                                shape: OvalBorder(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 19.w),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Jane Smith',
+                                          style: AppTextStyle.listTileTitle,
+                                        ),
+                                        SizedBox(
+                                          height: 10.h,
+                                        ),
+                                        SizedBox(
+                                          width: 250.w,
+                                          child: Text(
+                                            'Last Active 3 hours',
+                                            style:
+                                                AppTextStyle.listTileSubHeading,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          width: 70.88,
+                                          height: 30.96,
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: ShapeDecoration(
+                                            color: Color(0xFF0195F7),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(80),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Follow',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14.93,
+                                                  fontFamily: 'Jost',
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              )
+            ],
+          ),
+        );
+      });
 }

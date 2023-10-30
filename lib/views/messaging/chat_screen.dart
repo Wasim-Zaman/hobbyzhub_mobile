@@ -28,7 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
             children: [
               GestureDetector(
                 onTap: () {
-                  _settingModalBottomSheet(context);
+                  _searchBottomSheet(context);
                 },
                 child: Padding(
                     padding: EdgeInsets.all(8.w),
@@ -264,7 +264,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
-void _settingModalBottomSheet(context) {
+void _searchBottomSheet(context) {
   showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {

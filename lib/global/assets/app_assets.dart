@@ -17,4 +17,7 @@ class ImageAssets {
   static const String profileSelectedImage = "assets/images/profile.png";
   static const String helpDesk = "assets/images/helpdesk.png";
   static const String addNewMessageImage = "assets/images/Vector.png";
+  static const String clearImage = "assets/images/clear.png";
+  static const String deleteImage = "assets/images/delete.png";
+  static const String exportImage = "assets/images/export.png";
 }

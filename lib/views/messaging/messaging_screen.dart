@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:ionicons/ionicons.dart';
@@ -84,11 +85,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                   SizedBox(
                     child: Text(
                       'Jane Smith',
-                      style: TextStyle(
-                        color: Color(0xFF181818),
-                        fontSize: 16,
-                        fontFamily: 'Jost',
-                      ),
+                      style: AppTextStyle.listTileTitle,
                     ),
                   ),
                   SizedBox(
@@ -97,12 +94,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                   Text(
                     'Active now',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(0xFF797C7B),
-                      fontSize: 12,
-                      fontFamily: 'Jost',
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppTextStyle.subcategoryUnSelectedTextStyle,
                   )
                 ],
               ),
@@ -129,7 +121,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
             elevation: 1,
             onSelected: (item) => handleClick(item),
             itemBuilder: (context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 0,
                 // row with two children
                 child: Row(
@@ -140,12 +132,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                     ),
                     Text(
                       'Clear Chat',
-                      style: TextStyle(
-                        color: Color(0xFF394851),
-                        fontSize: 12,
-                        fontFamily: 'Jost',
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: AppTextStyle.listTileSubHeading,
                     )
                   ],
                 ),
@@ -161,12 +148,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                     ),
                     Text(
                       'Delete Chat',
-                      style: TextStyle(
-                        color: Color(0xFF394851),
-                        fontSize: 12,
-                        fontFamily: 'Jost',
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: AppTextStyle.listTileSubHeading,
                     ),
                   ],
                 ),
@@ -186,12 +168,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                     ),
                     Text(
                       'Export Chat',
-                      style: TextStyle(
-                        color: Color(0xFF394851),
-                        fontSize: 12,
-                        fontFamily: 'Jost',
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: AppTextStyle.listTileSubHeading,
                     )
                   ],
                 ),
@@ -239,12 +216,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                         SizedBox(width: 10.w),
                         Text(
                           'Write your message',
-                          style: TextStyle(
-                            color: Color(0xFFA1A1A1),
-                            fontSize: 13,
-                            fontFamily: 'Jost',
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: AppTextStyle.subcategoryUnSelectedTextStyle,
                         ),
                       ],
                     ),
@@ -327,12 +299,8 @@ class _MessagingScreenState extends State<MessagingScreen> {
                                 child: Text(
                                   'Hello man how are you doing?',
                                   textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12.54,
-                                    fontFamily: 'Jost',
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                  style:
+                                      AppTextStyle.subcategorySelectedTextStyle,
                                 ),
                               ),
                             ],
@@ -344,12 +312,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                         Text(
                           '12:10',
                           textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: Color(0x7F35364F),
-                            fontSize: 10.45,
-                            fontFamily: 'Jost',
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: AppTextStyle.subcategoryUnSelectedTextStyle,
                         )
                       ],
                     ),
@@ -387,14 +350,8 @@ class _MessagingScreenState extends State<MessagingScreen> {
                                 width: 184,
                                 child: Text(
                                   'I’m fine bro how are you?',
-                                  style: TextStyle(
-                                    color: Color(0xFF35364F),
-                                    fontSize: 12.54,
-                                    fontFamily: 'Jost',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                    letterSpacing: 0.25,
-                                  ),
+                                  style: AppTextStyle
+                                      .subcategoryUnSelectedTextStyle,
                                 ),
                               ),
                             ],
@@ -406,12 +363,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                         Text(
                           '12:10',
                           textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: Color(0x7F35364F),
-                            fontSize: 10.45,
-                            fontFamily: 'Jost',
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: AppTextStyle.subcategoryUnSelectedTextStyle,
                         )
                       ],
                     ),

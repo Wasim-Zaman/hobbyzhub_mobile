@@ -23,9 +23,6 @@ class ThirdPersonProfileScreen extends StatefulWidget {
 }
 
 class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
-  // posts and similar groups post controller
-  final PageController _pageController = PageController(initialPage: 0);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,6 +64,36 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class PostScreen extends StatelessWidget {
+  const PostScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [
+        Center(
+          child: Text("Hello"),
+        ),
+      ],
+    );
+  }
+}
+
+class GroupsInCommonScreen extends StatelessWidget {
+  const GroupsInCommonScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [
+        Center(
+          child: Text("Hello"),
+        ),
+      ],
     );
   }
 }

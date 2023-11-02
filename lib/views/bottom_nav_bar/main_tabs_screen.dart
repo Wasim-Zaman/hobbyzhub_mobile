@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/explore/explore_screen.dart';
+import 'package:hobbyzhub/views/group/group_screen.dart';
 import 'package:hobbyzhub/views/messaging/chat_screen.dart';
 import 'package:hobbyzhub/views/post/post_screen.dart';
 
@@ -30,7 +31,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
 
   final pages = [
     const PostScreen(),
-    const ExploreScreen(),
+    const GroupScreen(),
     const PostScreen(),
     const ChatScreen(),
     const PostScreen(),
@@ -61,8 +62,8 @@ class _MainTabScreenState extends State<MainTabScreen> {
             label: "",
             icon: Image.asset(
               pageIndex == 1
-                  ? ImageAssets.searchSelectedImage
-                  : ImageAssets.searchImage,
+                  ? ImageAssets.selectedGroupImage
+                  : ImageAssets.groupImage,
               height: 30.h,
             ),
           ),

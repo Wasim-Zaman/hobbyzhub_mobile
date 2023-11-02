@@ -17,4 +17,11 @@ class ImageAssets {
   static const String profileSelectedImage = "assets/images/profile.png";
   static const String helpDesk = "assets/images/helpdesk.png";
   static const String addNewMessageImage = "assets/images/Vector.png";
+  static const String clearImage = "assets/images/clear.png";
+  static const String deleteImage = "assets/images/delete.png";
+  static const String exportImage = "assets/images/export.png";
+  static const String groupImage = "assets/images/group.png";
+  static const String selectedGroupImage = "assets/images/selectedGroup.png";
+  static const String newGroupImage = "assets/images/groupAdd.png";
+  static const String createGroupImage = "assets/images/createGroup.png";
 }

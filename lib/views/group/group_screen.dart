@@ -6,29 +6,30 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/views/group/create_group_screen.dart';
 import 'package:hobbyzhub/views/messaging/messaging_screen.dart';
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+class GroupScreen extends StatefulWidget {
+  const GroupScreen({super.key});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  State<GroupScreen> createState() => _GroupScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _GroupScreenState extends State<GroupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("Chat", style: AppTextStyle.headings),
+        title: Text("Groups", style: AppTextStyle.headings),
         actions: [
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               GestureDetector(
                 onTap: () {
-                  _searchBottomSheet(context);
+                  // _searchBottomSheet(context);
                 },
                 child: Padding(
                     padding: EdgeInsets.all(8.w),
@@ -38,11 +39,16 @@ class _ChatScreenState extends State<ChatScreen> {
                     )),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  AppNavigator.goToPage(
+                    context: context,
+                    screen: CreateGroupScreen(),
+                  );
+                },
                 child: Padding(
                     padding: EdgeInsets.all(8.w),
                     child: Image.asset(
-                      ImageAssets.addNewMessageImage,
+                      ImageAssets.newGroupImage,
                       height: 25.h,
                     )),
               ),
@@ -56,79 +62,7 @@ class _ChatScreenState extends State<ChatScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 20.h,
-            ),
-            Text(
-              'Frequently Chatted',
-              style: AppTextStyle.exploreSubHead,
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-            SizedBox(
-              height: 70.h,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          width: 52.w,
-                          //  height: 51.h,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 49.w,
-                                  height: 60.h,
-                                  decoration: ShapeDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),
-                                      fit: BoxFit.fill,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.r)),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 40.w,
-                                top: 50.h,
-                                child: Container(
-                                  width: 12.w,
-                                  height: 12.h,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF12B669),
-                                    shape: OvalBorder(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                      ],
-                    );
-                  }),
-            ),
-            SizedBox(
               height: 10.h,
-            ),
-            Text(
-              'All Messages',
-              style: AppTextStyle.exploreSubHead,
-            ),
-            SizedBox(
-              height: 20.h,
             ),
             Expanded(
               child: ListView.builder(
@@ -138,10 +72,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        AppNavigator.goToPage(
-                          context: context,
-                          screen: MessagingScreen(),
-                        );
+                        // AppNavigator.goToPage(
+                        //   context: context,
+                        //   screen: MessagingScreen(),
+                        // );
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -200,7 +134,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(width: 19.w),
+                                    SizedBox(width: 15.w),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -213,7 +147,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           height: 5.h,
                                         ),
                                         SizedBox(
-                                          width: 250.w,
+                                          width: 230.w,
                                           child: Text(
                                             'It is a long established fact that a read and will be distracted lisece.',
                                             maxLines: 2,
@@ -224,14 +158,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                       ],
                                     ),
                                     SizedBox(
-                                      width: 20.w,
+                                      width: 5.w,
                                     ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          '22.51',
+                                          '31 members',
                                           style: AppTextStyle.likeByTextStyle,
                                         ),
                                         SizedBox(

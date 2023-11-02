@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
 import 'package:hobbyzhub/views/widgets/text/bio_text_widget.dart';
@@ -23,7 +22,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BackAppbarWidget(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),

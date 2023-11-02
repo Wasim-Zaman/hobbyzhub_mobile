@@ -24,4 +24,6 @@ class ImageAssets {
   static const String selectedGroupImage = "assets/images/selectedGroup.png";
   static const String newGroupImage = "assets/images/groupAdd.png";
   static const String createGroupImage = "assets/images/createGroup.png";
+  static const String addNewPersonImage = "assets/images/addImage.png";
+  static const String groupCreationImage = "assets/images/groupCreation.png";
 }

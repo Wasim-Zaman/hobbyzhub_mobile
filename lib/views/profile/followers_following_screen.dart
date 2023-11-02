@@ -3,34 +3,33 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/widgets/appbars/two_buttons_appbar.dart';
+import 'package:hobbyzhub/views/widgets/tabs/tabs_widget.dart';
 import 'package:ionicons/ionicons.dart';
 
 class FollowersFollowingScreen extends StatelessWidget {
-  const FollowersFollowingScreen({super.key});
+  final int index;
+  const FollowersFollowingScreen({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
-    return const DefaultTabController(
-      length: 2, // Number of tabs
-      child: Scaffold(
-        appBar: TwoButtonsAppbar(
-          title: "Sara Stamp",
-          icon: Ionicons.search_outline,
-          bottom: TabBar(
-            tabs: [
-              Tab(text: 'Followers'), // First tab
-              Tab(text: 'Followings'), // Second tab
-            ],
-          ),
-          size: 100,
-        ),
-        body: TabBarView(
-          children: [
-            FollowersScreen(), // Content for the first tab
-            FollowingScreen(), // Content for the second tab
+    return TabsWidget(
+      appBar: const TwoButtonsAppbar(
+        title: "Sara Stamp",
+        icon: Ionicons.search_outline,
+        bottom: TabBar(
+          tabs: [
+            Tab(text: 'Followers'), // First tab
+            Tab(text: 'Followings'), // Second tab
           ],
         ),
+        size: 100,
       ),
+      index: index,
+      length: 2,
+      children: const [
+        FollowersScreen(), // Content for the first tab
+        FollowingScreen(), // Content for the second tab
+      ],
     );
   }
 }

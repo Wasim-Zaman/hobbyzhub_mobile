@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/views/explore/explore_screen.dart';
 import 'package:hobbyzhub/views/group/group_screen.dart';
 import 'package:hobbyzhub/views/messaging/chat_screen.dart';
 import 'package:hobbyzhub/views/post/post_screen.dart';
+import 'package:hobbyzhub/views/profile/my_profile_screen.dart';
 
 class MainTabScreen extends StatefulWidget {
   final int index;
@@ -34,7 +34,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
     const GroupScreen(),
     const PostScreen(),
     const ChatScreen(),
-    const PostScreen(),
+    const MyProfileScreen(),
   ];
   @override
   Widget build(BuildContext context) {

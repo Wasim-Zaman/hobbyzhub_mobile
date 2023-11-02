@@ -7,7 +7,6 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/group/create_group_screen.dart';
-import 'package:hobbyzhub/views/messaging/messaging_screen.dart';
 
 class GroupScreen extends StatefulWidget {
   const GroupScreen({super.key});

@@ -72,7 +72,7 @@ class _PostScreenState extends State<PostScreen> {
                                                     decoration: ShapeDecoration(
                                                       image: DecorationImage(
                                                         image: NetworkImage(
-                                                            "https://via.placeholder.com/70x100"),
+                                                            "https://via.placeholder.com/25x25"),
                                                         fit: BoxFit.fill,
                                                       ),
                                                       shape:

@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/views/group/add_group_members.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
@@ -105,7 +107,12 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
             SizedBox(
               height: 20.h,
             ),
-            PrimaryButtonWidget(caption: "Next", onPressed: () {}),
+            PrimaryButtonWidget(
+                caption: "Next",
+                onPressed: () {
+                  AppNavigator.goToPage(
+                      context: context, screen: AddGroupMembers());
+                }),
           ],
         ),
       ),

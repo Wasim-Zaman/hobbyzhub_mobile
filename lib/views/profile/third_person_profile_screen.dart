@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/views/profile/followers_following_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
@@ -48,12 +50,30 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                 ),
                 20.height,
                 // Posts, following and followers in one row
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <TextValueWidget>[
-                    TextValueWidget(text: "85", value: "Posts"),
-                    TextValueWidget(text: "870", value: "Following"),
-                    TextValueWidget(text: "15k", value: "Followers"),
+                    const TextValueWidget(text: "85", value: "Posts"),
+                    TextValueWidget(
+                      text: "870",
+                      value: "Following",
+                      onTap: () {
+                        AppNavigator.goToPage(
+                          context: context,
+                          screen: const FollowersFollowingScreen(index: 1),
+                        );
+                      },
+                    ),
+                    TextValueWidget(
+                      text: "15k",
+                      value: "Followers",
+                      onTap: () {
+                        AppNavigator.goToPage(
+                          context: context,
+                          screen: const FollowersFollowingScreen(index: 0),
+                        );
+                      },
+                    ),
                   ],
                 ),
                 20.height,

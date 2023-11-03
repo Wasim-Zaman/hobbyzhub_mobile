@@ -46,7 +46,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
             SizedBox(
               height: 30.h,
             ),
-            Container(
+            SizedBox(
               width: 100.w,
               height: 130.h,
               child: Stack(

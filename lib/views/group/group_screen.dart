@@ -205,7 +205,7 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 }
 
-void _searchBottomSheet(context) {
+void searchBottomSheet(context) {
   showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {

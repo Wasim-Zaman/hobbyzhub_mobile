@@ -32,15 +32,17 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
   final formKey = GlobalKey<FormState>();
   late OtpTimerCubit otpTimerCubit;
 
+  // blocs
+  AuthBloc authBloc = AuthBloc();
+
   initCubits() {
     otpTimerCubit = context.read<OtpTimerCubit>();
     otpTimerCubit.startOtpIntervals();
   }
 
   initBlocs() {
-    context
-        .read<AuthBloc>()
-        .add(AuthEventSendVerificationEmail(email: widget.email));
+    authBloc = authBloc
+      ..add(AuthEventSendVerificationEmail(email: widget.email));
   }
 
   @override
@@ -54,10 +56,11 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
   }
 
   verifyOtp() {
-    context.read<AuthBloc>().add(AuthEventVerifyOtp(
-          email: widget.email,
-          otp: pinController.text.trim(),
-        ));
+    authBloc = authBloc
+      ..add(AuthEventVerifyOtp(
+        email: widget.email,
+        otp: pinController.text.trim(),
+      ));
   }
 
   @override
@@ -74,9 +77,9 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
       backgroundColor: AppColors.white,
       appBar: BackAppbarWidget(),
       body: BlocConsumer<AuthBloc, AuthState>(
+        bloc: authBloc,
         listener: (context, state) {
           if (state is AuthLoadingState) {
-            AppDialogs.closeDialog(context);
             AppDialogs.loadingDialog(context);
           } else if (state is AuthSendVerificationState) {
             AppDialogs.closeDialog(context);
@@ -90,9 +93,8 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
             AppDialogs.closeDialog(context);
             AppDialogs.otpSuccessDialog(context, onPressed: () {
               // verify email
-              context
-                  .read<AuthBloc>()
-                  .add(AuthEventVerifyEmail(email: widget.email));
+              authBloc = authBloc
+                ..add(AuthEventVerifyEmail(email: widget.email));
             });
           } else if (state is AuthStateFailure) {
             AppDialogs.closeDialog(context);

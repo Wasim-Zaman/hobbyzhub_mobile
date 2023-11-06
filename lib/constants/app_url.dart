@@ -1,7 +1,7 @@
 abstract class AppUrl {
   static const String testBaseUrl = "http://127.0.0.1:8000/api";
   static const String liveBaseUrl = "http://149.28.232.132:8765";
-  static const String accountManagementService = "/accountmanagement-service/";
+  static const String accountManagementService = "/accountmanagement-service";
   static const String baseUrl = liveBaseUrl + accountManagementService;
 }
 
@@ -23,7 +23,7 @@ abstract class AuthUrl {
 }
 
 abstract class MediaUrl {
-  static const mediaService = "/media-service/";
+  static const mediaService = "/media-service";
   static String baseUrl = AppUrl.liveBaseUrl + mediaService;
   static final uploadProfilePicture = "$baseUrl/media/profile";
 }

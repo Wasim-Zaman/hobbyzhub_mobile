@@ -81,6 +81,8 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
           userId: userId.toString(),
           file: image!,
         ));
+    } else {
+      AppToast.normal("Please select image");
     }
   }
 
@@ -118,7 +120,9 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
             listener: (context, state) async {
               if (state is ImagePickerPickedImageState) {
                 image = state.image;
-              } else if (state is ImagePickerFailureState) {}
+              } else if (state is ImagePickerFailureState) {
+                AppToast.danger("Failed to pick image");
+              }
             },
           ),
           BlocListener<MediaUploadBloc, MediaUploadState>(

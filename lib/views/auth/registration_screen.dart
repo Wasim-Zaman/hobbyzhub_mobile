@@ -46,14 +46,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     // remove focus from all the text fields
     emailFocusNode.unfocus();
     hideKeyboard(context);
-    Future.delayed(const Duration(seconds: 1), () {
-      AppNavigator.goToPage(
-        context: context,
-        screen: RegistrationOtpScreen(
-          email: emailController.text.trim(),
-        ),
-      );
-    });
+    AppNavigator.goToPage(
+      context: context,
+      screen: RegistrationOtpScreen(
+        email: emailController.text.trim(),
+      ),
+    );
   }
 
   @override

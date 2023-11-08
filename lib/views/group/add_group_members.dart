@@ -128,42 +128,40 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
                   ),
                   itemCount: 10, // Number of items in your data list
                   itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      child: Stack(
-                        children: [
-                          Container(
-                            width: 70.w,
-                            height: 70.h,
+                    return Stack(
+                      children: [
+                        Container(
+                          width: 70.w,
+                          height: 70.h,
+                          decoration: ShapeDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                  "https://via.placeholder.com/70x70"),
+                              fit: BoxFit.cover,
+                            ),
+                            shape: OvalBorder(),
+                          ),
+                        ),
+                        Positioned(
+                          left: 46.w,
+                          top: 46.h,
+                          child: Container(
+                            width: 24.w,
+                            height: 24.h,
                             decoration: ShapeDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                    "https://via.placeholder.com/70x70"),
-                                fit: BoxFit.cover,
-                              ),
-                              shape: OvalBorder(),
-                            ),
-                          ),
-                          Positioned(
-                            left: 46.w,
-                            top: 46.h,
-                            child: Container(
-                              width: 24.w,
-                              height: 24.h,
-                              decoration: ShapeDecoration(
-                                color: Color(0xFFF0F3F5),
-                                shape: OvalBorder(
-                                  side: BorderSide(
-                                      width: 1.50, color: Colors.white),
-                                ),
-                              ),
-                              child: Icon(
-                                Icons.close,
-                                size: 14.sp,
+                              color: Color(0xFFF0F3F5),
+                              shape: OvalBorder(
+                                side: BorderSide(
+                                    width: 1.50, color: Colors.white),
                               ),
                             ),
+                            child: Icon(
+                              Icons.close,
+                              size: 14.sp,
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     );
                   }),
             ),

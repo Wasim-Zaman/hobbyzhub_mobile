@@ -50,7 +50,6 @@ abstract class AuthController {
 
     try {
       final response = await ApiManager.bodyLessPut(url);
-      print(response.body);
       return _getResponse(response);
     } catch (_) {
       rethrow;

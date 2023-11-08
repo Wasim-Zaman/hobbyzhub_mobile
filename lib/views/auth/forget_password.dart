@@ -28,10 +28,24 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   // form key
   final formKey = GlobalKey<FormState>();
 
+  // Blocs
+  AuthBloc authBloc = AuthBloc();
+
   initBloc() {
-    context.read<AuthBloc>().add(AuthEventSendVerificationForPasswordReset(
-          email: emailController.text.trim(),
-        ));
+    authBloc = authBloc
+      ..add(AuthEventSendVerificationForPasswordReset(
+        email: emailController.text.trim(),
+      ));
+  }
+
+  navigate() {
+    Future.delayed(const Duration(seconds: 1), () {
+      AppNavigator.goToPage(
+          context: context,
+          screen: OtpScreen(
+            email: emailController.text.trim(),
+          ));
+    });
   }
 
   @override
@@ -40,17 +54,14 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       backgroundColor: AppColors.white,
       appBar: const BackAppbarWidget(),
       body: BlocListener<AuthBloc, AuthState>(
+        bloc: authBloc,
         listener: (context, state) {
           if (state is AuthLoadingState) {
             AppDialogs.loadingDialog(context);
           } else if (state is AuthSendVerificationForPasswordResetState) {
             AppDialogs.closeDialog(context);
             AppToast.success(state.response.message);
-            AppNavigator.goToPage(
-                context: context,
-                screen: OtpScreen(
-                  email: emailController.text.trim(),
-                ));
+            navigate();
           } else if (state is AuthStateFailure) {
             AppDialogs.closeDialog(context);
             AppToast.danger(state.message);

@@ -30,7 +30,10 @@ class _OtpScreenState extends State<OtpScreen> {
   final pinController = TextEditingController();
   final focusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
+
+  // blocs and cubits
   late OtpTimerCubit otpTimerCubit;
+  AuthBloc authBloc = AuthBloc();
 
   initCubits() {
     otpTimerCubit = context.read<OtpTimerCubit>();
@@ -38,21 +41,23 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   verifyOtpBloc() {
-    context.read<AuthBloc>().add(AuthEventVerifyOtp(
-          email: widget.email,
-          otp: pinController.text.trim(),
-        ));
+    authBloc = authBloc
+      ..add(AuthEventVerifyOtp(
+        email: widget.email,
+        otp: pinController.text.trim(),
+      ));
   }
 
   resendOtp() {
-    context.read<AuthBloc>().add(AuthEventSendVerificationForPasswordReset(
-          email: widget.email,
-        ));
+    authBloc = authBloc
+      ..add(AuthEventSendVerificationForPasswordReset(
+        email: widget.email,
+      ));
   }
 
   @override
   void initState() {
-    verifyOtpBloc();
+    initCubits();
     super.initState();
   }
 
@@ -168,6 +173,7 @@ class _OtpScreenState extends State<OtpScreen> {
               Padding(
                 padding: EdgeInsets.only(bottom: 20.w),
                 child: BlocConsumer<AuthBloc, AuthState>(
+                  bloc: authBloc,
                   listener: (context, state) {
                     if (state is AuthLoadingState) {
                       AppDialogs.loadingDialog(context);

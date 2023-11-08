@@ -29,6 +29,9 @@ class _RecoveryPasswordScreenState extends State<RecoveryPasswordScreen> {
   // form key
   final formKey = GlobalKey<FormState>();
 
+  // blocs
+  AuthBloc authBloc = AuthBloc();
+
   // other variables
   String? userId;
 
@@ -42,10 +45,11 @@ class _RecoveryPasswordScreenState extends State<RecoveryPasswordScreen> {
 
   resetPassword() {
     if (formKey.currentState!.validate()) {
-      context.read<AuthBloc>().add(AuthEventChangePasswordAfterOtpVerification(
-            userId: userId.toString(),
-            password: passwordController.text.trim(),
-          ));
+      authBloc = authBloc
+        ..add(AuthEventChangePasswordAfterOtpVerification(
+          userId: userId.toString(),
+          password: passwordController.text.trim(),
+        ));
     }
   }
 
@@ -63,6 +67,7 @@ class _RecoveryPasswordScreenState extends State<RecoveryPasswordScreen> {
       backgroundColor: AppColors.white,
       appBar: const BackAppbarWidget(),
       body: BlocListener<AuthBloc, AuthState>(
+        bloc: authBloc,
         listener: (context, state) {
           if (state is AuthLoadingState) {
             AppDialogs.loadingDialog(context);

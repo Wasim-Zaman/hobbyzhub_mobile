@@ -95,35 +95,32 @@ class _GroupScreenState extends State<GroupScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     SizedBox(
-                                      width: 47.w,
-                                      height: 48.h,
+                                      width: 10.w,
+                                    ),
+                                    Expanded(
                                       child: Stack(
                                         children: [
-                                          Positioned(
-                                            left: 0,
-                                            top: 0,
-                                            child: Container(
-                                              width: 45.w,
-                                              height: 45.h,
-                                              decoration: ShapeDecoration(
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      "https://via.placeholder.com/44x45"),
-                                                  fit: BoxFit.fill,
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
+                                          Container(
+                                            width: 45.w,
+                                            height: 45.h,
+                                            decoration: ShapeDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                    "https://via.placeholder.com/44x45"),
+                                                fit: BoxFit.fill,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.r),
                                               ),
                                             ),
                                           ),
                                           Positioned(
-                                            left: 35,
-                                            top: 36,
+                                            left: 35.w,
+                                            top: 33.h,
                                             child: Container(
-                                              width: 12,
-                                              height: 12,
+                                              width: 12.w,
+                                              height: 12.h,
                                               decoration: ShapeDecoration(
                                                 color: Color(0xFF12B669),
                                                 shape: OvalBorder(),
@@ -133,60 +130,54 @@ class _GroupScreenState extends State<GroupScreen> {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(width: 15.w),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Jane Smith',
-                                          style: AppTextStyle.listTileTitle,
-                                        ),
-                                        SizedBox(
-                                          height: 5.h,
-                                        ),
-                                        SizedBox(
-                                          width: 230.w,
-                                          child: Text(
-                                            'It is a long established fact that a read and will be distracted lisece.',
-                                            maxLines: 2,
-                                            style:
-                                                AppTextStyle.listTileSubHeading,
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Jane Smith',
+                                            style: AppTextStyle.listTileTitle,
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 5.w,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '31 members',
-                                          style: AppTextStyle.likeByTextStyle,
-                                        ),
-                                        SizedBox(
-                                          height: 10.h,
-                                        ),
-                                        Container(
-                                          width: 20.w,
-                                          height: 20.h,
-                                          decoration: ShapeDecoration(
-                                            color: Color(0xFF26A4FF),
-                                            shape: OvalBorder(),
+                                          SizedBox(
+                                            height: 5.h,
                                           ),
-                                          child: Center(
+                                          SizedBox(
+                                            width: 230.w,
                                             child: Text(
-                                              '3',
-                                              textAlign: TextAlign.center,
+                                              'It is a long established fact that a read and will be distracted lisece.',
+                                              maxLines: 2,
                                               style: AppTextStyle
-                                                  .subcategorySelectedTextStyle,
+                                                  .listTileSubHeading,
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            width: 20.w,
+                                            height: 20.h,
+                                            decoration: ShapeDecoration(
+                                              color: Color(0xFF26A4FF),
+                                              shape: OvalBorder(),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                '3',
+                                                textAlign: TextAlign.center,
+                                                style: AppTextStyle
+                                                    .subcategorySelectedTextStyle,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     )
                                   ],
                                 ),

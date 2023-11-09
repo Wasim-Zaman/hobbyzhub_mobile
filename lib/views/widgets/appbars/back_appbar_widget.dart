@@ -7,11 +7,13 @@ import 'package:nb_utils/nb_utils.dart';
 
 class BackAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
-  const BackAppbarWidget({Key? key, this.title}) : super(key: key);
+  final Color? color;
+  const BackAppbarWidget({Key? key, this.title, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: color ?? AppColors.white,
       title: title == null
           ? null
           : Text(title.toString(),

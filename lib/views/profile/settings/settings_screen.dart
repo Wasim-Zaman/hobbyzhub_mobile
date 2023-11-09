@@ -8,6 +8,7 @@ import 'package:hobbyzhub/views/profile/settings/faq_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/help_center_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/notification_settings_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/privacy_policy_screen.dart';
+import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/appbars/two_buttons_appbar.dart';
 import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
 import 'package:hobbyzhub/views/widgets/list_tile/list_tile_widget.dart';
@@ -69,9 +70,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           Container(
             decoration: const BoxDecoration(color: AppColors.grey),
-            child: const TwoButtonsAppbar(
+            child: const BackAppbarWidget(
               title: "Settings",
-              icon: Ionicons.search_outline,
               color: AppColors.transparent,
             ),
           ),
@@ -80,6 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             left: 0,
             right: 0,
             child: Container(
+              height: context.height() * 0.8,
               decoration: const BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.only(

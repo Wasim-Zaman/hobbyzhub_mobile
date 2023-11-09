@@ -177,9 +177,11 @@ class _MessagingScreenState extends State<MessagingScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(bottom: 12.w, left: 12.w, right: 12.w),
-        child: SizedBox(
+      bottomNavigationBar: Container(
+        color: Colors.white,
+        child: Padding(
+          padding:
+              EdgeInsets.only(bottom: 12.w, left: 12.w, right: 12.w, top: 10.h),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -199,7 +201,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                   shadows: [
                     BoxShadow(
                       color: Color(0x21000000),
-                      blurRadius: 20,
+                      blurRadius: 30,
                       offset: Offset(5, 4),
                       spreadRadius: 0,
                     )
@@ -242,7 +244,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                     shadows: [
                       BoxShadow(
                         color: Color(0x21000000),
-                        blurRadius: 20,
+                        blurRadius: 30,
                         offset: Offset(5, 4),
                         spreadRadius: 0,
                       )

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/app_validators.dart';
 
 class TextFieldWidget extends StatefulWidget {
   final TextEditingController controller;
@@ -40,7 +41,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.controller,
-      validator: widget.validator,
+      validator: widget.validator ?? AppValidators.notEmpty,
       focusNode: widget.focusNode,
       onChanged: widget.onChanged,
       maxLines: widget.maxLines ?? 1,

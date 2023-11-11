@@ -51,6 +51,27 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    // dispose the bloc
+    multiImagePickerBloc.close();
+
+    // dispose the controllers
+    captionController.dispose();
+    hashTagsController.dispose();
+
+    // dispose the focus nodes
+    captionFocusNode.dispose();
+    hashTagsFocusNode.dispose();
+
+    // clear the list of media files (images and videos)
+    pickedFiles.clear();
+
+    // clear the list of hash tags
+    hashTags.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const BackAppbarWidget(title: "Create New Post"),
@@ -153,7 +174,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           clear();
                         },
                         color: AppColors.darkGrey,
-                        circularRadius: 10,
+                        circularRadius: 5,
+                        height: 45,
                       ),
                     ),
                     20.width,
@@ -161,7 +183,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       child: PrimaryButtonWidget(
                         caption: "Post",
                         onPressed: () {},
-                        circularRadius: 10,
+                        circularRadius: 5,
+                        height: 45,
                       ),
                     ),
                   ],

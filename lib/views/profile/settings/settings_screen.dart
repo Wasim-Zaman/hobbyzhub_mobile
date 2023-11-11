@@ -66,97 +66,89 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(color: AppColors.grey),
-            child: const BackAppbarWidget(
-              title: "Settings",
-              color: AppColors.transparent,
+      backgroundColor: AppColors.grey,
+      appBar: const BackAppbarWidget(
+        title: "Settings",
+        color: AppColors.transparent,
+      ),
+      body: SafeArea(
+        child: Container(
+          height: context.height(),
+          margin: const EdgeInsets.only(top: 50),
+          decoration: const BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.elliptical(1000, 200),
+              topRight: Radius.elliptical(1000, 200),
             ),
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: context.height() * 0.8,
-              decoration: const BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.elliptical(200, 20),
-                  topRight: Radius.elliptical(200, 20),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const ProfileImageWidget(
-                        imageUrl: ImageAssets.userProfileImage,
-                        isEditable: true,
-                      ),
-                      20.height,
-                      Text(
-                        "Sara Stamp",
-                        style: AppTextStyle.normal.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      20.height,
-                      const BioTextWidget(
-                        bio:
-                            "I just love the idea of not being what people expect me to be!",
-                      ),
-                      20.height,
-                      ListTileWidget(
-                        title: "Notification",
-                        subtitle: "Messages, groups and others",
-                        icon: Ionicons.notifications_outline,
-                        onTap: () => navigate(1),
-                      ),
-                      // privacy and policy list tile widget
-                      ListTileWidget(
-                        title: "Privacy Policy",
-                        subtitle: "Hobbyzhub’s privacy policies",
-                        icon: Ionicons.shield_checkmark_outline,
-                        onTap: () => navigate(2),
-                      ),
-                      // help center list tile widget
-                      ListTileWidget(
-                        title: "Help Center",
-                        subtitle: "Help center, contact us",
-                        icon: Ionicons.help_circle_outline,
-                        onTap: () => navigate(3),
-                      ),
-                      // FAQs list tile widget
-                      ListTileWidget(
-                        title: "FAQs",
-                        subtitle: "Frequently asked questions",
-                        icon: Icons.abc_outlined,
-                        onTap: () => navigate(4),
-                      ),
-                      ListTileWidget(
-                        title: "About us",
-                        subtitle: "About hobbyzhub",
-                        icon: Ionicons.information_circle_outline,
-                        onTap: () => navigate(5),
-                      ),
-                      // log out widget
-                      ListTileWidget(
-                        title: "Log out",
-                        subtitle: "",
-                        icon: Ionicons.log_out_outline,
-                        onTap: () => navigate(6),
-                      ),
-                    ],
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const ProfileImageWidget(
+                    imageUrl: ImageAssets.userProfileImage,
+                    isEditable: true,
                   ),
-                ),
+                  20.height,
+                  Text(
+                    "Sara Stamp",
+                    style: AppTextStyle.normal.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  20.height,
+                  const BioTextWidget(
+                    bio:
+                        "I just love the idea of not being what people expect me to be!",
+                  ),
+                  20.height,
+                  ListTileWidget(
+                    title: "Notification",
+                    subtitle: "Messages, groups and others",
+                    icon: Ionicons.notifications_outline,
+                    onTap: () => navigate(1),
+                  ),
+                  // privacy and policy list tile widget
+                  ListTileWidget(
+                    title: "Privacy Policy",
+                    subtitle: "Hobbyzhub’s privacy policies",
+                    icon: Ionicons.shield_checkmark_outline,
+                    onTap: () => navigate(2),
+                  ),
+                  // help center list tile widget
+                  ListTileWidget(
+                    title: "Help Center",
+                    subtitle: "Help center, contact us",
+                    icon: Ionicons.help_circle_outline,
+                    onTap: () => navigate(3),
+                  ),
+                  // FAQs list tile widget
+                  ListTileWidget(
+                    title: "FAQs",
+                    subtitle: "Frequently asked questions",
+                    icon: Icons.abc_outlined,
+                    onTap: () => navigate(4),
+                  ),
+                  ListTileWidget(
+                    title: "About us",
+                    subtitle: "About hobbyzhub",
+                    icon: Ionicons.information_circle_outline,
+                    onTap: () => navigate(5),
+                  ),
+                  // log out widget
+                  ListTileWidget(
+                    title: "Log out",
+                    subtitle: "",
+                    icon: Ionicons.log_out_outline,
+                    onTap: () => navigate(6),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

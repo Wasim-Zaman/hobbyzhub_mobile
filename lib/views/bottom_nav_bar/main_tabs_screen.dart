@@ -4,6 +4,7 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/group/group_screen.dart';
 import 'package:hobbyzhub/views/messaging/chat_screen.dart';
+import 'package:hobbyzhub/views/post/create_post_screen.dart';
 import 'package:hobbyzhub/views/post/post_screen.dart';
 import 'package:hobbyzhub/views/profile/my_profile_screen.dart';
 
@@ -32,7 +33,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
   final pages = [
     const PostScreen(),
     const GroupScreen(),
-    const PostScreen(),
+    const CreatePostScreen(),
     const ChatScreen(),
     const MyProfileScreen(),
   ];
@@ -78,7 +79,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100)),
                 onPressed: () {
-                  selectedIndex(1);
+                  selectedIndex(2);
                 },
                 child: const Icon(Icons.add),
               ),

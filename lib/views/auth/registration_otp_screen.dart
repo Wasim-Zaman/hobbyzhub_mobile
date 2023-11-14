@@ -10,7 +10,6 @@ import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
-import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/auth/login_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -48,7 +47,6 @@ class _RegistrationOtpScreenState extends State<RegistrationOtpScreen> {
   @override
   void initState() {
     super.initState();
-    Future.wait([UserSecureStorage.setIsRegistering('true')]);
     Future.delayed(Duration(seconds: 2), () {
       initCubits();
       initBlocs();

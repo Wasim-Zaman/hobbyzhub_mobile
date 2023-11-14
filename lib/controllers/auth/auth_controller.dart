@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:hobbyzhub/constants/api_manager.dart';
 import 'package:hobbyzhub/constants/app_url.dart';
+import 'package:hobbyzhub/models/api_response.dart';
 import 'package:hobbyzhub/models/auth/auth_model.dart';
+import 'package:hobbyzhub/models/auth/login_model.dart';
 import 'package:hobbyzhub/models/user/register_user_model.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 
@@ -87,7 +89,8 @@ abstract class AuthController {
     }
   }
 
-  static Future<AuthModel> login(String email, String password) async {
+  static Future<ApiResponse<LoginModel>> login(
+      String email, String password) async {
     const url = AuthUrl.login;
     try {
       final response = await ApiManager.postRequest({
@@ -95,7 +98,17 @@ abstract class AuthController {
         'password': password,
       }, url);
 
-      return _getResponse(response);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final body = jsonDecode(response.body);
+        ApiResponse<LoginModel> model = ApiResponse.fromJson(
+          body,
+          (p0) => LoginModel.fromJson(body['data']),
+        );
+        return model;
+      } else {
+        final data = jsonDecode(response.body);
+        throw Exception(data["message"]);
+      }
     } catch (_) {
       rethrow;
     }

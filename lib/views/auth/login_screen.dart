@@ -45,9 +45,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    UserSecureStorage.fetchIsRegistering().then((value) {
-      isRegistering = value;
-    });
     super.initState();
   }
 
@@ -83,8 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
               AppDialogs.loadingDialog(context);
             } else if (state is AuthLoginState) {
               AppDialogs.closeDialog(context);
-              await initLocalStorage(state.response.data);
-              if (isRegistering == "true") {
+              if (state.response.data.newUser == true) {
                 AppNavigator.goToPageWithReplacement(
                   context: context,
                   screen: const CompleteProfileScreen1(),

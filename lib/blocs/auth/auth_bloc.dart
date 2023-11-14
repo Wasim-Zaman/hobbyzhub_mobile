@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/controllers/auth/auth_controller.dart';
+import 'package:hobbyzhub/models/api_response.dart';
 import 'package:hobbyzhub/models/auth/auth_model.dart';
+import 'package:hobbyzhub/models/auth/login_model.dart';
 import 'package:hobbyzhub/models/user/register_user_model.dart';
 import 'package:hobbyzhub/utils/media_utils.dart';
 import 'package:nb_utils/nb_utils.dart';

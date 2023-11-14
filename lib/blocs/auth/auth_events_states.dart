@@ -81,7 +81,7 @@ class AuthVerificationState extends AuthState {
 }
 
 class AuthLoginState extends AuthState {
-  final AuthModel response;
+  final ApiResponse<LoginModel> response;
   AuthLoginState({required this.response});
 }
 

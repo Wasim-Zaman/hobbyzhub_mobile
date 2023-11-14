@@ -75,7 +75,6 @@ abstract class AuthController {
   }) async {
     const url = AuthUrl.completeProfile;
     try {
-      print(user.toJson());
       final response = await ApiManager.putRequest(
         user.toJson(),
         url,
@@ -84,7 +83,6 @@ abstract class AuthController {
           "Content-Type": "application/json",
         },
       );
-      print(response.body);
       return _getResponse(response);
     } catch (_) {
       rethrow;
@@ -138,7 +136,6 @@ abstract class AuthController {
     const url = AuthUrl.changePassword;
     // get the token from local database
     final token = await UserSecureStorage.fetchToken();
-
     try {
       final response = await ApiManager.putRequest(
           {"userId": userId, "password": password}, url,
@@ -146,7 +143,6 @@ abstract class AuthController {
             "Content-Type": "application/json",
             "Authorization": token.toString(),
           });
-
       return _getResponse(response);
     } catch (_) {
       rethrow;

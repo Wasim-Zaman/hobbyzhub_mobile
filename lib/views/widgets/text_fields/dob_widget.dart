@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/global/variables/global_variables.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:ionicons/ionicons.dart';
@@ -37,8 +38,10 @@ class DobWidget extends StatelessWidget {
             lastDate: DateTime.now(),
           ).then((value) {
             if (value != null) {
-              // set date to controller
-              dobController.text = value.toIso8601String();
+              // set the global variable
+              birthDate = value.toIso8601String();
+              // set date to controller but in some format
+              dobController.text = value.toString().split(' ')[0];
             }
           });
         },

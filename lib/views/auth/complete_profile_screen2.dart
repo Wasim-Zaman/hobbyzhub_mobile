@@ -10,6 +10,7 @@ import 'package:hobbyzhub/blocs/image_picker/image_picker_bloc.dart';
 import 'package:hobbyzhub/blocs/media/media_upload_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/global/variables/global_variables.dart';
 import 'package:hobbyzhub/models/user/register_user_model.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
@@ -35,6 +36,7 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
   // blocs
   ImagePickerBloc imageBloc = ImagePickerBloc();
   MediaUploadBloc mediaUploadBloc = MediaUploadBloc();
+  AuthBloc authBloc = AuthBloc();
 
   // Controllers
   TextEditingController dobController = TextEditingController();
@@ -82,23 +84,30 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
           file: image!,
         ));
     } else {
-      AppToast.normal("Please select image");
+      // Will remove this section later
+      widget.user.profilePicB64 = null;
+      completeProfile();
     }
   }
 
   void saveFilePath(var response) {
-    widget.user.profilePicB64 = response.data.filePath;
+    if (image != null) {
+      widget.user.profilePicB64 = response.data.filePath;
+    } else {
+      widget.user.profilePicB64 = "null";
+    }
   }
 
   void completeProfile() async {
     // adding user id and token to the user model
     widget.user.userId = userId;
-    widget.user.birthdate = dobController.text.trim();
+    widget.user.birthdate = birthDate;
     widget.user.gender = selectedGender;
-    context.read<AuthBloc>().add(AuthEventCompleteProfile(
-          user: widget.user,
-          token: token.toString(),
-        ));
+    authBloc = authBloc
+      ..add(AuthEventCompleteProfile(
+        user: widget.user,
+        token: token.toString(),
+      ));
   }
 
   @override
@@ -146,6 +155,7 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
           ),
           // Auth bloc listener
           BlocListener<AuthBloc, AuthState>(
+            bloc: authBloc,
             listener: (context, state) {
               if (state is AuthLoadingState) {
                 AppDialogs.loadingDialog(context);

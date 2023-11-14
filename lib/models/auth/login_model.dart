@@ -2,7 +2,7 @@ class LoginModel {
   String? userId;
   String? accessToken;
   String? userName;
-  Null? userProfilePicLink;
+  String? userProfilePicLink;
   String? userEmail;
   bool? newUser;
   int? tokenExpirationMS;

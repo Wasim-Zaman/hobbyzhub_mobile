@@ -117,6 +117,8 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
 
     dobController.dispose();
 
+    birthDate = null;
+
     super.dispose();
   }
 

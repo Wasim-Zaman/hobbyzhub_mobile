@@ -36,10 +36,9 @@ class AuthEventVerifyEmail extends AuthEvent {
 }
 
 class AuthEventCompleteProfile extends AuthEvent {
-  final RegisterUserModel user;
-  final String token;
+  final CompleteProfileModel model;
 
-  AuthEventCompleteProfile({required this.user, required this.token});
+  AuthEventCompleteProfile({required this.model});
 }
 
 class AuthEventSendVerificationForPasswordReset extends AuthEvent {
@@ -51,11 +50,11 @@ class AuthEventSendVerificationForPasswordReset extends AuthEvent {
 class AuthEventImagePicker extends AuthEvent {}
 
 class AuthEventChangePasswordAfterOtpVerification extends AuthEvent {
-  final String userId;
+  final String email;
   final String password;
 
   AuthEventChangePasswordAfterOtpVerification(
-      {required this.userId, required this.password});
+      {required this.email, required this.password});
 }
 
 // States
@@ -66,17 +65,17 @@ class AuthInitialState extends AuthState {}
 class AuthLoadingState extends AuthState {}
 
 class AuthRegistrationSuccessState extends AuthState {
-  final AuthModel response;
+  final ApiResponse<dynamic> response;
   AuthRegistrationSuccessState({required this.response});
 }
 
 class AuthSendVerificationState extends AuthState {
-  final AuthModel response;
+  final ApiResponse response;
   AuthSendVerificationState({required this.response});
 }
 
 class AuthVerificationState extends AuthState {
-  final AuthModel response;
+  final ApiResponse response;
   AuthVerificationState({required this.response});
 }
 
@@ -86,22 +85,22 @@ class AuthLoginState extends AuthState {
 }
 
 class AuthCompleteProfileState extends AuthState {
-  final AuthModel response;
+  final ApiResponse response;
   AuthCompleteProfileState({required this.response});
 }
 
 class AuthSendVerificationForPasswordResetState extends AuthState {
-  final AuthModel response;
+  final ApiResponse response;
   AuthSendVerificationForPasswordResetState({required this.response});
 }
 
 class AuthVerifyOtpState extends AuthState {
-  final AuthModel response;
+  final ApiResponse response;
   AuthVerifyOtpState({required this.response});
 }
 
 class AuthChangePasswordAfterOtpVerificationState extends AuthState {
-  final AuthModel response;
+  final ApiResponse response;
   AuthChangePasswordAfterOtpVerificationState({required this.response});
 }
 

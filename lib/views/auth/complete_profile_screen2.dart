@@ -11,7 +11,7 @@ import 'package:hobbyzhub/blocs/media/media_upload_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/global/variables/global_variables.dart';
-import 'package:hobbyzhub/models/user/register_user_model.dart';
+import 'package:hobbyzhub/models/auth/complete_profile_model.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
@@ -24,8 +24,8 @@ import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CompleteProfileScreen2 extends StatefulWidget {
-  final RegisterUserModel user;
-  const CompleteProfileScreen2({Key? key, required this.user})
+  final CompleteProfileModel model;
+  const CompleteProfileScreen2({Key? key, required this.model})
       : super(key: key);
 
   @override
@@ -55,8 +55,6 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
 
   // other variables
   File? image;
-  String? token;
-  String? userId;
   String? dob;
 
   @override
@@ -68,45 +66,21 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
   void getLocalStorageData() {
     // get token and user id from secure storage
     UserSecureStorage.fetchToken().then((value) {
-      token = value;
+      widget.model.token = value;
     });
     UserSecureStorage.fetchUserId().then((value) {
-      userId = value;
+      widget.model.userId = value;
     });
-  }
-
-  void uploadImage() {
-    // upload image
-    if (image != null) {
-      mediaUploadBloc = mediaUploadBloc
-        ..add(MediaUploadStartedEvent(
-          userId: userId.toString(),
-          file: image!,
-        ));
-    } else {
-      // Will remove this section later
-      widget.user.profilePicB64 = null;
-      completeProfile();
-    }
-  }
-
-  void saveFilePath(var response) {
-    if (image != null) {
-      widget.user.profilePicB64 = response.data.filePath;
-    } else {
-      widget.user.profilePicB64 = "null";
-    }
   }
 
   void completeProfile() async {
     // adding user id and token to the user model
-    widget.user.userId = userId;
-    widget.user.birthdate = birthDate;
-    widget.user.gender = selectedGender;
+    widget.model.birthDate = birthDate;
+    widget.model.gender = selectedGender;
+    widget.model.profilePicture = image;
     authBloc = authBloc
       ..add(AuthEventCompleteProfile(
-        user: widget.user,
-        token: token.toString(),
+        model: widget.model,
       ));
   }
 
@@ -133,25 +107,6 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
                 image = state.image;
               } else if (state is ImagePickerFailureState) {
                 AppToast.danger("Failed to pick image");
-              }
-            },
-          ),
-          BlocListener<MediaUploadBloc, MediaUploadState>(
-            bloc: mediaUploadBloc,
-            listener: (context, state) {
-              if (state is MediaUploadLoading) {
-                AppDialogs.loadingDialog(context);
-              } else if (state is MediaUploadSuccess) {
-                AppDialogs.closeDialog(context);
-                // save the name of the image
-                saveFilePath(state.response);
-                AppToast.success(state.response.message);
-                completeProfile();
-              } else if (state is MediaUploadFailure) {
-                AppDialogs.closeDialog(context);
-                AppToast.danger(state.error);
-              } else {
-                AppDialogs.closeDialog(context);
               }
             },
           ),
@@ -221,7 +176,7 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
                                   caption: "Next",
                                   onPressed: () {
                                     if (formKey.currentState!.validate()) {
-                                      uploadImage();
+                                      completeProfile();
                                     }
                                   }),
                             ],

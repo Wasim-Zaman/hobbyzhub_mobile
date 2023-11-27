@@ -1,44 +1,24 @@
 class LoginModel {
+  String? token;
   String? userId;
-  String? accessToken;
-  String? userName;
-  String? userProfilePicLink;
-  String? userEmail;
-  bool? newUser;
-  int? tokenExpirationMS;
-  String? tokenExpiresAt;
+  String? email;
+  bool? newAccount;
 
-  LoginModel(
-      {this.userId,
-      this.accessToken,
-      this.userName,
-      this.userProfilePicLink,
-      this.userEmail,
-      this.newUser,
-      this.tokenExpirationMS,
-      this.tokenExpiresAt});
+  LoginModel({this.token, this.userId, this.email, this.newAccount});
 
   LoginModel.fromJson(Map<String, dynamic> json) {
+    token = json['token'];
     userId = json['userId'];
-    accessToken = json['accessToken'];
-    userName = json['userName'];
-    userProfilePicLink = json['userProfilePicLink'];
-    userEmail = json['userEmail'];
-    newUser = json['newUser'];
-    tokenExpirationMS = json['tokenExpirationMS'];
-    tokenExpiresAt = json['tokenExpiresAt'];
+    email = json['email'];
+    newAccount = json['newAccount'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['token'] = token;
     data['userId'] = userId;
-    data['accessToken'] = accessToken;
-    data['userName'] = userName;
-    data['userProfilePicLink'] = userProfilePicLink;
-    data['userEmail'] = userEmail;
-    data['newUser'] = newUser;
-    data['tokenExpirationMS'] = tokenExpirationMS;
-    data['tokenExpiresAt'] = tokenExpiresAt;
+    data['email'] = email;
+    data['newAccount'] = newAccount;
     return data;
   }
 }

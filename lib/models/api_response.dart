@@ -1,26 +1,30 @@
+// Define a generic response model
 class ApiResponse<T> {
   final String apiVersion;
   final String organizationName;
   final String message;
-  final int responseCode;
-  final T data;
+  final bool success;
+  final int status;
+  final T data; // Generic data field
 
   ApiResponse({
     required this.apiVersion,
     required this.organizationName,
     required this.message,
-    required this.responseCode,
+    required this.success,
+    required this.status,
     required this.data,
   });
 
-  factory ApiResponse.fromJson(
-      Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
-    return ApiResponse(
-      apiVersion: json['apiVersion'] as String,
-      organizationName: json['organizationName'] as String,
-      message: json['message'] as String,
-      responseCode: json['responseCode'] as int,
-      data: fromJsonT(json['data']),
+  // Factory method to create an instance of ApiResponse from JSON
+  factory ApiResponse.fromJson(Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
+    return ApiResponse<T>(
+      apiVersion: json['apiVersion'],
+      organizationName: json['organizationName'],
+      message: json['message'],
+      success: json['success'],
+      status: json['status'],
+      data: fromJsonT(json['data']), // Use the provided function to convert 'data' to the generic type
     );
   }
 }

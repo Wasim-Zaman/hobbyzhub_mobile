@@ -3,87 +3,123 @@ import 'dart:convert';
 import 'package:hobbyzhub/constants/api_manager.dart';
 import 'package:hobbyzhub/constants/app_url.dart';
 import 'package:hobbyzhub/models/api_response.dart';
-import 'package:hobbyzhub/models/auth/auth_model.dart';
+import 'package:hobbyzhub/models/auth/complete_profile_model.dart';
 import 'package:hobbyzhub/models/auth/login_model.dart';
-import 'package:hobbyzhub/models/user/register_user_model.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:http/http.dart';
 
 abstract class AuthController {
-  static Future<AuthModel> _getResponse(var response) async {
+  static Future<ApiResponse> _getResponseApi(var response) async {
     if (response.statusCode == 200 || response.statusCode == 201) {
       var body = jsonDecode(response.body);
-      return AuthModel.fromJson(body);
+      if (body['success'] == true) {
+        return ApiResponse.fromJson(body, (p0) => null);
+      } else {
+        throw Exception(body['message']);
+      }
     } else {
       final data = jsonDecode(response.body);
       throw Exception(data["message"]);
     }
   }
 
-  static Future<AuthModel> register(String email, String password) async {
+  static Future<ApiResponse> register(String email, String password) async {
     const url = AuthUrl.register;
     try {
       final response = await ApiManager.postRequest({
         'email': email,
         'password': password,
       }, url);
-
-      return _getResponse(response);
+      return _getResponseApi(response);
     } catch (_) {
       rethrow;
     }
   }
 
-  static Future<AuthModel> sendVerificaionMail(String email) async {
-    final url = "${AuthUrl.sendVerificationEmail}/$email";
-
+  static Future<ApiResponse> sendSignupVerificationMail(String email) async {
+    final url =
+        "${AuthUrl.sendSignupVerificationEmail}/$email?intent=verify-email";
     try {
       final response = await ApiManager.bodyLessPost(url, headers: {
         "Intent": "Verify-Email",
       });
-
-      return _getResponse(response);
+      print(response.body);
+      return _getResponseApi(response);
     } catch (_) {
       rethrow;
     }
   }
 
-  static Future<AuthModel> verifyOtp(String email, String otp) async {
+  static Future<ApiResponse> verifyOtpForBoth(String email, String otp) async {
     final url = "${AuthUrl.verifyOtp}/$email/$otp";
 
     try {
       final response = await ApiManager.bodyLessPut(url);
-      return _getResponse(response);
+      return _getResponseApi(response);
     } catch (_) {
       rethrow;
     }
   }
 
-  static Future<AuthModel> verifyAccount(String email) async {
-    final url = "${AuthUrl.verifyEmail}/$email";
+  static Future<ApiResponse> verifyAccount(String email) async {
+    final url = "${AuthUrl.activateAccount}/$email";
 
     try {
       final response = await ApiManager.bodyLessPut(url);
-      return _getResponse(response);
+      return _getResponseApi(response);
     } catch (_) {
       rethrow;
     }
   }
 
-  static Future<AuthModel> completeProfile({
-    required RegisterUserModel user,
-    required String token,
+  static Future<ApiResponse> completeProfile({
+    required CompleteProfileModel model,
   }) async {
     const url = AuthUrl.completeProfile;
     try {
-      final response = await ApiManager.putRequest(
-        user.toJson(),
-        url,
-        headers: {
-          "Authorization": token,
-          "Content-Type": "application/json",
-        },
+// multi part request
+      var request = MultipartRequest(
+        'PUT',
+        Uri.parse(url),
       );
-      return _getResponse(response);
+
+      request.headers.addAll({
+        "Content-Type": "multipart/form-data",
+        "Authorization": "Bearer ${model.token}",
+      });
+
+      if (model.profilePicture != null) {
+        request.files.add(
+          MultipartFile(
+            'profileImage',
+            model.profilePicture!.readAsBytes().asStream(),
+            model.profilePicture!.lengthSync(),
+            filename: model.profilePicture!.path.split('/').last,
+          ),
+        );
+      }
+
+      // send other fields
+      request.fields["userId"] = model.userId.toString();
+      request.fields["fullName"] = model.name.toString();
+      request.fields["birthdate"] = model.birthDate.toString();
+      request.fields["gender"] = model.birthDate.toString();
+
+      // send request
+      var response = await request.send();
+      // print response
+      var body = jsonDecode(await response.stream.bytesToString());
+      print(body);
+      if (response.statusCode == 200) {
+        // success
+        ApiResponse<dynamic> model = ApiResponse<dynamic>.fromJson(
+          body,
+          (data) => null,
+        );
+        return model;
+      } else {
+        throw Exception(body['message']);
+      }
     } catch (_) {
       rethrow;
     }
@@ -114,23 +150,24 @@ abstract class AuthController {
     }
   }
 
-  static Future<AuthModel> sendVerificaionMailForPasswordChange(
+  static Future<ApiResponse> sendVerificaionMailForPasswordChange(
     String email,
   ) async {
     // get the token from local database
     final token = await UserSecureStorage.fetchToken();
-    final url = "${AuthUrl.sendVerificationMailForPasswordReset}/$email";
+    final url =
+        "${AuthUrl.sendVerificationMailForPasswordReset}/$email?intent=reset-password";
     final response =
         await ApiManager.bodyLessPost(url, headers: <String, String>{
-      "Authorization": token!,
+      "Authorization": token.toString(),
       "Intent": "Reset-Password",
       "Content-Type": "application/json"
     });
-    return _getResponse(response);
+    return _getResponseApi(response);
   }
 
-  static Future<AuthModel> changePassword(
-    String userId,
+  static Future<ApiResponse> changePassword(
+    String email,
     String password,
   ) async {
     const url = AuthUrl.changePassword;
@@ -138,12 +175,12 @@ abstract class AuthController {
     final token = await UserSecureStorage.fetchToken();
     try {
       final response = await ApiManager.putRequest(
-          {"userId": userId, "password": password}, url,
+          {"email": email, "password": password}, url,
           headers: <String, String>{
             "Content-Type": "application/json",
             "Authorization": token.toString(),
           });
-      return _getResponse(response);
+      return _getResponseApi(response);
     } catch (_) {
       rethrow;
     }

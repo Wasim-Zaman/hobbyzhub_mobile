@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
-import 'package:hobbyzhub/models/user/register_user_model.dart';
+import 'package:hobbyzhub/models/auth/complete_profile_model.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
 import 'package:hobbyzhub/views/auth/complete_profile_screen2.dart';
@@ -29,7 +29,7 @@ class _CompleteProfileScreen1State extends State<CompleteProfileScreen1> {
   // form key
   final formKey = GlobalKey<FormState>();
 
-  late RegisterUserModel userModel;
+  late CompleteProfileModel model;
 
   @override
   void initState() {
@@ -37,16 +37,15 @@ class _CompleteProfileScreen1State extends State<CompleteProfileScreen1> {
   }
 
   onClick() {
-    userModel = RegisterUserModel(
-      name: nameController.text.trim(),
-      // bio: bioController.text.trim(),
-      pushToken: "sample-push-token",
+    model = CompleteProfileModel(
+      name: nameController.text,
+      bio: bioController.text,
     );
 
     AppNavigator.goToPage(
       context: context,
       screen: CompleteProfileScreen2(
-        user: userModel,
+        model: model,
       ),
     );
   }

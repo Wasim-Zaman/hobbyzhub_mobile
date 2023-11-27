@@ -182,7 +182,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       AppToast.normal(state.response.message);
                       AppNavigator.goToPage(
                         context: context,
-                        screen: RecoveryPasswordScreen(),
+                        screen: RecoveryPasswordScreen(email: widget.email),
                       );
                     } else if (state is AuthStateFailure) {
                       AppDialogs.closeDialog(context);

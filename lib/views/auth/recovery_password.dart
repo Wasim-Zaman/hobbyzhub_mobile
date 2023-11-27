@@ -8,7 +8,6 @@ import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
-import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/auth/login_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -16,7 +15,8 @@ import 'package:hobbyzhub/views/widgets/text_fields/password_field_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class RecoveryPasswordScreen extends StatefulWidget {
-  const RecoveryPasswordScreen({super.key});
+  final String email;
+  const RecoveryPasswordScreen({super.key, required this.email});
 
   @override
   State<RecoveryPasswordScreen> createState() => _RecoveryPasswordScreenState();
@@ -32,14 +32,8 @@ class _RecoveryPasswordScreenState extends State<RecoveryPasswordScreen> {
   // blocs
   AuthBloc authBloc = AuthBloc();
 
-  // other variables
-  String? userId;
-
   @override
   void initState() {
-    UserSecureStorage.fetchUserId().then((value) {
-      userId = value;
-    });
     super.initState();
   }
 
@@ -47,7 +41,7 @@ class _RecoveryPasswordScreenState extends State<RecoveryPasswordScreen> {
     if (formKey.currentState!.validate()) {
       authBloc = authBloc
         ..add(AuthEventChangePasswordAfterOtpVerification(
-          userId: userId.toString(),
+          email: widget.email,
           password: passwordController.text.trim(),
         ));
     }

@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
               AppDialogs.loadingDialog(context);
             } else if (state is AuthLoginState) {
               AppDialogs.closeDialog(context);
-              if (state.response.data.newUser == true) {
+              if (state.response.data.newAccount == true) {
                 AppNavigator.goToPageWithReplacement(
                   context: context,
                   screen: const CompleteProfileScreen1(),

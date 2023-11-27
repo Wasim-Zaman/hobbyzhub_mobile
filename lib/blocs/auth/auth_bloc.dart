@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/controllers/auth/auth_controller.dart';
 import 'package:hobbyzhub/models/api_response.dart';
-import 'package:hobbyzhub/models/auth/auth_model.dart';
+import 'package:hobbyzhub/models/auth/complete_profile_model.dart';
 import 'package:hobbyzhub/models/auth/login_model.dart';
-import 'package:hobbyzhub/models/user/register_user_model.dart';
 import 'package:hobbyzhub/utils/media_utils.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -41,7 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         bool networkStatus = await isNetworkAvailable();
         if (networkStatus == true) {
           final response =
-              await AuthController.sendVerificaionMail(event.email);
+              await AuthController.sendSignupVerificationMail(event.email);
           emit(AuthSendVerificationState(response: response));
         } else {
           throw Exception("No Internet Connection");
@@ -57,7 +56,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         bool networkStatus = await isNetworkAvailable();
         if (networkStatus == true) {
           final response =
-              await AuthController.verifyOtp(event.email, event.otp);
+              await AuthController.verifyOtpForBoth(event.email, event.otp);
           emit(AuthVerifyOtpState(response: response));
         } else {
           throw Exception("No Internet Connection");
@@ -89,10 +88,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         bool networkStatus = await isNetworkAvailable();
         if (networkStatus == true) {
-          final response = await AuthController.completeProfile(
-            user: event.user,
-            token: event.token,
-          );
+          final response =
+              await AuthController.completeProfile(model: event.model);
           emit(AuthCompleteProfileState(response: response));
         } else {
           throw Exception("No Internet Connection");
@@ -144,7 +141,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         bool networkStatus = await isNetworkAvailable();
         if (networkStatus == true) {
           final response =
-              await AuthController.changePassword(event.userId, event.password);
+              await AuthController.changePassword(event.email, event.password);
           emit(AuthChangePasswordAfterOtpVerificationState(response: response));
         } else {
           throw Exception("No Internet Connection");

@@ -112,7 +112,7 @@ abstract class AuthController {
       print(body);
       if (response.statusCode == 200) {
         // success
-        ApiResponse<dynamic> model = ApiResponse<dynamic>.fromJson(
+        ApiResponse model = ApiResponse.fromJson(
           body,
           (data) => null,
         );

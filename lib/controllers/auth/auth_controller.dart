@@ -77,7 +77,6 @@ abstract class AuthController {
   }) async {
     const url = AuthUrl.completeProfile;
     try {
-// multi part request
       var request = MultipartRequest(
         'PUT',
         Uri.parse(url),
@@ -98,9 +97,9 @@ abstract class AuthController {
           ),
         );
       }
-
+      print(model.userId.toString());
       // send other fields
-      request.fields["userId"] = "2b797185fb19";
+      request.fields["userId"] = model.userId.toString();
       request.fields["fullName"] = model.name.toString();
       request.fields["birthdate"] = model.birthDate.toString();
       request.fields["gender"] = model.birthDate.toString();
@@ -130,16 +129,13 @@ abstract class AuthController {
     String password,
   ) async {
     const url = AuthUrl.login;
+    Map body = {'email': email, 'password': password};
     try {
-      final response = await ApiManager.postRequest({
-        'email': email,
-        'password': password,
-      }, url);
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final body = jsonDecode(response.body);
+      final response = await ApiManager.postRequest(body, url);
+      final responseBody = jsonDecode(response.body);
+      if (responseBody['success'] == true) {
         ApiResponse<LoginModel> model = ApiResponse.fromJson(
-          body,
+          responseBody,
           (data) => LoginModel.fromJson(body['data']),
         );
         return model;

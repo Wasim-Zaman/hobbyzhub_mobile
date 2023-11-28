@@ -35,7 +35,6 @@ abstract class AuthController {
     const url = AuthUrl.sendSignupVerificationEmail;
     try {
       final response = await ApiManager.postRequest({'email': email}, url);
-      print(response.body);
       return getResponse(response);
     } catch (_) {
       rethrow;
@@ -92,7 +91,6 @@ abstract class AuthController {
           ),
         );
       }
-      print(model.userId.toString());
       // send other fields
       request.fields["userId"] = model.userId.toString();
       request.fields["fullName"] = model.name.toString();
@@ -104,7 +102,6 @@ abstract class AuthController {
       var response = await request.send();
       // print response
       var body = jsonDecode(await response.stream.bytesToString());
-      print(body);
       if (response.statusCode == 200) {
         // success
         ApiResponse model = ApiResponse.fromJson(

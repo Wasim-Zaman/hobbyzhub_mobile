@@ -13,7 +13,7 @@ abstract class AuthController {
     if (response.statusCode == 200 || response.statusCode == 201) {
       var body = jsonDecode(response.body);
       if (body['success'] == true) {
-        return ApiResponse.fromJson(body, (p0) => null);
+        return ApiResponse.fromJson(body, (data) => null);
       } else {
         throw Exception(body['message']);
       }
@@ -37,12 +37,9 @@ abstract class AuthController {
   }
 
   static Future<ApiResponse> sendSignupVerificationMail(String email) async {
-    final url =
-        "${AuthUrl.sendSignupVerificationEmail}/$email?intent=verify-email";
+    const url = AuthUrl.sendSignupVerificationEmail;
     try {
-      final response = await ApiManager.bodyLessPost(url, headers: {
-        "Intent": "Verify-Email",
-      });
+      final response = await ApiManager.postRequest({'email': email}, url);
       print(response.body);
       return _getResponseApi(response);
     } catch (_) {
@@ -51,10 +48,13 @@ abstract class AuthController {
   }
 
   static Future<ApiResponse> verifyOtpForBoth(String email, String otp) async {
-    final url = "${AuthUrl.verifyOtp}/$email/$otp";
+    const url = AuthUrl.verifyOtp;
 
     try {
-      final response = await ApiManager.bodyLessPut(url);
+      final response = await ApiManager.putRequest(
+        {"email": email, "temporaryOtp": otp},
+        url,
+      );
       return _getResponseApi(response);
     } catch (_) {
       rethrow;
@@ -62,10 +62,10 @@ abstract class AuthController {
   }
 
   static Future<ApiResponse> verifyAccount(String email) async {
-    final url = "${AuthUrl.activateAccount}/$email";
+    const url = AuthUrl.activateAccount;
 
     try {
-      final response = await ApiManager.bodyLessPut(url);
+      final response = await ApiManager.putRequest({"email": email}, url);
       return _getResponseApi(response);
     } catch (_) {
       rethrow;
@@ -100,7 +100,7 @@ abstract class AuthController {
       }
 
       // send other fields
-      request.fields["userId"] = model.userId.toString();
+      request.fields["userId"] = "2b797185fb19";
       request.fields["fullName"] = model.name.toString();
       request.fields["birthdate"] = model.birthDate.toString();
       request.fields["gender"] = model.birthDate.toString();
@@ -126,7 +126,9 @@ abstract class AuthController {
   }
 
   static Future<ApiResponse<LoginModel>> login(
-      String email, String password) async {
+    String email,
+    String password,
+  ) async {
     const url = AuthUrl.login;
     try {
       final response = await ApiManager.postRequest({
@@ -138,7 +140,7 @@ abstract class AuthController {
         final body = jsonDecode(response.body);
         ApiResponse<LoginModel> model = ApiResponse.fromJson(
           body,
-          (p0) => LoginModel.fromJson(body['data']),
+          (data) => LoginModel.fromJson(body['data']),
         );
         return model;
       } else {
@@ -155,14 +157,13 @@ abstract class AuthController {
   ) async {
     // get the token from local database
     final token = await UserSecureStorage.fetchToken();
-    final url =
-        "${AuthUrl.sendVerificationMailForPasswordReset}/$email?intent=reset-password";
-    final response =
-        await ApiManager.bodyLessPost(url, headers: <String, String>{
-      "Authorization": token.toString(),
-      "Intent": "Reset-Password",
-      "Content-Type": "application/json"
-    });
+    const url = AuthUrl.sendVerificationMailForPasswordReset;
+    final response = await ApiManager.postRequest({'email': email}, url,
+        headers: <String, String>{
+          "Authorization": token.toString(),
+          "Intent": "Reset-Password",
+          "Content-Type": "application/json"
+        });
     return _getResponseApi(response);
   }
 

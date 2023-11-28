@@ -1,36 +1,38 @@
 abstract class AppUrl {
-  static const String testBaseUrl = "http://127.0.0.1:8000/api";
-  static const String liveUrl = "http://149.28.232.132:8765";
-  static const String accountManagementService = "/accountmanagement-service";
-  static const String baseUrl = liveUrl + accountManagementService;
+  static const String developmentUrl = "http://149.28.232.132:8765";
+  static const String productionUrl = "http://149.28.232.132:8765";
+  static const String baseUrl = developmentUrl;
 }
 
 abstract class AuthUrl {
+  // Auth Service
   static const authService = "/auth-service";
+
+  static const register = "${AppUrl.baseUrl}$authService/api/v1/auth/register";
+  static const login = "${AppUrl.baseUrl}$authService/api/v1/auth/login";
+  static const activateAccount =
+      "${AppUrl.baseUrl}$authService/api/v1/auth/activate-account";
+  static const changePassword =
+      "${AppUrl.baseUrl}$authService/api/v1/auth/reset-password";
+
+  // Account Service
   static const accountService = "/accounts-service";
 
-  static const register = "${AppUrl.liveUrl}$authService/api/v1/auth/register";
   static const sendSignupVerificationEmail =
-      "${AppUrl.liveUrl}$accountService/api/v1/accounts/email-otp";
+      "${AppUrl.baseUrl}$accountService/api/v1/accounts/email-otp?intent=verify-email";
   static const verifyOtp =
-      "${AppUrl.liveUrl}$accountService/api/v1/accounts/verify-otp";
-
-  static const String emailVerification =
-      "${AppUrl.baseUrl}/api/auth/verify-account";
-  static const login = "${AppUrl.liveUrl}$authService/api/v1/auth/login";
-
-  static const String activateAccount =
-      "${AppUrl.liveUrl}$authService/api/v1/auth/activate-account";
+      "${AppUrl.baseUrl}$accountService/api/v1/accounts/verify-otp";
   static const completeProfile =
-      "${AppUrl.liveUrl}$accountService/api/v1/accounts/update-details";
+      "${AppUrl.baseUrl}$accountService/api/v1/accounts/update-details";
   static const sendVerificationMailForPasswordReset =
-      "${AppUrl.liveUrl}$accountService/api/v1/accounts/email-otp";
-  static const changePassword =
-      "${AppUrl.liveUrl}$authService/api/v1/auth/reset-password";
+      "${AppUrl.baseUrl}$accountService/api/v1/accounts/email-otp?intent=reset-password";
+
+  // static const String emailVerification =
+  //     "${AppUrl.baseUrl}/api/auth/verify-account";
 }
 
 abstract class MediaUrl {
   static const mediaService = "/media-service";
-  static String baseUrl = AppUrl.liveUrl + mediaService;
+  static String baseUrl = AppUrl.productionUrl + mediaService;
   static final uploadProfilePicture = "$baseUrl/media/profile";
 }

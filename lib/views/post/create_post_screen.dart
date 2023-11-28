@@ -1,11 +1,15 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/hash_tags/hash_tags_bloc.dart';
 import 'package:hobbyzhub/blocs/image_picker/multi_image_picker_bloc.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
+import 'package:hobbyzhub/views/widgets/appbars/secondary_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:image_picker/image_picker.dart';
@@ -81,7 +85,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BackAppbarWidget(title: "Create New Post"),
+      appBar: SecondaryAppBarWidget(
+        title: "Create New Post",
+        isBackButton: false,
+      ),
       // create a screen having camera already opened in the screen view
       body: MultiBlocListener(
         listeners: [
@@ -89,7 +96,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             bloc: multiImagePickerBloc,
             listener: (context, state) {
               if (state is MultiImagePickerStatePickedFiles) {
-                pickedFiles = state.pickedFiles;
+                setState(() {
+                  pickedFiles = state.pickedFiles;
+                });
               } else if (state is MultiImagePickerStateClear) {
                 pickedFiles.clear();
               }
@@ -110,17 +119,23 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           child: Form(
             key: formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // pick media files (images and videos)
-                ElevatedButton(
-                  onPressed: () {
+                GestureDetector(
+                  onTap: () {
                     pickFiles();
                   },
-                  child: const Text("Pick Media Files"),
+                  child: Image.asset(
+                    "assets/images/cameraImage.jpeg",
+                    height: 100.h,
+                    width: 100.w,
+                  ),
                 ).visible(pickedFiles.isEmpty),
+
                 // display the selected media files (images and videos)
                 SizedBox(
-                  height: 150,
+                  height: 100,
                   child: GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(

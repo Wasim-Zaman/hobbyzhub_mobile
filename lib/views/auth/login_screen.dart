@@ -50,9 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   initLocalStorage(var data) async {
     Future.wait([
-      UserSecureStorage.setToken(data?.accessToken),
+      UserSecureStorage.setToken(data?.token),
       UserSecureStorage.setUserId(data?.userId),
-      UserSecureStorage.setExpiryTime(data?.tokenExpiresAt),
     ]);
   }
 
@@ -80,6 +79,8 @@ class _LoginScreenState extends State<LoginScreen> {
               AppDialogs.loadingDialog(context);
             } else if (state is AuthLoginState) {
               AppDialogs.closeDialog(context);
+              // save token to local storage
+              await initLocalStorage(state.response.data);
               if (state.response.data.newAccount == true) {
                 AppNavigator.goToPageWithReplacement(
                   context: context,

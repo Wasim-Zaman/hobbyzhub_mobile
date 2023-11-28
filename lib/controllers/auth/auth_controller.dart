@@ -98,6 +98,7 @@ abstract class AuthController {
       request.fields["fullName"] = model.name.toString();
       request.fields["birthdate"] = model.birthDate.toString();
       request.fields["gender"] = model.birthDate.toString();
+      request.fields["bio"] = model.bio.toString();
 
       // send request
       var response = await request.send();
@@ -127,9 +128,11 @@ abstract class AuthController {
     Map body = {'email': email, 'password': password};
     try {
       final response = await ApiManager.postRequest(body, url);
-      final responseBody = jsonDecode(response.body);
-      final model = LoginModel.fromJson(responseBody['data']);
-      return getResponse(response, model: model);
+      final json = jsonDecode(response.body);
+      return getResponse(
+        response,
+        model: json['data'] != null ? LoginModel.fromJson(json['data']) : null,
+      );
     } catch (_) {
       rethrow;
     }

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:hobbyzhub/blocs/hash_tags/hash_tags_bloc.dart';
 import 'package:hobbyzhub/blocs/image_picker/multi_image_picker_bloc.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
+import 'package:hobbyzhub/views/widgets/appbars/secondary_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:image_picker/image_picker.dart';
@@ -81,7 +84,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BackAppbarWidget(title: "Create New Post"),
+      appBar: SecondaryAppBarWidget(
+        title: "Create New Post",
+        isBackButton: false,
+      ),
       // create a screen having camera already opened in the screen view
       body: MultiBlocListener(
         listeners: [

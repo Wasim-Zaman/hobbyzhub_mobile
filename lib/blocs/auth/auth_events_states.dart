@@ -80,7 +80,7 @@ class AuthVerificationState extends AuthState {
 }
 
 class AuthLoginState extends AuthState {
-  final ApiResponse<LoginModel> response;
+  final ApiResponse response;
   AuthLoginState({required this.response});
 }
 

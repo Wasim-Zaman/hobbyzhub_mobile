@@ -9,17 +9,12 @@ import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:http/http.dart';
 
 abstract class AuthController {
-  static Future<ApiResponse> _getResponseApi(var response) async {
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      var body = jsonDecode(response.body);
-      if (body['success'] == true) {
-        return ApiResponse.fromJson(body, (data) => null);
-      } else {
-        throw Exception(body['message']);
-      }
+  static Future<ApiResponse> getResponse(var response, {var model}) async {
+    final body = jsonDecode(response.body);
+    if (body['success'] == true) {
+      return ApiResponse.fromJson(body, (data) => model);
     } else {
-      final data = jsonDecode(response.body);
-      throw Exception(data["message"]);
+      throw Exception(body['message']);
     }
   }
 
@@ -30,7 +25,7 @@ abstract class AuthController {
         'email': email,
         'password': password,
       }, url);
-      return _getResponseApi(response);
+      return getResponse(response);
     } catch (_) {
       rethrow;
     }
@@ -41,7 +36,7 @@ abstract class AuthController {
     try {
       final response = await ApiManager.postRequest({'email': email}, url);
       print(response.body);
-      return _getResponseApi(response);
+      return getResponse(response);
     } catch (_) {
       rethrow;
     }
@@ -55,7 +50,7 @@ abstract class AuthController {
         {"email": email, "temporaryOtp": otp},
         url,
       );
-      return _getResponseApi(response);
+      return getResponse(response);
     } catch (_) {
       rethrow;
     }
@@ -66,7 +61,7 @@ abstract class AuthController {
 
     try {
       final response = await ApiManager.putRequest({"email": email}, url);
-      return _getResponseApi(response);
+      return getResponse(response);
     } catch (_) {
       rethrow;
     }
@@ -124,7 +119,7 @@ abstract class AuthController {
     }
   }
 
-  static Future<ApiResponse<LoginModel>> login(
+  static Future<ApiResponse> login(
     String email,
     String password,
   ) async {
@@ -133,16 +128,8 @@ abstract class AuthController {
     try {
       final response = await ApiManager.postRequest(body, url);
       final responseBody = jsonDecode(response.body);
-      if (responseBody['success'] == true) {
-        ApiResponse<LoginModel> model = ApiResponse.fromJson(
-          responseBody,
-          (data) => LoginModel.fromJson(body['data']),
-        );
-        return model;
-      } else {
-        final data = jsonDecode(response.body);
-        throw Exception(data["message"]);
-      }
+      final model = LoginModel.fromJson(responseBody['data']);
+      return getResponse(response, model: model);
     } catch (_) {
       rethrow;
     }
@@ -153,14 +140,16 @@ abstract class AuthController {
   ) async {
     // get the token from local database
     final token = await UserSecureStorage.fetchToken();
+
     const url = AuthUrl.sendVerificationMailForPasswordReset;
-    final response = await ApiManager.postRequest({'email': email}, url,
-        headers: <String, String>{
-          "Authorization": token.toString(),
-          "Intent": "Reset-Password",
-          "Content-Type": "application/json"
-        });
-    return _getResponseApi(response);
+    final body = {'email': email};
+    final headers = <String, String>{
+      "Authorization": token.toString(),
+      "Intent": "Reset-Password",
+      "Content-Type": "application/json"
+    };
+    final response = await ApiManager.postRequest(body, url, headers: headers);
+    return getResponse(response);
   }
 
   static Future<ApiResponse> changePassword(
@@ -168,18 +157,13 @@ abstract class AuthController {
     String password,
   ) async {
     const url = AuthUrl.changePassword;
-    // get the token from local database
     final token = await UserSecureStorage.fetchToken();
-    try {
-      final response = await ApiManager.putRequest(
-          {"email": email, "password": password}, url,
-          headers: <String, String>{
-            "Content-Type": "application/json",
-            "Authorization": token.toString(),
-          });
-      return _getResponseApi(response);
-    } catch (_) {
-      rethrow;
-    }
+    final body = {"email": email, "password": password};
+    final headers = <String, String>{
+      "Content-Type": "application/json",
+      "Authorization": token.toString(),
+    };
+    final response = await ApiManager.putRequest(body, url, headers: headers);
+    return getResponse(response);
   }
 }

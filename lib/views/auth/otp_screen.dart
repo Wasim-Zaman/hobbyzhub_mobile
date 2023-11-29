@@ -23,9 +23,13 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  final TextEditingController phoneController = TextEditingController();
+  // controllers
   final pinController = TextEditingController();
-  final focusNode = FocusNode();
+
+  // focus nodes
+  final pinFocusNode = FocusNode();
+
+  // form key
   final formKey = GlobalKey<FormState>();
 
   // blocs and cubits
@@ -67,7 +71,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   void dispose() {
     pinController.dispose();
-    focusNode.dispose();
+    pinFocusNode.dispose();
     super.dispose();
   }
 
@@ -99,7 +103,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       textDirection: TextDirection.ltr,
                       child: OtpWidget(
                         pinController: pinController,
-                        focusNode: focusNode,
+                        focusNode: pinFocusNode,
                         validator: AppValidators.otp,
                       ),
                     ),

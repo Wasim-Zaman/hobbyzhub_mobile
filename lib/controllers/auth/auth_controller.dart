@@ -9,7 +9,7 @@ import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:http/http.dart';
 
 abstract class AuthController {
-  static Future<ApiResponse> getResponse(var response, {var model}) async {
+  static Future<ApiResponse> _returnModel(var response, {var model}) async {
     final body = jsonDecode(response.body);
     if (body['success'] == true) {
       return ApiResponse.fromJson(body, (data) => model);
@@ -25,7 +25,7 @@ abstract class AuthController {
         'email': email,
         'password': password,
       }, url);
-      return getResponse(response);
+      return _returnModel(response);
     } catch (_) {
       rethrow;
     }
@@ -35,7 +35,7 @@ abstract class AuthController {
     const url = AuthUrl.sendSignupVerificationEmail;
     try {
       final response = await ApiManager.postRequest({'email': email}, url);
-      return getResponse(response);
+      return _returnModel(response);
     } catch (_) {
       rethrow;
     }
@@ -49,7 +49,7 @@ abstract class AuthController {
         {"email": email, "temporaryOtp": otp},
         url,
       );
-      return getResponse(response);
+      return _returnModel(response);
     } catch (_) {
       rethrow;
     }
@@ -60,7 +60,7 @@ abstract class AuthController {
 
     try {
       final response = await ApiManager.putRequest({"email": email}, url);
-      return getResponse(response);
+      return _returnModel(response);
     } catch (_) {
       rethrow;
     }
@@ -126,7 +126,7 @@ abstract class AuthController {
     try {
       final response = await ApiManager.postRequest(body, url);
       final json = jsonDecode(response.body);
-      return getResponse(
+      return _returnModel(
         response,
         model: json['data'] != null ? LoginModel.fromJson(json['data']) : null,
       );
@@ -149,7 +149,7 @@ abstract class AuthController {
       "Content-Type": "application/json"
     };
     final response = await ApiManager.postRequest(body, url, headers: headers);
-    return getResponse(response);
+    return _returnModel(response);
   }
 
   static Future<ApiResponse> changePassword(
@@ -164,6 +164,6 @@ abstract class AuthController {
       "Authorization": token.toString(),
     };
     final response = await ApiManager.putRequest(body, url, headers: headers);
-    return getResponse(response);
+    return _returnModel(response);
   }
 }

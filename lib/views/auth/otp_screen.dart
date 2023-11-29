@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +8,6 @@ import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/utils/app_validators.dart';
-import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/auth/recovery_password.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -71,14 +68,13 @@ class _OtpScreenState extends State<OtpScreen> {
   void dispose() {
     pinController.dispose();
     focusNode.dispose();
-    UserSecureStorage.deleteOtp();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BackAppbarWidget(),
+      appBar: const BackAppbarWidget(),
       body: Form(
         key: formKey,
         child: Padding(

@@ -157,13 +157,9 @@ abstract class AuthController {
     String password,
   ) async {
     const url = AuthUrl.changePassword;
-    final token = await UserSecureStorage.fetchToken();
-    final body = {"email": email, "password": password};
-    final headers = <String, String>{
-      "Content-Type": "application/json",
-      "Authorization": token.toString(),
-    };
-    final response = await ApiManager.putRequest(body, url, headers: headers);
+    final body = {"email": email, "newPassword": password};
+
+    final response = await ApiManager.putRequest(body, url);
     return _returnModel(response);
   }
 }

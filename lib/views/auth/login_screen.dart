@@ -29,6 +29,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // Blocs
+  late AuthBloc authBloc;
+
   // Controllers
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -45,7 +48,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    authBloc = AuthBloc();
     super.initState();
+  }
+
+  void login() {
+    authBloc.add(
+      AuthEventLogin(
+        email: emailController.text,
+        password: passwordController.text,
+      ),
+    );
   }
 
   initLocalStorage(var data) async {
@@ -71,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: BlocConsumer<AuthBloc, AuthState>(
+          bloc: authBloc,
           listener: (context, state) async {
             if (state is AuthLoadingState) {
               // unfocus keyboard
@@ -159,15 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     caption: "Login",
                                     onPressed: () {
                                       if (formKey.currentState!.validate()) {
-                                        context.read<AuthBloc>().add(
-                                              AuthEventLogin(
-                                                email:
-                                                    emailController.text.trim(),
-                                                password: passwordController
-                                                    .text
-                                                    .trim(),
-                                              ),
-                                            );
+                                        login();
                                       }
                                     }),
                               ],

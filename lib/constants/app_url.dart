@@ -1,6 +1,7 @@
 abstract class AppUrl {
   static const String developmentUrl = "http://149.28.232.132:8765";
   static const String productionUrl = "http://149.28.232.132:8765";
+
   static const String baseUrl = developmentUrl;
 }
 
@@ -35,4 +36,10 @@ abstract class MediaUrl {
   static const mediaService = "/media-service";
   static String baseUrl = AppUrl.productionUrl + mediaService;
   static final uploadProfilePicture = "$baseUrl/media/profile";
+}
+
+abstract class PostUrl {
+  static const baseUrl = "http://149.28.232.132:8600";
+  static const createPost = "$baseUrl/api/v1/posts/upload";
+  static const getPost = "$baseUrl/api/v1/posts/all";
 }

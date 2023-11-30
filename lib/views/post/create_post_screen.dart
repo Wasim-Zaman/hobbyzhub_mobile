@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/create_post/createpost_cubit.dart';
 import 'package:hobbyzhub/blocs/hash_tags/hash_tags_bloc.dart';
 import 'package:hobbyzhub/blocs/image_picker/multi_image_picker_bloc.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
@@ -229,7 +230,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       child: PrimaryButtonWidget(
                         caption: "Post",
                         onPressed: () {
-                          if (formKey.currentState!.validate()) {}
+                          // if (formKey.currentState!.validate()) {}
+
+                          List<File> imagePickedFiles = [];
+                          for (var i = 0; i < pickedFiles.length; i++) {
+                            imagePickedFiles.add(File(pickedFiles[i].path));
+                          }
+
+                          context
+                              .read<CreatepostCubit>()
+                              .createPost(imagePickedFiles);
                         },
                         circularRadius: 5,
                         height: 45,

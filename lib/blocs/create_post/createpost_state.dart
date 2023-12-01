@@ -7,7 +7,7 @@ final class CreatepostInitial extends CreatepostState {}
 
 final class CreatepostLoading extends CreatepostState {}
 
-final class CreatepostLoaded extends CreatepostState {}
+final class CreatepostSuccessfully extends CreatepostState {}
 
 final class CreatepostFailed extends CreatepostState {}
 

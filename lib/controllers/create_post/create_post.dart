@@ -2,18 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:hobbyzhub/constants/app_url.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class PostController {
-  createPost(List<File> files) async {
-    // Replace the URL with your server endpoint
+  createPost(List<File> files, caption) async {
     final url = Uri.parse(PostUrl.createPost);
 
-    // Create a new multipart request
     final request = http.MultipartRequest('POST', url);
 
-    // Add files to the request
     List<String> filePaths = [];
 
     for (var i = 0; i < files.length; i++) {
@@ -30,11 +28,11 @@ class PostController {
       );
     }
 
-    // Add query parameters
-    request.fields['userId'] = 'hasdasdha';
+    var userId = await UserSecureStorage.fetchUserId();
 
-    // Add JSON body
-    Map<String, dynamic> jsonBody = {'caption': 'hello'};
+    request.fields['userId'] = '${userId}';
+
+    Map<String, dynamic> jsonBody = {'caption': '${caption}'};
     request.files.add(
       http.MultipartFile.fromString(
         'createPost',
@@ -43,17 +41,8 @@ class PostController {
       ),
     );
 
-    // Send the request
-    try {
-      final response = await request.send();
+    final response = await request.send();
 
-      if (response.statusCode == 201) {
-        print('Request successful');
-      } else {
-        print('Request failed with status: ${response.statusCode}');
-      }
-    } catch (error) {
-      print('Error sending request: $error');
-    }
+    return response;
   }
 }

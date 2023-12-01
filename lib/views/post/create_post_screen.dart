@@ -6,11 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/create_post/createpost_cubit.dart';
+import 'package:hobbyzhub/blocs/get_post/get_post_cubit.dart';
 import 'package:hobbyzhub/blocs/hash_tags/hash_tags_bloc.dart';
 import 'package:hobbyzhub/blocs/image_picker/multi_image_picker_bloc.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/views/widgets/appbars/secondary_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -84,170 +87,190 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: SecondaryAppBarWidget(
-        title: "Create New Post",
-        isBackButton: false,
-      ),
-      // create a screen having camera already opened in the screen view
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<MultiImagePickerBloc, MultiImagePickerState>(
-            bloc: multiImagePickerBloc,
-            listener: (context, state) {
-              if (state is MultiImagePickerStatePickedFiles) {
-                setState(() {
-                  pickedFiles = state.pickedFiles;
-                });
-              } else if (state is MultiImagePickerStateClear) {
-                pickedFiles.clear();
-              }
-            },
-          ),
-          BlocListener<HashTagsBloc, HashTagsState>(
-            bloc: hashTagsBloc,
-            listener: (context, state) {
-              if (state is HashTagsStateSuccess) {
-                // add the hash tag to the list of hash tags
-                hashTags = state.tags;
-              }
-            },
-          ),
-        ],
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // pick media files (images and videos)
-                GestureDetector(
-                  onTap: () {
-                    pickFiles();
-                  },
-                  child: Image.asset(
-                    "assets/images/cameraImage.jpeg",
-                    height: 100.h,
-                    width: 100.w,
-                  ),
-                ).visible(pickedFiles.isEmpty),
+    return BlocListener<CreatepostCubit, CreatepostState>(
+      listener: (context, state) {
+        if (state is CreatepostLoading) {
+          AppDialogs.loadingDialog(context);
+        } else if (state is CreatepostSuccessfully) {
+          context.read<GetPostCubit>().getPostList();
+          toast("Your post created successfully");
+          AppDialogs.closeDialog(context);
+          Navigator.of(context).pop();
+        } else if (state is CreatepostFailed) {
+          toast("Your post creation failed");
 
-                // display the selected media files (images and videos)
-                SizedBox(
-                  height: 100,
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
+          AppDialogs.closeDialog(context);
+        } else if (state is CreatepostInternetError) {
+          toast("Internet connection failed");
+
+          AppDialogs.closeDialog(context);
+        }
+      },
+      child: Scaffold(
+        appBar: SecondaryAppBarWidget(
+          title: "Create New Post",
+          isBackButton: false,
+        ),
+        // create a screen having camera already opened in the screen view
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<MultiImagePickerBloc, MultiImagePickerState>(
+              bloc: multiImagePickerBloc,
+              listener: (context, state) {
+                if (state is MultiImagePickerStatePickedFiles) {
+                  setState(() {
+                    pickedFiles = state.pickedFiles;
+                  });
+                } else if (state is MultiImagePickerStateClear) {
+                  pickedFiles.clear();
+                }
+              },
+            ),
+            BlocListener<HashTagsBloc, HashTagsState>(
+              bloc: hashTagsBloc,
+              listener: (context, state) {
+                if (state is HashTagsStateSuccess) {
+                  // add the hash tag to the list of hash tags
+                  hashTags = state.tags;
+                }
+              },
+            ),
+          ],
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // pick media files (images and videos)
+                  GestureDetector(
+                    onTap: () {
+                      pickFiles();
+                    },
+                    child: Image.asset(
+                      "assets/images/cameraImage.jpeg",
+                      height: 100.h,
+                      width: 100.w,
                     ),
-                    itemCount: pickedFiles.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, int index) {
-                      // display the media files (image or video)
-                      return Image.file(
-                        File(pickedFiles[index].path),
-                        fit: BoxFit.cover,
-                      );
+                  ).visible(pickedFiles.isEmpty),
+
+                  // display the selected media files (images and videos)
+                  SizedBox(
+                    height: 100,
+                    child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                      ),
+                      itemCount: pickedFiles.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index) {
+                        // display the media files (image or video)
+                        return Image.file(
+                          File(pickedFiles[index].path),
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ).visible(pickedFiles.isNotEmpty),
+                  30.height,
+                  TextFieldWidget(
+                    labelText: "Caption",
+                    controller: captionController,
+                    hintText: "Add Caption",
+                    focusNode: captionFocusNode,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 3,
+                  ),
+                  20.height,
+                  // TextFieldWidget(
+                  //   labelText: "Hash Tags",
+                  //   controller: hashTagsController,
+                  //   hintText: "Add Hash Tags",
+                  //   focusNode: hashTagsFocusNode,
+                  //   keyboardType: TextInputType.text,
+                  //   maxLines: 1,
+                  //   onEditingComplete: () {
+                  //     hashTags.add(hashTagsController.text);
+                  //     // add the hash tag to the list of hash tags
+                  //     hashTagsBloc.add(HashTagsEventHandler(hashTags));
+                  //     // clear the hash tag text field
+                  //     hashTagsController.clear();
+                  //   },
+                  // ),
+                  20.height,
+                  // display the list of hash tags
+                  BlocBuilder<HashTagsBloc, HashTagsState>(
+                    bloc: hashTagsBloc,
+                    builder: (context, state) {
+                      if (state is HashTagsStateSuccess) {
+                        return Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          children: hashTags
+                              .map(
+                                (hashTag) => Chip(
+                                  label: Text(hashTag),
+                                  onDeleted: () {
+                                    // remove the hash tag from the list of hash tags
+                                    hashTags.remove(hashTag);
+                                    hashTagsBloc
+                                        .add(HashTagsEventHandler(hashTags));
+                                  },
+                                ),
+                              )
+                              .toList(),
+                        );
+                      }
+                      return Container();
                     },
                   ),
-                ).visible(pickedFiles.isNotEmpty),
-                30.height,
-                TextFieldWidget(
-                  labelText: "Caption",
-                  controller: captionController,
-                  hintText: "Add Caption",
-                  focusNode: captionFocusNode,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 3,
-                ),
-                20.height,
-                TextFieldWidget(
-                  labelText: "Hash Tags",
-                  controller: hashTagsController,
-                  hintText: "Add Hash Tags",
-                  focusNode: hashTagsFocusNode,
-                  keyboardType: TextInputType.text,
-                  maxLines: 1,
-                  onEditingComplete: () {
-                    hashTags.add(hashTagsController.text);
-                    // add the hash tag to the list of hash tags
-                    hashTagsBloc.add(HashTagsEventHandler(hashTags));
-                    // clear the hash tag text field
-                    hashTagsController.clear();
-                  },
-                ),
-                20.height,
-                // display the list of hash tags
-                BlocBuilder<HashTagsBloc, HashTagsState>(
-                  bloc: hashTagsBloc,
-                  builder: (context, state) {
-                    if (state is HashTagsStateSuccess) {
-                      return Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: hashTags
-                            .map(
-                              (hashTag) => Chip(
-                                label: Text(hashTag),
-                                onDeleted: () {
-                                  // remove the hash tag from the list of hash tags
-                                  hashTags.remove(hashTag);
-                                  hashTagsBloc
-                                      .add(HashTagsEventHandler(hashTags));
-                                },
-                              ),
-                            )
-                            .toList(),
-                      );
-                    }
-                    return Container();
-                  },
-                ),
-                const Spacer(),
-                // post the media files (images and videos)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: PrimaryButtonWidget(
-                        caption: "Cancel",
-                        onPressed: () {
-                          captionController.clear();
-                          hashTagsController.clear();
-                          pickedFiles.clear();
-                          clear();
-                        },
-                        color: AppColors.darkGrey,
-                        circularRadius: 5,
-                        height: 45,
-                      ),
-                    ),
-                    20.width,
-                    Expanded(
-                      child: PrimaryButtonWidget(
-                        caption: "Post",
-                        onPressed: () {
-                          // if (formKey.currentState!.validate()) {}
+                  const Spacer(),
 
-                          List<File> imagePickedFiles = [];
-                          for (var i = 0; i < pickedFiles.length; i++) {
-                            imagePickedFiles.add(File(pickedFiles[i].path));
-                          }
-
-                          context
-                              .read<CreatepostCubit>()
-                              .createPost(imagePickedFiles);
-                        },
-                        circularRadius: 5,
-                        height: 45,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: PrimaryButtonWidget(
+                          caption: "Cancel",
+                          onPressed: () {
+                            captionController.clear();
+                            hashTagsController.clear();
+                            pickedFiles.clear();
+                            clear();
+                          },
+                          color: AppColors.darkGrey,
+                          circularRadius: 5,
+                          height: 45,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      20.width,
+                      Expanded(
+                        child: PrimaryButtonWidget(
+                          caption: "Post",
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              List<File> imagePickedFiles = [];
+                              for (var i = 0; i < pickedFiles.length; i++) {
+                                imagePickedFiles.add(File(pickedFiles[i].path));
+                              }
+
+                              context.read<CreatepostCubit>().createPost(
+                                  imagePickedFiles,
+                                  captionController.text.trim());
+                            }
+                          },
+                          circularRadius: 5,
+                          height: 45,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

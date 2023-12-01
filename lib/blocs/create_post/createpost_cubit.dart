@@ -11,12 +11,20 @@ class CreatepostCubit extends Cubit<CreatepostState> {
 
   PostController postController = PostController();
 
-  createPost(List<File> imageFile) async {
+  createPost(List<File> imageFile, caption) async {
+    emit(CreatepostLoading());
     try {
-      print(imageFile);
-      await postController.createPost(imageFile);
+      var response = await postController.createPost(imageFile, caption);
+
+      if (response.statusCode == 201) {
+        emit(CreatepostSuccessfully());
+      } else {
+        emit(CreatepostFailed());
+      }
+    } on SocketException {
+      emit(CreatepostInternetError());
     } catch (e) {
-      print(e);
+      emit(CreatepostFailed());
     }
   }
 }

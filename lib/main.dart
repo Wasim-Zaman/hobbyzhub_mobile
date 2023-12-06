@@ -38,14 +38,11 @@ class _MyAppState extends State<MyApp> {
                 hideKeyboard(context);
               },
               child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                title: 'HobbyzHub',
-                theme: AppTheme.light,
-                navigatorKey: navigatorKey,
-                home: MainTabScreen(
-                  index: 0,
-                ),
-              ),
+                  debugShowCheckedModeBanner: false,
+                  title: 'HobbyzHub',
+                  theme: AppTheme.light,
+                  navigatorKey: navigatorKey,
+                  home: SplashScreen()),
             );
           }),
     );

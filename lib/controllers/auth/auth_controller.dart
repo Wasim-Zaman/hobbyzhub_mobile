@@ -125,6 +125,7 @@ abstract class AuthController {
     Map body = {'email': email, 'password': password};
     try {
       final response = await ApiManager.postRequest(body, url);
+      print(response.body);
       final json = jsonDecode(response.body);
       return _returnModel(
         response,

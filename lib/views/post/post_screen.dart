@@ -198,7 +198,6 @@ class _PostScreenState extends State<PostScreen> {
             ),
             BlocBuilder<GetPostCubit, GetPostState>(
               builder: (context, state) {
-                print(state);
                 if (state is GetPostLoaded) {
                   return ListView.builder(
                       itemCount: state.postsList.first.data.length,

@@ -39,7 +39,8 @@ abstract class MediaUrl {
 }
 
 abstract class PostUrl {
-  static const baseUrl = "http://149.28.232.132:8600";
-  static const createPost = "$baseUrl/api/v1/posts/upload";
-  static const getPost = "$baseUrl/api/v1/posts/all";
+  static const baseUrl = "http://149.28.232.132:8765";
+  static const createPost = "$baseUrl/post-service/api/v1/posts/upload";
+  static const getPost = "$baseUrl/post-service/api/v1/posts/all";
+  static const deletepost = "$baseUrl/post-service/api/v1/posts/delete/";
 }

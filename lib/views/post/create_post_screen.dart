@@ -13,7 +13,6 @@ import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/views/widgets/appbars/secondary_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
-import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -45,6 +44,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   List<XFile> pickedFiles = [];
   // list of hash tags
   List<String> hashTags = [];
+  List<String> hastagsData = [];
 
   @override
   void initState() {
@@ -93,9 +93,14 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           AppDialogs.loadingDialog(context);
         } else if (state is CreatepostSuccessfully) {
           context.read<GetPostCubit>().getPostList();
+
+          captionController.clear();
+          hastagsData.clear();
+          pickedFiles.clear();
+          setState(() {});
           toast("Your post created successfully");
+
           AppDialogs.closeDialog(context);
-          Navigator.of(context).pop();
         } else if (state is CreatepostFailed) {
           toast("Your post creation failed");
 
@@ -186,27 +191,46 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     maxLines: 3,
                   ),
                   20.height,
-                  // TextFieldWidget(
-                  //   labelText: "Hash Tags",
-                  //   controller: hashTagsController,
-                  //   hintText: "Add Hash Tags",
-                  //   focusNode: hashTagsFocusNode,
-                  //   keyboardType: TextInputType.text,
-                  //   maxLines: 1,
-                  //   onEditingComplete: () {
-                  //     hashTags.add(hashTagsController.text);
-                  //     // add the hash tag to the list of hash tags
-                  //     hashTagsBloc.add(HashTagsEventHandler(hashTags));
-                  //     // clear the hash tag text field
-                  //     hashTagsController.clear();
-                  //   },
-                  // ),
+                  TextField(
+                    controller: hashTagsController,
+                    focusNode: hashTagsFocusNode,
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                      labelText: "HASHTAGS",
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide:
+                            const BorderSide(color: AppColors.lightGrey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: AppColors.primary),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide:
+                            const BorderSide(color: AppColors.dangerColor),
+                      ),
+                      fillColor: AppColors.white,
+                      filled: true,
+                    ),
+                    onEditingComplete: () {
+                      hashTags.add(hashTagsController.text);
+                      // add the hash tag to the list of hash tags
+                      hashTagsBloc.add(HashTagsEventHandler(hashTags));
+                      // clear the hash tag text field
+                      hashTagsController.clear();
+                    },
+                  ),
                   20.height,
                   // display the list of hash tags
                   BlocBuilder<HashTagsBloc, HashTagsState>(
                     bloc: hashTagsBloc,
                     builder: (context, state) {
                       if (state is HashTagsStateSuccess) {
+                        hastagsData = state.tags;
                         return Wrap(
                           spacing: 10,
                           runSpacing: 10,
@@ -259,8 +283,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               }
 
                               context.read<CreatepostCubit>().createPost(
-                                  imagePickedFiles,
-                                  captionController.text.trim());
+                                    imagePickedFiles,
+                                    captionController.text.trim(),
+                                    hastagsData,
+                                  );
                             }
                           },
                           circularRadius: 5,

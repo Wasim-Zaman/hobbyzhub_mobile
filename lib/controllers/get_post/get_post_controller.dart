@@ -18,4 +18,20 @@ class GetPostController {
       rethrow;
     }
   }
+
+  deletePosts(postId) async {
+    var url = PostUrl.deletepost + "$postId";
+    try {
+      final token = await UserSecureStorage.fetchToken();
+
+      final headers = <String, String>{
+        "Authorization": token.toString(),
+        "Content-Type": "application/json"
+      };
+      final response = await ApiManager.deleteRequest(url, headers: headers);
+      return response;
+    } catch (_) {
+      rethrow;
+    }
+  }
 }

@@ -7,8 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class PostController {
-  createPost(List<File> files, caption) async {
-    final url = Uri.parse(PostUrl.createPost);
+  createPost(List<File> files, caption, hashtags) async {
+    final userId = await UserSecureStorage.fetchUserId();
+    final url = Uri.parse(PostUrl.createPost + "/${userId}");
 
     final request = http.MultipartRequest('POST', url);
 
@@ -28,11 +29,23 @@ class PostController {
       );
     }
 
-    var userId = await UserSecureStorage.fetchUserId();
+    final token = await UserSecureStorage.fetchToken();
+    print(token);
 
-    request.fields['userId'] = '${userId}';
+    List mapofHashtags = [];
 
-    Map<String, dynamic> jsonBody = {'caption': '${caption}'};
+    for (var i = 0; i < hashtags.length; i++) {
+      mapofHashtags.add({"tagName": hashtags[i]});
+    }
+
+    print(mapofHashtags);
+
+    // request.fields['userId'] = '60b90846a017';
+
+    Map<String, dynamic> jsonBody = {
+      'caption': '${caption}',
+      'hashTags': mapofHashtags
+    };
     request.files.add(
       http.MultipartFile.fromString(
         'createPost',
@@ -40,6 +53,10 @@ class PostController {
         contentType: MediaType('application', 'json'),
       ),
     );
+    Map<String, String> headers = {
+      "Authorization": token.toString(),
+    };
+    request.headers.addAll(headers);
 
     final response = await request.send();
 

@@ -39,6 +39,9 @@ class PostModel {
 class Datum {
   String postId;
   String userId;
+  String username;
+  String profileImage;
+
   String caption;
   List<String> imageUrls;
   DateTime postTime;
@@ -49,6 +52,8 @@ class Datum {
   Datum({
     required this.postId,
     required this.userId,
+    required this.username,
+    required this.profileImage,
     required this.caption,
     required this.imageUrls,
     required this.postTime,
@@ -61,6 +66,8 @@ class Datum {
         postId: json["postId"],
         userId: json["userId"],
         caption: json["caption"],
+        username: json["username"] ?? '',
+        profileImage: json["profileImage"] ?? '',
         imageUrls: List<String>.from(json["imageUrls"].map((x) => x)),
         postTime: DateTime.parse(json["postTime"]),
         likes: List<dynamic>.from(json["likes"].map((x) => x)),
@@ -72,6 +79,8 @@ class Datum {
         "postId": postId,
         "userId": userId,
         "caption": caption,
+        "profileImage": profileImage,
+        "username": username,
         "imageUrls": List<dynamic>.from(imageUrls.map((x) => x)),
         "postTime": postTime.toIso8601String(),
         "likes": List<dynamic>.from(likes.map((x) => x)),

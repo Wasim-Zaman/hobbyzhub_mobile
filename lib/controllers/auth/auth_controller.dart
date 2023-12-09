@@ -43,12 +43,9 @@ abstract class AuthController {
 
   static Future<ApiResponse> verifyOtpForBoth(String email, String otp) async {
     const url = AuthUrl.verifyOtp;
-
+    final body = {"email": email, "temporaryOtp": otp};
     try {
-      final response = await ApiManager.putRequest(
-        {"email": email, "temporaryOtp": otp},
-        url,
-      );
+      final response = await ApiManager.putRequest(body, url);
       return _returnModel(response);
     } catch (_) {
       rethrow;

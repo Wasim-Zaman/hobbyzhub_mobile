@@ -226,7 +226,8 @@ class _PostScreenState extends State<PostScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     state.postsList.first.data[index]
-                                            .profileImage.isEmpty
+                                                .profileImage ==
+                                            null
                                         ? CircleAvatar(
                                             radius: 20.sp,
                                             child: state
@@ -273,20 +274,27 @@ class _PostScreenState extends State<PostScreen> {
                                         ],
                                       ),
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        context
-                                            .read<DeletePostCubit>()
-                                            .deletePost(state.postsList.first
-                                                .data[index].postId);
-                                      },
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 10.0),
-                                        child: Icon(
-                                          Icons.delete,
-                                          color: AppColors.primary,
-                                        ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 10.0),
+                                      child: PopupMenuButton<int>(
+                                        onSelected: (item) {
+                                          switch (item) {
+                                            case 0:
+                                              context
+                                                  .read<DeletePostCubit>()
+                                                  .deletePost(state
+                                                      .postsList
+                                                      .first
+                                                      .data[index]
+                                                      .postId);
+                                              break;
+                                          }
+                                        },
+                                        itemBuilder: (context) => [
+                                          PopupMenuItem<int>(
+                                              value: 0, child: Text('Delete')),
+                                        ],
                                       ),
                                     )
                                   ],
@@ -294,17 +302,46 @@ class _PostScreenState extends State<PostScreen> {
                                 SizedBox(
                                   height: 20.h,
                                 ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      child: Text(
-                                          state.postsList.first.data[index]
-                                              .caption,
-                                          style:
-                                              AppTextStyle.normalFontTextStyle),
-                                    ),
-                                  ],
+                                state.postsList.first.data[index].caption !=
+                                        null
+                                    ? Row(
+                                        children: [
+                                          SizedBox(
+                                            child: Text(
+                                                state.postsList.first
+                                                    .data[index].caption!,
+                                                style: AppTextStyle
+                                                    .normalFontTextStyle),
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox(),
+                                SizedBox(
+                                  height: 10.h,
                                 ),
+                                state.postsList.first.data[index].hashTags !=
+                                        null
+                                    ? Row(
+                                        children: [
+                                          for (int i = 0;
+                                              i <
+                                                  state
+                                                      .postsList
+                                                      .first
+                                                      .data[index]
+                                                      .hashTags!
+                                                      .length;
+                                              i++) ...[
+                                            SizedBox(
+                                              child: Text(
+                                                  "#${state.postsList.first.data[index].hashTags![i].tagName}",
+                                                  style: AppTextStyle
+                                                      .codeTextStyle),
+                                            ),
+                                          ]
+                                        ],
+                                      )
+                                    : SizedBox(),
                                 SizedBox(
                                   height: 20.h,
                                 ),

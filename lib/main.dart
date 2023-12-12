@@ -3,9 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/bloc_provider.dart';
 import 'package:hobbyzhub/global/themes/app_theme.dart';
-import 'package:hobbyzhub/views/bottom_nav_bar/main_tabs_screen.dart';
+import 'package:hobbyzhub/views/onboarding/onboarding_screen.dart';
 import 'package:hobbyzhub/views/splash_screen/splash_screen.dart';
-import 'package:hobbyzhub/views/welcome/welcome_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:timeago/timeago.dart' as timeago;
 

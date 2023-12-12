@@ -91,7 +91,7 @@ class Datum {
         caption: json["caption"],
         postTime: DateTime.parse(json["postTime"]),
         status: json["status"],
-        username: json["username"],
+        username: json["username"] ?? '',
         profileImage: json["profileImage"],
         hashTags: json["hashTags"] == null
             ? []

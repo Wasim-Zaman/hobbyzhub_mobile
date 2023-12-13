@@ -563,17 +563,20 @@ class _PostScreenState extends State<PostScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (builder) =>
-                                                CommentScreen()));
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (builder) => CommentScreen(
+                                                  postId: state.postsList.first
+                                                      .data[index].postId!,
+                                                )));
                                   },
                                   child: Row(
                                     children: [
                                       SizedBox(
                                         child: Opacity(
                                           opacity: 0.50,
-                                          child: Text('View all 57 comments',
+                                          child: Text(
+                                              'View all ${state.postsList.first.data[index].comments.length} comments',
                                               style:
                                                   AppTextStyle.likeByTextStyle),
                                         ),

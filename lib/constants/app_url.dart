@@ -42,5 +42,6 @@ abstract class PostUrl {
   static const baseUrl = "http://149.28.232.132:8765";
   static const createPost = "$baseUrl/post-service/api/v1/posts/upload";
   static const getPost = "$baseUrl/post-service/api/v1/posts/all";
+  static const specficPost = "$baseUrl/post-service/api/v1/posts/post/";
   static const deletepost = "$baseUrl/post-service/api/v1/posts/delete/";
 }

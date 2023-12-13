@@ -501,7 +501,8 @@ class _PostScreenState extends State<PostScreen> {
                                         SizedBox(
                                           width: 5.w,
                                         ),
-                                        Text('247',
+                                        Text(
+                                            '${state.postsList.first.data[index].likes.length}',
                                             style: AppTextStyle
                                                 .normalFontTextStyle),
                                         SizedBox(
@@ -514,7 +515,8 @@ class _PostScreenState extends State<PostScreen> {
                                         SizedBox(
                                           width: 5.w,
                                         ),
-                                        Text('150',
+                                        Text(
+                                            '${state.postsList.first.data[index].comments.length}',
                                             style: AppTextStyle
                                                 .normalFontTextStyle),
                                       ],

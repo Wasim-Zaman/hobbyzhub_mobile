@@ -226,74 +226,55 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   ),
                   20.height,
                   // display the list of hash tags
-                  BlocBuilder<HashTagsBloc, HashTagsState>(
-                    bloc: hashTagsBloc,
-                    builder: (context, state) {
-                      if (state is HashTagsStateSuccess) {
-                        hastagsData = state.tags;
-                        return Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
-                          children: hashTags
-                              .map(
-                                (hashTag) => Chip(
-                                  label: Text(hashTag),
-                                  onDeleted: () {
-                                    // remove the hash tag from the list of hash tags
-                                    hashTags.remove(hashTag);
-                                    hashTagsBloc
-                                        .add(HashTagsEventHandler(hashTags));
-                                  },
-                                ),
-                              )
-                              .toList(),
-                        );
-                      }
-                      return Container();
-                    },
+                  Expanded(
+                    child: BlocBuilder<HashTagsBloc, HashTagsState>(
+                      bloc: hashTagsBloc,
+                      builder: (context, state) {
+                        if (state is HashTagsStateSuccess) {
+                          hastagsData = state.tags;
+                          return Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: hashTags
+                                .map(
+                                  (hashTag) => Chip(
+                                    label: Text(hashTag),
+                                    onDeleted: () {
+                                      // remove the hash tag from the list of hash tags
+                                      hashTags.remove(hashTag);
+                                      hashTagsBloc
+                                          .add(HashTagsEventHandler(hashTags));
+                                    },
+                                  ),
+                                )
+                                .toList(),
+                          );
+                        }
+                        return Container();
+                      },
+                    ),
                   ),
                   const Spacer(),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: PrimaryButtonWidget(
-                          caption: "Cancel",
-                          onPressed: () {
-                            captionController.clear();
-                            hashTagsController.clear();
-                            pickedFiles.clear();
-                            clear();
-                          },
-                          color: AppColors.darkGrey,
-                          circularRadius: 5,
-                          height: 45,
-                        ),
-                      ),
-                      20.width,
-                      Expanded(
-                        child: PrimaryButtonWidget(
-                          caption: "Post",
-                          onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              List<File> imagePickedFiles = [];
-                              for (var i = 0; i < pickedFiles.length; i++) {
-                                imagePickedFiles.add(File(pickedFiles[i].path));
-                              }
+                  20.width,
+                  PrimaryButtonWidget(
+                    caption: "Post",
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        List<File> imagePickedFiles = [];
+                        for (var i = 0; i < pickedFiles.length; i++) {
+                          imagePickedFiles.add(File(pickedFiles[i].path));
+                        }
 
-                              context.read<CreatepostCubit>().createPost(
-                                    imagePickedFiles,
-                                    captionController.text.trim(),
-                                    hastagsData,
-                                  );
-                            }
-                          },
-                          circularRadius: 5,
-                          height: 45,
-                        ),
-                      ),
-                    ],
+                        context.read<CreatepostCubit>().createPost(
+                              imagePickedFiles,
+                              captionController.text.trim(),
+                              hastagsData,
+                            );
+                      }
+                    },
+                    circularRadius: 5,
+                    height: 45,
                   ),
                 ],
               ),

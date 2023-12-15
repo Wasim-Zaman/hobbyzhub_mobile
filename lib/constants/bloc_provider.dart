@@ -5,6 +5,7 @@ import 'package:hobbyzhub/blocs/delete_post/delete_post_cubit.dart';
 import 'package:hobbyzhub/blocs/get_post/get_post_cubit.dart';
 import 'package:hobbyzhub/blocs/specific_post/specific_post_cubit.dart';
 import 'package:hobbyzhub/blocs/timer_cubit/timer_cubit_cubit.dart';
+import 'package:hobbyzhub/blocs/write_comment/write_comment_cubit.dart';
 
 class BlocProviders {
   static final List<BlocProvider> providers = [
@@ -13,6 +14,7 @@ class BlocProviders {
     BlocProvider<CreatepostCubit>(create: (context) => CreatepostCubit()),
     BlocProvider<DeletePostCubit>(create: (context) => DeletePostCubit()),
     BlocProvider<SpecificPostCubit>(create: (context) => SpecificPostCubit()),
+    BlocProvider<WriteCommentCubit>(create: (context) => WriteCommentCubit()),
     BlocProvider<GetPostCubit>(
         create: (context) => GetPostCubit()..getPostList())
   ];

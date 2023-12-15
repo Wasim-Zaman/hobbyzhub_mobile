@@ -44,4 +44,6 @@ abstract class PostUrl {
   static const getPost = "$baseUrl/post-service/api/v1/posts/all";
   static const specficPost = "$baseUrl/post-service/api/v1/posts/post/";
   static const deletepost = "$baseUrl/post-service/api/v1/posts/delete/";
+  static const createComment =
+      "$baseUrl/post-service/api/v1/comments/comment/create";
 }

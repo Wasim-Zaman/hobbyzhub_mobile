@@ -14,6 +14,8 @@ class TextFieldWidget extends StatefulWidget {
   final int? maxLines;
   final bool? readOnly;
   final Widget? prefixIcon;
+  final Widget? suffixIcon;
+
   final Function(String)? onChanged;
 
   const TextFieldWidget({
@@ -21,6 +23,7 @@ class TextFieldWidget extends StatefulWidget {
     required this.labelText,
     required this.controller,
     required this.hintText,
+    this.suffixIcon,
     this.validator,
     this.focusNode,
     this.keyboardType,
@@ -66,6 +69,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         hintText: widget.hintText,
         hintStyle: AppTextStyle.textField,
         prefixIcon: widget.prefixIcon,
+        suffixIcon: widget.suffixIcon,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         labelStyle: AppTextStyle.textField,
         border: OutlineInputBorder(

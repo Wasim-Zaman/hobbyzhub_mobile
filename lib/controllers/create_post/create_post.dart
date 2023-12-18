@@ -10,7 +10,7 @@ import 'package:http_parser/http_parser.dart';
 class PostController {
   createPost(List<File> files, caption, hashtags) async {
     final userId = await UserSecureStorage.fetchUserId();
-    final url = Uri.parse(PostUrl.createPost + "/${userId}");
+    final url = Uri.parse("${PostUrl.createPost}/$userId");
 
     final request = http.MultipartRequest('POST', url);
 
@@ -41,7 +41,7 @@ class PostController {
     // request.fields['userId'] = '60b90846a017';
 
     Map<String, dynamic> jsonBody = {
-      'caption': '${caption}',
+      'caption': '$caption',
       'hashTags': mapofHashtags
     };
     request.files.add(
@@ -64,7 +64,7 @@ class PostController {
   writeCommentFunction(postId, comment) async {
     try {
       final token = await UserSecureStorage.fetchToken();
-      final url = PostUrl.createComment + "?postId=${postId}";
+      final url = "${PostUrl.createComment}?postId=$postId";
 
       final headers = <String, String>{
         "Authorization": token.toString(),

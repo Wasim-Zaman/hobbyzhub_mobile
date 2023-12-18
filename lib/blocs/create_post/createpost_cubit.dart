@@ -25,7 +25,6 @@ class CreatepostCubit extends Cubit<CreatepostState> {
     } on SocketException {
       emit(CreatepostInternetError());
     } catch (e) {
-      print(e);
       emit(CreatepostFailed());
     }
   }

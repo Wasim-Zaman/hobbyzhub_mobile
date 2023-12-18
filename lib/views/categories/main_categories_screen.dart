@@ -179,23 +179,11 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                 SizedBox(
                   height: 20.h,
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    PrimaryButtonWidget(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: 20.w, vertical: 20.h),
-                      onPressed: () {},
-                      caption: 'Next',
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Text('Skip for now',
-                        textAlign: TextAlign.center,
-                        style: AppTextStyle.subHeading)
-                  ],
+                PrimaryButtonWidget(
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                  onPressed: () {},
+                  caption: 'Next',
                 ),
                 SizedBox(
                   height: 20.h,

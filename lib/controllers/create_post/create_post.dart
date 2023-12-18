@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:hobbyzhub/constants/api_manager.dart';
 import 'package:hobbyzhub/constants/app_url.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -30,15 +31,12 @@ class PostController {
     }
 
     final token = await UserSecureStorage.fetchToken();
-    print(token);
 
     List mapofHashtags = [];
 
     for (var i = 0; i < hashtags.length; i++) {
       mapofHashtags.add({"tagName": hashtags[i]});
     }
-
-    print(mapofHashtags);
 
     // request.fields['userId'] = '60b90846a017';
 
@@ -61,5 +59,25 @@ class PostController {
     final response = await request.send();
 
     return response;
+  }
+
+  writeCommentFunction(postId, comment) async {
+    try {
+      final token = await UserSecureStorage.fetchToken();
+      final url = PostUrl.createComment + "?postId=${postId}";
+
+      final headers = <String, String>{
+        "Authorization": token.toString(),
+        "Content-Type": "application/json"
+      };
+
+      final body = {"message": comment};
+
+      final response =
+          await ApiManager.postRequest(body, url, headers: headers);
+      return response;
+    } catch (_) {
+      rethrow;
+    }
   }
 }

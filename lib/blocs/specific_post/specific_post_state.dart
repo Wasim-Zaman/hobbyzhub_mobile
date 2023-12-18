@@ -8,9 +8,9 @@ final class SpecificPostInitial extends SpecificPostState {}
 final class SpecificPostLoading extends SpecificPostState {}
 
 final class SpecificPostLoaded extends SpecificPostState {
-  // final List<PostModel> specificPostsList;
+  final List<SpecificPostModel> specificPostsList;
 
-  // SpecificPostLoaded({required this.specificPostsList});
+  SpecificPostLoaded({required this.specificPostsList});
 }
 
 final class SpecificPostFailed extends SpecificPostState {}

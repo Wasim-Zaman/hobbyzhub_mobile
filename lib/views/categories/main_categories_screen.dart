@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -120,53 +121,55 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                       crossAxisSpacing: 20,
                     ),
                     itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: EdgeInsets.all(5.w),
-                        child: GestureDetector(
-                          onTap: () {
-                            // add category into the selected category list
-                            setState(() {
-                              // if category is already there, remove it
-                              // otherwise add it to selected categories list
-                              if (selectedCategories
-                                  .contains(categories[index])) {
-                                selectedCategories.remove(categories[index]);
-                              } else {
-                                selectedCategories.add(categories[index]);
-                              }
-                            });
-                          },
-                          child: Container(
-                            width: 80.w,
-                            height: 97.h,
-                            decoration: ShapeDecoration(
-                              color:
-                                  selectedCategories.contains(categories[index])
-                                      ? AppColors.primary.withOpacity(0.5)
-                                      : AppColors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.r),
-                              ),
-                              shadows: [
-                                BoxShadow(
-                                  color: Color(0x26000000),
-                                  blurRadius: 7,
-                                  offset: Offset(0, 0),
-                                  spreadRadius: 0,
-                                )
-                              ],
+                      return GestureDetector(
+                        onTap: () {
+                          // add category into the selected category list
+                          setState(() {
+                            // if category is already there, remove it
+                            // otherwise add it to selected categories list
+                            if (selectedCategories
+                                .contains(categories[index])) {
+                              selectedCategories.remove(categories[index]);
+                            } else {
+                              selectedCategories.add(categories[index]);
+                            }
+                          });
+                        },
+                        child: Container(
+                          width: 80.w,
+                          height: 97.h,
+                          padding: EdgeInsets.all(5.w),
+                          decoration: ShapeDecoration(
+                            color:
+                                selectedCategories.contains(categories[index])
+                                    ? AppColors.primary.withOpacity(0.5)
+                                    : AppColors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.r),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.network(
-                                  categories[index].iconLink.toString(),
+                            shadows: [
+                              BoxShadow(
+                                color: Color(0x26000000),
+                                blurRadius: 7,
+                                offset: Offset(0, 0),
+                                spreadRadius: 0,
+                              )
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CachedNetworkImage(
+                                  imageUrl:
+                                      categories[index].iconLink.toString(),
                                   height: 40.h,
-                                ),
-                                Text(categories[index].categoryName.toString()),
-                              ],
-                            ),
+                                  placeholder: (context, url) =>
+                                      LoadingWidget(),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.image_outlined)),
+                              Text(categories[index].categoryName.toString()),
+                            ],
                           ),
                         ),
                       );

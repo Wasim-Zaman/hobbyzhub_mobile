@@ -45,3 +45,9 @@ abstract class PostUrl {
   static const specficPost = "$baseUrl/post-service/api/v1/posts/post/";
   static const deletepost = "$baseUrl/post-service/api/v1/posts/delete/";
 }
+
+abstract class CategoryUrl {
+  static const categoryService = "/category-service";
+  static const getAllCategories =
+      "${AppUrl.baseUrl}$categoryService/api/v1/categories/hobby/get-list?";
+}

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:hobbyzhub/models/api_response.dart';
 import 'package:http/http.dart';
 
 class ApiManager {
@@ -38,5 +39,14 @@ class ApiManager {
       Uri.parse(url),
       headers: headers,
     );
+  }
+
+  static Future<ApiResponse> returnModel(var response, {var model}) async {
+    final body = jsonDecode(response.body);
+    if (body['success'] == true) {
+      return ApiResponse.fromJson(body, (data) => model);
+    } else {
+      throw Exception(body['message']);
+    }
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hobbyzhub/constants/app_config.dart';
+import 'package:hobbyzhub/controllers/category/category_controller.dart';
 import 'package:hobbyzhub/models/api_response.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -14,6 +16,17 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
           var networkstatus = await isNetworkAvailable();
           if (networkstatus) {
             // user controller logic here
+            int page = AppConfig.pageOne;
+            int pageSize = AppConfig.categoriesPageSize;
+            final categories = await CategoryController.getAllCategories(
+              page,
+              pageSize,
+            );
+            if (categories.data.isEmpty) {
+              emit(CategoriesEmptyState());
+            } else {
+              emit(CategoriesLoadedState(categories: categories));
+            }
           } else {
             emit(CategoriesNoInternetState());
           }

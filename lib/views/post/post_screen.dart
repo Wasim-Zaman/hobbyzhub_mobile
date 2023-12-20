@@ -588,8 +588,28 @@ class _PostScreenState extends State<PostScreen> {
                             ),
                           );
                         });
+                  } else if (state is GetPostFailed) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 4,
+                        ),
+                        Center(child: Text('No Post to display')),
+                      ],
+                    );
                   } else {
-                    return Center(child: CircularProgressIndicator());
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 4,
+                        ),
+                        Center(child: CircularProgressIndicator()),
+                      ],
+                    );
                   }
                 },
               )

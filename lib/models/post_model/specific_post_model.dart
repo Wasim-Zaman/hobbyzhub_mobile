@@ -45,7 +45,7 @@ class Data {
   String caption;
   List<String> imageUrls;
   DateTime postTime;
-  List<dynamic> likes;
+  List<Like> likes;
   List<Comment> comments;
   bool status;
   String username;
@@ -70,7 +70,7 @@ class Data {
         caption: json["caption"],
         imageUrls: List<String>.from(json["imageUrls"].map((x) => x)),
         postTime: DateTime.parse(json["postTime"]),
-        likes: List<dynamic>.from(json["likes"].map((x) => x)),
+        likes: List<Like>.from(json["likes"].map((x) => Like.fromJson(x))),
         comments: List<Comment>.from(
             json["comments"].map((x) => Comment.fromJson(x))),
         status: json["status"],
@@ -84,7 +84,7 @@ class Data {
         "caption": caption,
         "imageUrls": List<dynamic>.from(imageUrls.map((x) => x)),
         "postTime": postTime.toIso8601String(),
-        "likes": List<dynamic>.from(likes.map((x) => x)),
+        "likes": List<dynamic>.from(likes.map((x) => x.toJson())),
         "comments": List<dynamic>.from(comments.map((x) => x.toJson())),
         "status": status,
         "username": username,
@@ -99,6 +99,7 @@ class Comment {
   dynamic like;
   String username;
   dynamic profileImage;
+  DateTime? commentTime;
 
   Comment({
     required this.commentId,
@@ -107,6 +108,7 @@ class Comment {
     required this.like,
     required this.username,
     required this.profileImage,
+    required this.commentTime,
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
@@ -116,6 +118,9 @@ class Comment {
         like: json["like"],
         username: json["username"],
         profileImage: json["profileImage"],
+        commentTime: json["commentTime"] == null
+            ? null
+            : DateTime.parse(json["commentTime"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -125,5 +130,38 @@ class Comment {
         "like": like,
         "username": username,
         "profileImage": profileImage,
+        "commentTime": commentTime?.toIso8601String(),
+      };
+}
+
+class Like {
+  String likeId;
+  String username;
+  int likeCount;
+  dynamic profileImage;
+  dynamic likeTime;
+
+  Like({
+    required this.likeId,
+    required this.username,
+    required this.likeCount,
+    required this.profileImage,
+    required this.likeTime,
+  });
+
+  factory Like.fromJson(Map<String, dynamic> json) => Like(
+        likeId: json["likeId"],
+        username: json["username"],
+        likeCount: json["likeCount"],
+        profileImage: json["profileImage"],
+        likeTime: json["likeTime"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "likeId": likeId,
+        "username": username,
+        "likeCount": likeCount,
+        "profileImage": profileImage,
+        "likeTime": likeTime,
       };
 }

@@ -489,6 +489,15 @@ class _CommentScreenState extends State<CommentScreen> {
                                                     .username,
                                                 style: AppTextStyle
                                                     .notificationTitleTextStyle),
+                                            Text(
+                                                formatDateTime(state
+                                                    .specificPostsList
+                                                    .first
+                                                    .data
+                                                    .comments[index]
+                                                    .commentTime!),
+                                                style: AppTextStyle
+                                                    .normalFontTextStyle),
                                             SizedBox(
                                               height: 5.h,
                                             ),

@@ -194,10 +194,12 @@ class _PostScreenState extends State<PostScreen> {
                                                 ],
                                               ),
                                             ),
-                                            Text('Your Story',
-                                                textAlign: TextAlign.center,
-                                                style: AppTextStyle
-                                                    .normalFontTextStyle),
+                                            Text(
+                                              'Your Story',
+                                              textAlign: TextAlign.center,
+                                              style: AppTextStyle
+                                                  .normalFontTextStyle,
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -498,23 +500,18 @@ class _PostScreenState extends State<PostScreen> {
                                           MainAxisAlignment.spaceAround,
                                       children: [
                                         Icon(CupertinoIcons.heart),
-                                        SizedBox(
-                                          width: 5.w,
-                                        ),
+                                        SizedBox(width: 5.w),
                                         Text(
-                                            '${state.postsList.first.data[index].likes.length}',
-                                            style: AppTextStyle
-                                                .normalFontTextStyle),
-                                        SizedBox(
-                                          width: 20.w,
+                                          '${state.postsList.first.data[index].likes.length}',
+                                          style:
+                                              AppTextStyle.normalFontTextStyle,
                                         ),
+                                        SizedBox(width: 20.w),
                                         Image.asset(
                                           ImageAssets.messageImage,
                                           height: 20.h,
                                         ),
-                                        SizedBox(
-                                          width: 5.w,
-                                        ),
+                                        SizedBox(width: 5.w),
                                         Text(
                                             '${state.postsList.first.data[index].comments.length}',
                                             style: AppTextStyle

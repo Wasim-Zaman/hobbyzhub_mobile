@@ -96,6 +96,27 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
         builder: (context, state) {
           if (state is CategoriesLoadingState) {
             return Center(child: LoadingWidget());
+          } else if (state is CategoriesErrorState) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(state.error),
+                  20.height,
+                  PrimaryButtonWidget(
+                    onPressed: getInitialCategories,
+                    caption: "Reload",
+                    height: 40,
+                    width: 200,
+                  ),
+                ],
+              ),
+            );
+          } else if (state is CategoriesEmptyState) {
+            return Center(
+              child: Text("No Categories Found"),
+            );
           }
           return Padding(
             padding: EdgeInsets.all(8.w),

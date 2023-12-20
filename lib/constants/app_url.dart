@@ -48,8 +48,8 @@ abstract class PostUrl {
       "$baseUrl/post-service/api/v1/comments/comment/create";
 }
 
-abstract class CategoryUrl {
+abstract class MainCategoryUrl {
   static const categoryService = "/category-service";
   static const getAllCategories =
-      "${AppUrl.baseUrl}$categoryService/api/v1/categories/hobby/get-list?";
+      "${AppUrl.baseUrl}$categoryService/api/v1/categories/hobby/get-list";
 }

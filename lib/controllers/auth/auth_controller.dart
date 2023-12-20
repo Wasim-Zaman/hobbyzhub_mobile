@@ -9,15 +9,6 @@ import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:http/http.dart';
 
 abstract class AuthController {
-  static Future<ApiResponse> _returnModel(var response, {var model}) async {
-    final body = jsonDecode(response.body);
-    if (body['success'] == true) {
-      return ApiResponse.fromJson(body, (data) => model);
-    } else {
-      throw Exception(body['message']);
-    }
-  }
-
   static Future<ApiResponse> register(String email, String password) async {
     const url = AuthUrl.register;
     try {
@@ -25,7 +16,7 @@ abstract class AuthController {
         'email': email,
         'password': password,
       }, url);
-      return _returnModel(response);
+      return ApiManager.returnModel(response);
     } catch (_) {
       rethrow;
     }
@@ -35,7 +26,7 @@ abstract class AuthController {
     const url = AuthUrl.sendSignupVerificationEmail;
     try {
       final response = await ApiManager.postRequest({'email': email}, url);
-      return _returnModel(response);
+      return ApiManager.returnModel(response);
     } catch (_) {
       rethrow;
     }
@@ -46,7 +37,7 @@ abstract class AuthController {
     final body = {"email": email, "temporaryOtp": otp};
     try {
       final response = await ApiManager.putRequest(body, url);
-      return _returnModel(response);
+      return ApiManager.returnModel(response);
     } catch (_) {
       rethrow;
     }
@@ -57,7 +48,7 @@ abstract class AuthController {
 
     try {
       final response = await ApiManager.putRequest({"email": email}, url);
-      return _returnModel(response);
+      return ApiManager.returnModel(response);
     } catch (_) {
       rethrow;
     }
@@ -122,9 +113,8 @@ abstract class AuthController {
     Map body = {'email': email, 'password': password};
     try {
       final response = await ApiManager.postRequest(body, url);
-      print(response.body);
       final json = jsonDecode(response.body);
-      return _returnModel(
+      return ApiManager.returnModel(
         response,
         model: json['data'] != null ? LoginModel.fromJson(json['data']) : null,
       );
@@ -147,7 +137,7 @@ abstract class AuthController {
       "Content-Type": "application/json"
     };
     final response = await ApiManager.postRequest(body, url, headers: headers);
-    return _returnModel(response);
+    return ApiManager.returnModel(response);
   }
 
   static Future<ApiResponse> changePassword(
@@ -158,6 +148,6 @@ abstract class AuthController {
     final body = {"email": email, "newPassword": password};
 
     final response = await ApiManager.putRequest(body, url);
-    return _returnModel(response);
+    return ApiManager.returnModel(response);
   }
 }

@@ -18,7 +18,7 @@ import 'package:timeago/timeago.dart' as timeago;
 class CommentScreen extends StatefulWidget {
   final String postId;
 
-  CommentScreen({required this.postId});
+  const CommentScreen({super.key, required this.postId});
 
   @override
   State<CommentScreen> createState() => _CommentScreenState();

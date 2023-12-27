@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/like_post/likes_cubit.dart';
 import 'package:hobbyzhub/blocs/specific_post/specific_post_cubit.dart';
 import 'package:hobbyzhub/blocs/write_comment/write_comment_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
@@ -13,6 +14,8 @@ import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/widgets/appbars/secondary_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class CommentScreen extends StatefulWidget {
@@ -33,9 +36,12 @@ class _CommentScreenState extends State<CommentScreen> {
     return timeago.format(now.subtract(difference), locale: 'en');
   }
 
+  String? userId;
+
   @override
   void initState() {
     initCubit();
+    fetchUserInformation();
     super.initState();
   }
 
@@ -43,19 +49,61 @@ class _CommentScreenState extends State<CommentScreen> {
     context.read<SpecificPostCubit>().specificPostInformation(widget.postId);
   }
 
+  fetchUserInformation() async {
+    userId = 'Wasim';
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<WriteCommentCubit, WriteCommentState>(
-      listener: (context, state) {
-        if (state is WriteCommentSuccessfully) {
-          initCubit();
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<WriteCommentCubit, WriteCommentState>(
+          listener: (context, state) {
+            if (state is WriteCommentSuccessfully) {
+              initCubit();
+            }
+          },
+        ),
+        BlocListener<LikesCubit, LikesState>(
+          listener: (context, state) {
+            if (state is LikeSuccessfully) {
+              initCubit();
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         backgroundColor: AppColors.white,
-        appBar: SecondaryAppBarWidget(
-          title: 'Comments',
-          isBackButton: true,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text('Comments', style: AppTextStyle.headings),
+          leading: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: GestureDetector(
+              onTap: () {
+                context.pop();
+                initCubit();
+              },
+              child: Container(
+                decoration: ShapeDecoration(
+                  color: AppColors.white,
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(
+                        width: 1.5, color: AppColors.borderGrey),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                ),
+                child: Center(
+                  child: Icon(
+                    Ionicons.arrow_back,
+                    size: 20.sp,
+                    color: AppColors.darkGrey,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -303,7 +351,33 @@ class _CommentScreenState extends State<CommentScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  Icon(CupertinoIcons.heart),
+                                  GestureDetector(
+                                    onTap: () {
+                                      state.specificPostsList.first.data.likes
+                                              .any((element) =>
+                                                  element.username == 'Wasim')
+                                          ? null
+                                          : context
+                                              .read<LikesCubit>()
+                                              .createLike(state
+                                                  .specificPostsList
+                                                  .first
+                                                  .data
+                                                  .postId);
+                                    },
+                                    child: state
+                                            .specificPostsList.first.data.likes
+                                            .any((element) =>
+                                                element.username == 'Wasim')
+                                        ? Icon(
+                                            CupertinoIcons.heart_fill,
+                                            color: Colors.red,
+                                          )
+                                        : Icon(
+                                            CupertinoIcons.heart,
+                                            color: Colors.black,
+                                          ),
+                                  ),
                                   SizedBox(
                                     width: 5.w,
                                   ),
@@ -340,17 +414,18 @@ class _CommentScreenState extends State<CommentScreen> {
                                           text: 'Liked by ',
                                           style: AppTextStyle.likeByTextStyle),
                                       TextSpan(
-                                          text: 'HarryStyles',
+                                          text:
+                                              '${state.specificPostsList.first.data.likes.first.username}',
                                           style: AppTextStyle.likeByTextStyle),
-                                      TextSpan(
-                                          text: ' and ',
-                                          style: AppTextStyle.likeByTextStyle),
-                                      TextSpan(
-                                          text: '100+',
-                                          style: AppTextStyle.likeByTextStyle),
-                                      TextSpan(
-                                          text: ' others',
-                                          style: AppTextStyle.likeByTextStyle),
+                                      state.specificPostsList.first.data.likes
+                                                  .length >
+                                              1
+                                          ? TextSpan(
+                                              text:
+                                                  ' and ${state.specificPostsList.first.data.likes.length} others',
+                                              style:
+                                                  AppTextStyle.likeByTextStyle)
+                                          : TextSpan(),
                                     ],
                                   ),
                                 ),

@@ -33,6 +33,14 @@ class ApiManager {
         headers: headers ?? {'Content-Type': 'application/json'});
   }
 
+// Static method for making a POST request without body.
+  static Future<Response> postRequestWithoutBody(var url,
+      {dynamic headers}) async {
+    // Perform a POST request with the specified body and return the response.
+    return await post(Uri.parse(url),
+        headers: headers ?? {'Content-Type': 'application/json'});
+  }
+
   static Future<Response> deleteRequest(var url, {dynamic headers}) async {
     // Perform a GET request and return the response.
     return await delete(

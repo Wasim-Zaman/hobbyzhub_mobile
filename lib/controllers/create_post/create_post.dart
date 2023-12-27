@@ -80,4 +80,22 @@ class PostController {
       rethrow;
     }
   }
+
+  createLikeFunction(postId) async {
+    try {
+      final token = await UserSecureStorage.fetchToken();
+      final url = "${PostUrl.createLike}?postId=$postId";
+
+      final headers = <String, String>{
+        "Authorization": token.toString(),
+        "Content-Type": "application/json"
+      };
+
+      final response =
+          await ApiManager.postRequestWithoutBody(url, headers: headers);
+      return response;
+    } catch (_) {
+      rethrow;
+    }
+  }
 }

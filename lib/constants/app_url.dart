@@ -46,6 +46,7 @@ abstract class PostUrl {
   static const deletepost = "$baseUrl/post-service/api/v1/posts/delete/";
   static const createComment =
       "$baseUrl/post-service/api/v1/comments/comment/create";
+  static const createLike = "$baseUrl/post-service/api/likes/create";
 }
 
 abstract class MainCategoryUrl {

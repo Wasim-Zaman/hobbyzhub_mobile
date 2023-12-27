@@ -99,7 +99,7 @@ class Comment {
   dynamic like;
   String username;
   dynamic profileImage;
-  DateTime? commentTime;
+  DateTime commentTime;
 
   Comment({
     required this.commentId,
@@ -118,9 +118,7 @@ class Comment {
         like: json["like"],
         username: json["username"],
         profileImage: json["profileImage"],
-        commentTime: json["commentTime"] == null
-            ? null
-            : DateTime.parse(json["commentTime"]),
+        commentTime: DateTime.parse(json["commentTime"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -130,7 +128,7 @@ class Comment {
         "like": like,
         "username": username,
         "profileImage": profileImage,
-        "commentTime": commentTime?.toIso8601String(),
+        "commentTime": commentTime.toIso8601String(),
       };
 }
 

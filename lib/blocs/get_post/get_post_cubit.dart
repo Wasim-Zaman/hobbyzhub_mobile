@@ -14,15 +14,19 @@ class GetPostCubit extends Cubit<GetPostState> {
 
   GetPostController getPostController = GetPostController();
 
+  List<PostModel> postModelList = [];
+
   getPostList() async {
-    emit(GetPostLoading());
+    emit(GetPostLoading(postsList: postModelList));
     try {
       var response = await getPostController.getPosts();
 
       if (response.statusCode == 200) {
         var postList = PostModel.fromJson(jsonDecode(response.body));
+        postModelList = [postList];
         emit(GetPostLoaded(postsList: [postList]));
       } else {
+        postModelList = [];
         emit(GetPostFailed());
       }
     } on SocketException {

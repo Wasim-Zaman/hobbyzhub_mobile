@@ -11,6 +11,7 @@ import 'package:hobbyzhub/blocs/write_comment/write_comment_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/widgets/appbars/secondary_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
@@ -50,7 +51,7 @@ class _CommentScreenState extends State<CommentScreen> {
   }
 
   fetchUserInformation() async {
-    userId = 'Wasim';
+    userId = await UserSecureStorage.fetchUserId();
     setState(() {});
   }
 
@@ -355,7 +356,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                     onTap: () {
                                       state.specificPostsList.first.data.likes
                                               .any((element) =>
-                                                  element.username == 'Wasim')
+                                                  element.userId == userId)
                                           ? null
                                           : context
                                               .read<LikesCubit>()
@@ -368,7 +369,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                     child: state
                                             .specificPostsList.first.data.likes
                                             .any((element) =>
-                                                element.username == 'Wasim')
+                                                element.userId == userId)
                                         ? Icon(
                                             CupertinoIcons.heart_fill,
                                             color: Colors.red,

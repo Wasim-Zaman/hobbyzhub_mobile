@@ -138,6 +138,7 @@ class Like {
   int likeCount;
   dynamic profileImage;
   dynamic likeTime;
+  dynamic userId;
 
   Like({
     required this.likeId,
@@ -145,6 +146,7 @@ class Like {
     required this.likeCount,
     required this.profileImage,
     required this.likeTime,
+    required this.userId,
   });
 
   factory Like.fromJson(Map<String, dynamic> json) => Like(
@@ -153,6 +155,7 @@ class Like {
         likeCount: json["likeCount"],
         profileImage: json["profileImage"],
         likeTime: json["likeTime"],
+        userId: json["userId"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -161,5 +164,6 @@ class Like {
         "likeCount": likeCount,
         "profileImage": profileImage,
         "likeTime": likeTime,
+        "userId": userId,
       };
 }

@@ -41,7 +41,7 @@ class _PostScreenState extends State<PostScreen> {
   }
 
   fetchUserInformation() async {
-    userId = 'Wasim';
+    userId = await UserSecureStorage.fetchUserId();
     setState(() {});
   }
 
@@ -555,8 +555,8 @@ class _PostScreenState extends State<PostScreen> {
                                                 state.postsList.first
                                                         .data[index].likes
                                                         .any((element) =>
-                                                            element.username ==
-                                                            'Wasim')
+                                                            element.userId ==
+                                                            userId)
                                                     ? null
                                                     : context
                                                         .read<LikesCubit>()
@@ -569,8 +569,8 @@ class _PostScreenState extends State<PostScreen> {
                                               child: state.postsList.first
                                                       .data[index].likes
                                                       .any((element) =>
-                                                          element.username ==
-                                                          'Wasim')
+                                                          element.userId ==
+                                                          userId)
                                                   ? Icon(
                                                       CupertinoIcons.heart_fill,
                                                       color: Colors.red,
@@ -1026,8 +1026,8 @@ class _PostScreenState extends State<PostScreen> {
                                                 state.postsList.first
                                                         .data[index].likes
                                                         .any((element) =>
-                                                            element.username ==
-                                                            'Wasim')
+                                                            element.userId ==
+                                                            userId)
                                                     ? null
                                                     : context
                                                         .read<LikesCubit>()
@@ -1040,8 +1040,8 @@ class _PostScreenState extends State<PostScreen> {
                                               child: state.postsList.first
                                                       .data[index].likes
                                                       .any((element) =>
-                                                          element.username ==
-                                                          'Wasim')
+                                                          element.userId ==
+                                                          userId)
                                                   ? Icon(
                                                       CupertinoIcons.heart_fill,
                                                       color: Colors.red,

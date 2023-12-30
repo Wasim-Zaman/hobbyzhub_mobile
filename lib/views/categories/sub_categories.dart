@@ -8,7 +8,9 @@ import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class SubCategoryScreen extends StatefulWidget {
-  const SubCategoryScreen({Key? key}) : super(key: key);
+  final List selectedCategories;
+  const SubCategoryScreen({Key? key, required this.selectedCategories})
+      : super(key: key);
 
   @override
   _SubCategoryScreenState createState() => _SubCategoryScreenState();

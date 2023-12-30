@@ -650,7 +650,7 @@ class _PostScreenState extends State<PostScreen> {
                                                           .postsList
                                                           .first
                                                           .data[index]
-                                                          .postId!,
+                                                          .postId,
                                                     )));
                                       },
                                       child: Row(

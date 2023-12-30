@@ -8,6 +8,8 @@ import 'package:hobbyzhub/blocs/categories/categories_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/category/category_model.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/views/categories/sub_categories.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -203,7 +205,14 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                 PrimaryButtonWidget(
                   margin:
                       EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-                  onPressed: () {},
+                  onPressed: () {
+                    AppNavigator.goToPage(
+                      context: context,
+                      screen: SubCategoryScreen(
+                        selectedCategories: selectedCategories,
+                      ),
+                    );
+                  },
                   caption: 'Next',
                 ),
                 SizedBox(

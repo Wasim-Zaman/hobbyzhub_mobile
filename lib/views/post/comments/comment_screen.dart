@@ -12,7 +12,6 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
-import 'package:hobbyzhub/views/widgets/appbars/secondary_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:ionicons/ionicons.dart';
@@ -415,8 +414,8 @@ class _CommentScreenState extends State<CommentScreen> {
                                           text: 'Liked by ',
                                           style: AppTextStyle.likeByTextStyle),
                                       TextSpan(
-                                          text:
-                                              '${state.specificPostsList.first.data.likes.first.username}',
+                                          text: state.specificPostsList.first
+                                              .data.likes.first.username,
                                           style: AppTextStyle.likeByTextStyle),
                                       state.specificPostsList.first.data.likes
                                                   .length >
@@ -571,7 +570,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                                     .first
                                                     .data
                                                     .comments[index]
-                                                    .commentTime!),
+                                                    .commentTime),
                                                 style: AppTextStyle
                                                     .normalFontTextStyle),
                                             SizedBox(

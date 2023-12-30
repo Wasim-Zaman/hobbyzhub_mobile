@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -32,7 +31,6 @@ class GetPostCubit extends Cubit<GetPostState> {
     } on SocketException {
       emit(GetPostInternetError());
     } catch (e) {
-      print(e);
       emit(GetPostFailed());
     }
   }

@@ -11,13 +11,16 @@ class CategoryController {
     final token = await UserSecureStorage.fetchToken();
     const url = MainCategoryUrl.getAllCategories;
     final body = {"page": page, "size": pageSize};
-    final headers = {"Authorization", "Bearer $token"};
+    final headers = <String, String>{
+      "Authorization":
+          "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtdW5pckBnbWFpbC5jb20iLCJleHAiOjE3MDUzODA5OTIsImlhdCI6MTcwMjk2MTc5Mn0.ocdMEMo37yATycVlTXdWh9pzTiilcB_32mZJw6T9RDNJ9NS7rCAb-Tor6mXJmileGj0RDYsEBH7ZXZc1-Cws7A",
+      "Content-Type": "application/json",
+    };
     try {
       final response =
-          await ApiManager.postRequest(url, body, headers: headers);
+          await ApiManager.postRequest(body, url, headers: headers);
       var responseBody = jsonDecode(response.body);
-      print(responseBody.toString());
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (responseBody['success'] && responseBody['status'] == 200) {
         List<CategoryModel> categories = [];
         responseBody['data'].forEach((category) {
           categories.add(CategoryModel.fromJson(category));

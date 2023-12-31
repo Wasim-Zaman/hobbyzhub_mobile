@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, library_private_types_in_public_api
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,6 +10,7 @@ import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/category/category_model.dart';
 import 'package:hobbyzhub/models/category/sub_category_model.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 // global variables
@@ -153,9 +155,16 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                         children: [
                           Row(
                             children: [
-                              Image.network(
-                                _subCategories[index]["iconLink"],
+                              CachedNetworkImage(
+                                imageUrl: _subCategories[index]["iconLink"],
                                 height: 45.w,
+                                width: 45.w,
+                                placeholder: (context, url) => LoadingWidget(),
+                                errorWidget: (context, url, error) => Icon(
+                                  Icons.image_outlined,
+                                  size: 40.sp,
+                                  color: AppColors.black,
+                                ),
                               ),
                               20.width,
                               Text(

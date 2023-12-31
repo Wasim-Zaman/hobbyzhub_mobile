@@ -18,7 +18,7 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
             // user controller logic here
             int page = AppConfig.pageOne;
             int pageSize = AppConfig.categoriesPageSize;
-            final categories = await CategoryController.getAllCategories(
+            final categories = await CategoryController.getMainCategories(
               page,
               pageSize,
             );

@@ -1,13 +1,13 @@
-class CategoryModel {
+class SubCategoryModel {
   String? categoryId;
   String? categoryName;
   String? lastEdited;
   String? iconLink;
 
-  CategoryModel(
+  SubCategoryModel(
       {this.categoryId, this.categoryName, this.lastEdited, this.iconLink});
 
-  CategoryModel.fromJson(Map<String, dynamic> json) {
+  SubCategoryModel.fromJson(Map<String, dynamic> json) {
     categoryId = json['categoryId'];
     categoryName = json['categoryName'];
     lastEdited = json['lastEdited'];
@@ -23,4 +23,3 @@ class CategoryModel {
     return data;
   }
 }
-

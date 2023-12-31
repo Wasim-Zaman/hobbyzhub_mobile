@@ -98,7 +98,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                 },
                 child: Container(
                   decoration: ShapeDecoration(
-                    color: Colors.white,
+                    color: AppColors.white,
                     shape: RoundedRectangleBorder(
                       side: BorderSide(width: 1.w, color: Color(0x33A0A2B3)),
                       borderRadius: BorderRadius.circular(10),
@@ -107,10 +107,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                   width: 30.w,
                   height: 30.h,
                   child: Center(
-                    child: Icon(
-                      Icons.navigate_before,
-                      size: 30.sp,
-                    ),
+                    child: Icon(Icons.navigate_before, size: 30.sp),
                   ),
                 ),
               ),
@@ -121,10 +118,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
             actions: [
               Padding(
                 padding: EdgeInsets.all(8.w),
-                child: Icon(
-                  Icons.search,
-                  size: 30.sp,
-                ),
+                child: Icon(Icons.search, size: 30.sp),
               ),
             ],
           ),

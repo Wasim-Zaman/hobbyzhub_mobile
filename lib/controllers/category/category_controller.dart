@@ -62,4 +62,33 @@ class CategoryController {
       rethrow;
     }
   }
+
+  // subscribe user to a sub category
+  static Future<ApiResponse> subscribeUserToSubCategory(
+      String subCategoryId) async {
+    final userId = await UserSecureStorage.fetchUserId();
+    const url = MainCategoryUrl.subscribeUserToSubCategory;
+    final body = {
+      "userId": userId,
+      "userName": "",
+      "subCategoryId": subCategoryId,
+      "profilePicLink": null,
+    };
+
+    try {
+      final response = await ApiManager.postRequest(body, url);
+      var responseBody = jsonDecode(response.body);
+      if (responseBody['success'] && responseBody['status'] == 200) {
+        List<SubCategoryModel> subCategories = [];
+        responseBody['data'].forEach((sc) {
+          subCategories.add(SubCategoryModel.fromJson(sc));
+        });
+        return ApiResponse.fromJson(responseBody, (data) => subCategories);
+      } else {
+        throw Exception(responseBody['message']);
+      }
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

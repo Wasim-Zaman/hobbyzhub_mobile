@@ -16,7 +16,25 @@ class SubCategoriesBloc extends Bloc<SubCategoriesEvent, SubCategoriesState> {
             // user controller logic here
             final response =
                 await CategoryController.getSubCategories(event.categoryId);
-            emit(SubCategoriesLoadedState(subCategories: response, index: event.index,));
+            emit(SubCategoriesLoadedState(
+              subCategories: response,
+              categoryName: event.categoryName,
+              index: event.index,
+            ));
+          } else {
+            emit(SubCategoriesNoInternetState());
+          }
+        } catch (error) {
+          emit(SubCategoriesErrorState(error: error.toString()));
+        }
+      } else if (event is SubCategoriesSubscribeEvent) {
+        emit(SubCategoriesLoadingState());
+        try {
+          var networkstatus = await isNetworkAvailable();
+          if (networkstatus) {
+            // user controller logic here
+
+            emit(SubCategoriesSubscribedState());
           } else {
             emit(SubCategoriesNoInternetState());
           }

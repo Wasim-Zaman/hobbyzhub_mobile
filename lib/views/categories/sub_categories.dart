@@ -26,15 +26,19 @@ class SubCategoryScreen extends StatefulWidget {
 class _SubCategoryScreenState extends State<SubCategoryScreen> {
   // Lists
   late List<List<SubCategoryModel>> subCategories;
+  late List<Map<String, dynamic>> _subCategories;
 
   // Blocs
   late SubCategoriesBloc subCategoriesBloc;
 
   @override
   void initState() {
-    subCategories = List.generate(
+    _subCategories = List.generate(
       widget.selectedCategories.length,
-      (index) => [],
+      (index) => {
+        widget.selectedCategories[index].categoryName!: [],
+        "iconLink": widget.selectedCategories[index].iconLink!,
+      },
     );
     initBlocs();
     super.initState();
@@ -47,7 +51,18 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
       subCategoriesBloc = subCategoriesBloc
         ..add(SubCategoriesFetchInitialEvent(
           categoryId: widget.selectedCategories[i].categoryId!,
+          categoryName: widget.selectedCategories[i].categoryName!,
           index: i,
+        ));
+    }
+  }
+
+  subscribeUser() {
+    // subscribe user to the selected sub categories
+    for (int i = 0; i < selectedSubCategories.length; i++) {
+      subCategoriesBloc = subCategoriesBloc
+        ..add(SubCategoriesSubscribeEvent(
+          subCategoryId: selectedSubCategories[i].categoryId!,
         ));
     }
   }
@@ -65,10 +80,8 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
       listener: (context, state) {
         if (state is SubCategoriesLoadedState) {
           // store the sub categories index wise
-          if (state.subCategories.data.isEmpty) {
-            subCategories.insert(state.index, []);
-          }
-          subCategories.insert(state.index, state.subCategories.data);
+          _subCategories[state.index][state.categoryName] =
+              state.subCategories.data;
         }
       },
       builder: (context, state) {
@@ -116,38 +129,37 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              15.height,
               Expanded(
                   child: ListView.builder(
-                itemCount: widget.selectedCategories.length,
+                itemCount: _subCategories.length,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.all(20.w),
+                    padding: EdgeInsets.all(10.0),
                     child: Container(
                       decoration: ShapeDecoration(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.r)),
-                        shadows: [
-                          BoxShadow(
-                            color: Color(0x26000000),
-                            blurRadius: 15,
-                            offset: Offset(0, 4),
-                            spreadRadius: 0,
-                          )
-                        ],
+                        // shadows: [
+                        //   BoxShadow(
+                        //     color: Color(0x26000000),
+                        //     blurRadius: 15,
+                        //     offset: Offset(0, 4),
+                        //     spreadRadius: 0,
+                        //   )
+                        // ],
                       ),
                       child: Column(
                         children: [
                           Row(
                             children: [
                               Image.network(
-                                "https://vectips.com/wp-content/uploads/2017/03/project-preview-large-2.png",
+                                _subCategories[index]["iconLink"],
                                 height: 45.w,
                               ),
                               20.width,
                               Text(
-                                widget.selectedCategories[index].categoryName!,
+                                _subCategories[index].keys.first,
                                 style: AppTextStyle.subHeading,
                               )
                             ],
@@ -155,9 +167,12 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                           10.height,
                           Wrap(
                             alignment: WrapAlignment.start,
-                            children: subCategories[index]
-                                .map((e) => SubCategoryWidget(model: e))
-                                .toList(),
+                            children: List.generate(
+                              _subCategories[index].values.first.length,
+                              (i) => SubCategoryWidget(
+                                model: _subCategories[index].values.first[i],
+                              ),
+                            ),
                           )
                         ],
                       ).paddingAll(16.w),
@@ -173,7 +188,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                   PrimaryButtonWidget(
                     margin:
                         EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-                    onPressed: () {},
+                    onPressed: subscribeUser,
                     caption: 'Finish Registration',
                   ),
                   // SizedBox(
@@ -213,16 +228,19 @@ class _SubCategoryWidgetState extends State<SubCategoryWidget> {
           } else {
             selectedSubCategories.remove(widget.model);
           }
-          print(selectedSubCategories.length);
         });
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 5.h),
         clipBehavior: Clip.antiAlias,
         decoration: ShapeDecoration(
-          color: isSelected ? AppColors.primary : AppColors.borderGrey,
+          color: isSelected ? AppColors.primary : AppColors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.r),
+            side: BorderSide(
+              color: isSelected ? AppColors.primary : AppColors.iconGrey,
+              width: 1.w,
+            ),
           ),
         ),
         margin: EdgeInsets.all(6),
@@ -230,7 +248,7 @@ class _SubCategoryWidgetState extends State<SubCategoryWidget> {
           widget.model.categoryName!,
           textAlign: TextAlign.center,
           style: AppTextStyle.subcategorySelectedTextStyle.copyWith(
-            color: isSelected ? AppColors.white : AppColors.black,
+            color: isSelected ? AppColors.white : AppColors.iconGrey,
           ),
         ),
       ),

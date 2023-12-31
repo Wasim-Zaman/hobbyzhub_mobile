@@ -50,11 +50,11 @@ abstract class PostUrl {
 }
 
 abstract class MainCategoryUrl {
-  static const categoryService = "/category-service";
-  static const baseUrl = AppUrl.baseUrl;
+  static const baseUrl = "${AppUrl.baseUrl}/category-service";
 
-  static const getMainCategories =
-      "$baseUrl$categoryService/api/v1/categories/hobby/get-list";
+  static const getMainCategories = "$baseUrl/api/v1/categories/hobby/get-list";
   static const getSubCategories =
-      "$baseUrl$categoryService/api/v1/categories/sub-hobby/get-list";
+      "$baseUrl/api/v1/categories/sub-hobby/get-list";
+  static const subscribeUserToSubCategory =
+      "$baseUrl/api/v1/categories/subscription/subscribe";
 }

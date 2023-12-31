@@ -165,7 +165,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                           decoration: ShapeDecoration(
                             color:
                                 selectedCategories.contains(categories[index])
-                                    ? AppColors.primary.withOpacity(0.5)
+                                    ? AppColors.primary.withOpacity(0.3)
                                     : AppColors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.r),
@@ -184,14 +184,22 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CachedNetworkImage(
-                                  imageUrl:
-                                      categories[index].iconLink.toString(),
-                                  height: 40.h,
-                                  placeholder: (context, url) =>
-                                      LoadingWidget(),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.image_outlined)),
-                              Text(categories[index].categoryName.toString()),
+                                imageUrl: categories[index].iconLink.toString(),
+                                height: 40.h,
+                                placeholder: (context, url) => LoadingWidget(),
+                                errorWidget: (context, url, error) => Icon(
+                                  Icons.image_outlined,
+                                  size: 40.sp,
+                                  color: selectedCategories
+                                          .contains(categories[index])
+                                      ? AppColors.white
+                                      : AppColors.black,
+                                ),
+                              ),
+                              10.height,
+                              Text(
+                                categories[index].categoryName.toString(),
+                              ),
                             ],
                           ),
                         ),
@@ -199,9 +207,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                     },
                   ),
                 ),
-                SizedBox(
-                  height: 20.h,
-                ),
+                20.height,
                 PrimaryButtonWidget(
                   margin:
                       EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
@@ -215,9 +221,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                   },
                   caption: 'Next',
                 ),
-                SizedBox(
-                  height: 20.h,
-                ),
+                20.height,
               ],
             ).paddingAll(9.w),
           );

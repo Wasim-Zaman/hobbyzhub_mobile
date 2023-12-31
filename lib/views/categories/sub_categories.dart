@@ -238,7 +238,7 @@ class _SubCategoryWidgetState extends State<SubCategoryWidget> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.r),
             side: BorderSide(
-              color: isSelected ? AppColors.primary : AppColors.iconGrey,
+              color: isSelected ? AppColors.primary : AppColors.darkGrey,
               width: 1.w,
             ),
           ),
@@ -248,7 +248,7 @@ class _SubCategoryWidgetState extends State<SubCategoryWidget> {
           widget.model.categoryName!,
           textAlign: TextAlign.center,
           style: AppTextStyle.subcategorySelectedTextStyle.copyWith(
-            color: isSelected ? AppColors.white : AppColors.iconGrey,
+            color: isSelected ? AppColors.white : AppColors.darkGrey,
           ),
         ),
       ),

@@ -29,7 +29,6 @@ class SubCategoriesBloc extends Bloc<SubCategoriesEvent, SubCategoriesState> {
           emit(SubCategoriesErrorState(error: error.toString()));
         }
       } else if (event is SubCategoriesSubscribeEvent) {
-        emit(SubCategoriesLoadingState());
         try {
           var networkstatus = await isNetworkAvailable();
           if (networkstatus) {
@@ -39,13 +38,14 @@ class SubCategoriesBloc extends Bloc<SubCategoriesEvent, SubCategoriesState> {
               event.subCategoryId,
               event.finishAccountModel,
             );
-
             emit(SubCategoriesSubscribedState(response: response));
           } else {
             emit(SubCategoriesNoInternetState());
           }
         } catch (error) {
-          emit(SubCategoriesErrorState(error: error.toString()));
+          emit(
+            SubCategoriesUnsubscribedState(subCategoryId: event.subCategoryId),
+          );
         }
       }
     });

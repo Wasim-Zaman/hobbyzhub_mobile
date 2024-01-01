@@ -17,10 +17,8 @@ class SubCategoriesFetchInitialEvent extends SubCategoriesEvent {
 class SubCategoriesSubscribeEvent extends SubCategoriesEvent {
   final String subCategoryId;
   final FinishAccountModel finishAccountModel;
-  SubCategoriesSubscribeEvent({
-    required this.subCategoryId,
-    required this.finishAccountModel,
-  });
+  SubCategoriesSubscribeEvent(
+      {required this.subCategoryId, required this.finishAccountModel});
 }
 
 abstract class SubCategoriesState {}
@@ -50,4 +48,9 @@ class SubCategoriesNoInternetState extends SubCategoriesState {}
 class SubCategoriesSubscribedState extends SubCategoriesState {
   final ApiResponse response;
   SubCategoriesSubscribedState({required this.response});
+}
+
+class SubCategoriesUnsubscribedState extends SubCategoriesState {
+  final String subCategoryId;
+  SubCategoriesUnsubscribedState({required this.subCategoryId});
 }

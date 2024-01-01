@@ -42,6 +42,12 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
 
   @override
   void initState() {
+    initList();
+    initBlocs();
+    super.initState();
+  }
+
+  initList() {
     _subCategories = List.generate(
       widget.selectedCategories.length,
       (index) => {
@@ -49,8 +55,6 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
         "iconLink": widget.selectedCategories[index].iconLink!,
       },
     );
-    initBlocs();
-    super.initState();
   }
 
   initBlocs() {
@@ -66,21 +70,26 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
     }
   }
 
-  Future subscribeUser() async {
+  subscribeUser() {
     // subscribe user to the selected sub categories
     for (int i = 0; i < selectedSubCategories.length; i++) {
-      subCategoriesBloc = subCategoriesBloc
-        ..add(SubCategoriesSubscribeEvent(
-          subCategoryId: selectedSubCategories[i].categoryId!,
-          finishAccountModel: widget.model,
-        ));
+      subCategoriesBloc.add(SubCategoriesSubscribeEvent(
+        subCategoryId: selectedSubCategories[i].categoryId!,
+        finishAccountModel: widget.model,
+      ));
     }
+  }
+
+  reSubscribe(String subCategoryId) {
+    subCategoriesBloc.add(SubCategoriesSubscribeEvent(
+      subCategoryId: subCategoryId,
+      finishAccountModel: widget.model,
+    ));
   }
 
   @override
   void dispose() {
     subCategoriesBloc.close();
-
     selectedSubCategories.clear();
     super.dispose();
   }
@@ -88,6 +97,12 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SubCategoriesBloc, SubCategoriesState>(
+      buildWhen: (previous, current) {
+        if (current is SubCategoriesLoadedState) {
+          return true;
+        }
+        return false;
+      },
       bloc: subCategoriesBloc,
       listener: (context, state) {
         if (state is SubCategoriesLoadedState) {
@@ -99,6 +114,9 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
             context: context,
             screen: MainTabScreen(index: 0),
           );
+        } else if (state is SubCategoriesUnsubscribedState) {
+          // retry and try again to subscribe that subscription
+          reSubscribe(state.subCategoryId);
         }
       },
       builder: (context, state) {

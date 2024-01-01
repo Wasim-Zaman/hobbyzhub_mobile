@@ -88,11 +88,7 @@ class CategoryController {
       print(response.body);
       var responseBody = jsonDecode(response.body);
       if (responseBody['success'] && responseBody['status'] == 200) {
-        List<SubCategoryModel> subCategories = [];
-        responseBody['data'].forEach((sc) {
-          subCategories.add(SubCategoryModel.fromJson(sc));
-        });
-        return ApiResponse.fromJson(responseBody, (data) => subCategories);
+        return ApiResponse.fromJson(responseBody, (data) => null);
       } else {
         throw Exception(responseBody['message']);
       }

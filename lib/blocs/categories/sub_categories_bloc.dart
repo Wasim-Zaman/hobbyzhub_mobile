@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/controllers/category/category_controller.dart';
 import 'package:hobbyzhub/models/api_response.dart';
+import 'package:hobbyzhub/models/auth/finish_account_model.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 part 'sub_categories_events_states.dart';
@@ -33,8 +34,13 @@ class SubCategoriesBloc extends Bloc<SubCategoriesEvent, SubCategoriesState> {
           var networkstatus = await isNetworkAvailable();
           if (networkstatus) {
             // user controller logic here
+            final response =
+                await CategoryController.subscribeUserToSubCategory(
+              event.subCategoryId,
+              event.finishAccountModel,
+            );
 
-            emit(SubCategoriesSubscribedState());
+            emit(SubCategoriesSubscribedState(response: response));
           } else {
             emit(SubCategoriesNoInternetState());
           }

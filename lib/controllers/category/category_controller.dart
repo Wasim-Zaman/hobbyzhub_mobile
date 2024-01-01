@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:hobbyzhub/constants/api_manager.dart';
 import 'package:hobbyzhub/constants/app_url.dart';
 import 'package:hobbyzhub/models/api_response.dart';
+import 'package:hobbyzhub/models/auth/finish_account_model.dart';
 import 'package:hobbyzhub/models/category/category_model.dart';
 import 'package:hobbyzhub/models/category/sub_category_model.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
@@ -65,18 +66,26 @@ class CategoryController {
 
   // subscribe user to a sub category
   static Future<ApiResponse> subscribeUserToSubCategory(
-      String subCategoryId) async {
-    final userId = await UserSecureStorage.fetchUserId();
+    String subCategoryId,
+    FinishAccountModel finishAccountModel,
+  ) async {
     const url = MainCategoryUrl.subscribeUserToSubCategory;
     final body = {
-      "userId": userId,
-      "userName": "",
+      "userId": finishAccountModel.userId,
+      "userName": finishAccountModel.fullName,
       "subCategoryId": subCategoryId,
-      "profilePicLink": null,
+      "profilePicLink": finishAccountModel.profileImage,
+    };
+    final headers = <String, String>{
+      "Authorization":
+          "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtdW5pckBnbWFpbC5jb20iLCJleHAiOjE3MDUzODA5OTIsImlhdCI6MTcwMjk2MTc5Mn0.ocdMEMo37yATycVlTXdWh9pzTiilcB_32mZJw6T9RDNJ9NS7rCAb-Tor6mXJmileGj0RDYsEBH7ZXZc1-Cws7A",
+      "Content-Type": "application/json",
     };
 
     try {
-      final response = await ApiManager.postRequest(body, url);
+      final response =
+          await ApiManager.postRequest(body, url, headers: headers);
+      print(response.body);
       var responseBody = jsonDecode(response.body);
       if (responseBody['success'] && responseBody['status'] == 200) {
         List<SubCategoryModel> subCategories = [];

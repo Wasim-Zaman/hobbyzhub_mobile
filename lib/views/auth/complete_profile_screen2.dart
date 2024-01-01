@@ -12,11 +12,12 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/global/variables/global_variables.dart';
 import 'package:hobbyzhub/models/auth/complete_profile_model.dart';
+import 'package:hobbyzhub/models/auth/finish_account_model.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
-import 'package:hobbyzhub/views/bottom_nav_bar/main_tabs_screen.dart';
+import 'package:hobbyzhub/views/categories/main_categories_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/dropdowns/dropdown_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/dob_widget.dart';
@@ -117,10 +118,11 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
               if (state is AuthLoadingState) {
                 AppDialogs.loadingDialog(context);
               } else if (state is AuthCompleteProfileState) {
+                var model = state.response.data as FinishAccountModel;
                 AppDialogs.closeDialog(context);
                 AppNavigator.goToPageWithReplacement(
                   context: context,
-                  screen: const MainTabScreen(index: 0),
+                  screen: MainCategoriesScreen(model: model),
                 );
               } else if (state is AuthStateFailure) {
                 AppDialogs.closeDialog(context);

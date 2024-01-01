@@ -7,8 +7,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/categories/sub_categories_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/auth/finish_account_model.dart';
 import 'package:hobbyzhub/models/category/category_model.dart';
 import 'package:hobbyzhub/models/category/sub_category_model.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/views/bottom_nav_bar/main_tabs_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -18,8 +21,12 @@ List<SubCategoryModel> selectedSubCategories = [];
 
 class SubCategoryScreen extends StatefulWidget {
   final List<CategoryModel> selectedCategories;
-  const SubCategoryScreen({Key? key, required this.selectedCategories})
-      : super(key: key);
+  final FinishAccountModel model;
+  const SubCategoryScreen({
+    Key? key,
+    required this.selectedCategories,
+    required this.model,
+  }) : super(key: key);
 
   @override
   _SubCategoryScreenState createState() => _SubCategoryScreenState();
@@ -59,12 +66,13 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
     }
   }
 
-  subscribeUser() {
+  Future subscribeUser() async {
     // subscribe user to the selected sub categories
     for (int i = 0; i < selectedSubCategories.length; i++) {
       subCategoriesBloc = subCategoriesBloc
         ..add(SubCategoriesSubscribeEvent(
           subCategoryId: selectedSubCategories[i].categoryId!,
+          finishAccountModel: widget.model,
         ));
     }
   }
@@ -72,6 +80,8 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
   @override
   void dispose() {
     subCategoriesBloc.close();
+
+    selectedSubCategories.clear();
     super.dispose();
   }
 
@@ -84,6 +94,11 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
           // store the sub categories index wise
           _subCategories[state.index][state.categoryName] =
               state.subCategories.data;
+        } else if (state is SubCategoriesSubscribedState) {
+          AppNavigator.goToPageWithReplacement(
+            context: context,
+            screen: MainTabScreen(index: 0),
+          );
         }
       },
       builder: (context, state) {

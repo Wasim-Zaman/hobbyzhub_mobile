@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/categories/categories_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
+import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/auth/finish_account_model.dart';
 import 'package:hobbyzhub/models/category/category_model.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/categories/sub_categories.dart';
@@ -15,7 +17,8 @@ import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class MainCategoriesScreen extends StatefulWidget {
-  const MainCategoriesScreen({Key? key}) : super(key: key);
+  final FinishAccountModel model;
+  const MainCategoriesScreen({Key? key, required this.model}) : super(key: key);
 
   @override
   _MainCategoriesScreenState createState() => _MainCategoriesScreenState();
@@ -27,8 +30,10 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
 
   // Lists
   List<CategoryModel> categories = [];
-
   List<CategoryModel> selectedCategories = [];
+
+  // Flags
+  bool _isSearching = false;
 
   @override
   void initState() {
@@ -49,6 +54,42 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
 
   getInitialCategories() {
     categoriesBloc = categoriesBloc..add(CategoriesFetchInitialEvent());
+  }
+
+  Widget _buildSearchField() {
+    return Visibility(
+      visible: _isSearching,
+      child: AnimatedCrossFade(
+        duration: Duration(milliseconds: 800),
+        firstChild: IconButton(
+          icon: Image.asset(ImageAssets.searchImage, height: 30, width: 30),
+          onPressed: () {
+            setState(() {
+              _isSearching = false;
+            });
+          },
+        ),
+        secondChild: SizedBox(
+          height: 50,
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Search...',
+              contentPadding: EdgeInsets.symmetric(horizontal: 20),
+              prefixIcon: Image.asset(ImageAssets.searchImage),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onChanged: (term) {
+              // Perform search based on the entered query
+              // You can update your search results or filter data accordingly
+            },
+          ),
+        ),
+        crossFadeState:
+            _isSearching ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+      ),
+    );
   }
 
   @override
@@ -76,15 +117,32 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
             ),
           ),
         ),
+        title: _isSearching ? _buildSearchField() : null,
         actions: [
-          Padding(
-            padding: EdgeInsets.all(8.w),
-            child: Icon(
-              Icons.search,
-              size: 30.sp,
-            ),
+          IconButton(
+            icon: _isSearching
+                ? Icon(Icons.cancel_rounded, size: 30)
+                : Image.asset(
+                    ImageAssets.searchImage,
+                    height: 30,
+                    width: 30,
+                  ),
+            onPressed: () {
+              setState(() {
+                _isSearching = !_isSearching;
+              });
+            },
           ),
         ],
+        // actions: [
+        //   Padding(
+        //     padding: EdgeInsets.all(8.w),
+        //     child: Icon(
+        //       Icons.search,
+        //       size: 30.sp,
+        //     ),
+        //   ),
+        // ],
       ),
       body: BlocConsumer<CategoriesBloc, CategoriesState>(
         bloc: categoriesBloc,
@@ -216,6 +274,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                       context: context,
                       screen: SubCategoryScreen(
                         selectedCategories: selectedCategories,
+                        model: widget.model,
                       ),
                     );
                   },

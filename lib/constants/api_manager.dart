@@ -32,6 +32,7 @@ class ApiManager {
       {dynamic headers, bool? authorizationHeaders}) async {
     // Perform a POST request with the specified body and return the response.
     var token = await UserSecureStorage.fetchToken();
+    var json = jsonEncode(body);
     late Map<String, String> _headers;
     if (authorizationHeaders != null && authorizationHeaders) {
       _headers = <String, String>{
@@ -41,11 +42,7 @@ class ApiManager {
     } else {
       _headers = <String, String>{"Content-Type": "application/json"};
     }
-    return await post(
-      Uri.parse(url),
-      body: jsonEncode(body),
-      headers: headers ?? _headers,
-    );
+    return await post(Uri.parse(url), body: json, headers: headers ?? _headers);
   }
 
 // Static method for making a POST request without body.

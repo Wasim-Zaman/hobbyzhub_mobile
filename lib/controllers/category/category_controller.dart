@@ -9,16 +9,14 @@ import 'package:hobbyzhub/models/category/sub_category_model.dart';
 
 class CategoryController {
   static Future<ApiResponse> getMainCategories(int page, int pageSize) async {
-    // final token = await UserSecureStorage.fetchToken();
     const url = MainCategoryUrl.getMainCategories;
     final body = {"page": page, "size": pageSize};
-    // final headers = <String, String>{
-    //   "Authorization": "Bearer $token",
-    //   "Content-Type": "application/json",
-    // };
     try {
-      final response =
-          await ApiManager.postRequest(body, url, authorizationHeaders: true);
+      final response = await ApiManager.postRequest(
+        body,
+        url,
+        authorizationHeaders: true,
+      );
       var responseBody = jsonDecode(response.body);
       if (responseBody['success'] && responseBody['status'] == 200) {
         List<CategoryModel> categories = [];

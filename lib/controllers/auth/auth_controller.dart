@@ -4,6 +4,7 @@ import 'package:hobbyzhub/constants/api_manager.dart';
 import 'package:hobbyzhub/constants/app_url.dart';
 import 'package:hobbyzhub/models/api_response.dart';
 import 'package:hobbyzhub/models/auth/complete_profile_model.dart';
+import 'package:hobbyzhub/models/auth/finish_account_model.dart';
 import 'package:hobbyzhub/models/auth/login_model.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:http/http.dart';
@@ -90,11 +91,12 @@ abstract class AuthController {
       var response = await request.send();
       // print response
       var body = jsonDecode(await response.stream.bytesToString());
+      print(body);
       if (response.statusCode == 200) {
         // success
         ApiResponse model = ApiResponse.fromJson(
           body,
-          (data) => null,
+          (data) => FinishAccountModel.fromJson(body['data']),
         );
         return model;
       } else {

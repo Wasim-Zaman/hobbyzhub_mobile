@@ -94,7 +94,7 @@ class Datum {
         profileImage: json["profileImage"],
         status: json["status"],
         userId: json["userId"],
-        username: json["username"],
+        username: json["username"] ?? '',
         hashTags: json["hashTags"] == null
             ? []
             : List<HashTag>.from(

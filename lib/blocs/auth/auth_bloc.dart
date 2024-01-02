@@ -5,6 +5,7 @@ import 'package:hobbyzhub/controllers/auth/auth_controller.dart';
 import 'package:hobbyzhub/models/api_response.dart';
 import 'package:hobbyzhub/models/auth/complete_profile_model.dart';
 import 'package:hobbyzhub/utils/media_utils.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 part 'auth_events_states.dart';
@@ -87,6 +88,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         bool networkStatus = await isNetworkAvailable();
         if (networkStatus == true) {
+          print(event.model.userId);
+          print(event.model.token);
           final response =
               await AuthController.completeProfile(model: event.model);
           emit(AuthCompleteProfileState(response: response));
@@ -152,7 +155,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     // Pick image event
     on<AuthEventImagePicker>((event, emit) {
-      MediaUtils.pickImage().then((value) {
+      MediaUtils.pickImage(event.imageSource).then((value) {
         if (value != null) {
           final File img = value;
           emit(AuthImagePickerState(image: img));

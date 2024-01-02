@@ -60,10 +60,7 @@ abstract class AuthController {
   }) async {
     const url = AuthUrl.completeProfile;
     try {
-      var request = MultipartRequest(
-        'PUT',
-        Uri.parse(url),
-      );
+      var request = MultipartRequest('PUT', Uri.parse(url));
 
       request.headers.addAll({
         "Content-Type": "multipart/form-data",
@@ -80,6 +77,7 @@ abstract class AuthController {
           ),
         );
       }
+      // print(model.profilePicture!.path.split('/').last);
       // send other fields
       request.fields["userId"] = model.userId.toString();
       request.fields["fullName"] = model.name.toString();

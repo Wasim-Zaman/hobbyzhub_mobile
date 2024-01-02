@@ -47,7 +47,11 @@ class AuthEventSendVerificationForPasswordReset extends AuthEvent {
   AuthEventSendVerificationForPasswordReset({required this.email});
 }
 
-class AuthEventImagePicker extends AuthEvent {}
+class AuthEventImagePicker extends AuthEvent {
+  final ImageSource imageSource;
+
+  AuthEventImagePicker({required this.imageSource});
+}
 
 class AuthEventChangePasswordAfterOtpVerification extends AuthEvent {
   final String email;

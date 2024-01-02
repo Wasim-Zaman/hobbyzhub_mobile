@@ -21,6 +21,7 @@ import 'package:hobbyzhub/views/categories/main_categories_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/dropdowns/dropdown_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/dob_widget.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -78,11 +79,10 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
     // adding user id and token to the user model
     widget.model.birthDate = birthDate;
     widget.model.gender = selectedGender;
-    widget.model.profilePicture = image;
-    authBloc = authBloc
-      ..add(AuthEventCompleteProfile(
-        model: widget.model,
-      ));
+    if (image != null) {
+      widget.model.profilePicture = image;
+    }
+    authBloc = authBloc..add(AuthEventCompleteProfile(model: widget.model));
   }
 
   @override
@@ -93,6 +93,7 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
     dobController.dispose();
 
     birthDate = null;
+    image = null;
 
     super.dispose();
   }
@@ -206,8 +207,16 @@ class ImagePickWidget extends StatefulWidget {
 }
 
 class _ImagePickWidgetState extends State<ImagePickWidget> {
-  initBloc() {
-    context.read<ImagePickerBloc>().add(ImagePickerPickImageEvent());
+  pickFromGallery() {
+    context.read<ImagePickerBloc>().add(
+          ImagePickerPickImageEvent(imageSource: ImageSource.gallery),
+        );
+  }
+
+  pickFromCamera() {
+    context.read<ImagePickerBloc>().add(
+          ImagePickerPickImageEvent(imageSource: ImageSource.camera),
+        );
   }
 
   @override
@@ -265,7 +274,7 @@ class _ImagePickWidgetState extends State<ImagePickWidget> {
                   ),
                 ),
                 onPressed: () {
-                  initBloc();
+                  pickFromGallery();
                 },
               ),
             ),

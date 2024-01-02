@@ -2,7 +2,10 @@ part of 'image_picker_bloc.dart';
 
 abstract class ImagePickerEvent {}
 
-class ImagePickerPickImageEvent extends ImagePickerEvent {}
+class ImagePickerPickImageEvent extends ImagePickerEvent {
+  final ImageSource imageSource;
+  ImagePickerPickImageEvent({required this.imageSource});
+}
 
 abstract class ImagePickerState {}
 

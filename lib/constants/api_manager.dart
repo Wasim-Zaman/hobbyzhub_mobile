@@ -1,6 +1,9 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'dart:convert';
 
 import 'package:hobbyzhub/models/api_response.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:http/http.dart';
 
 class ApiManager {
@@ -26,11 +29,23 @@ class ApiManager {
 
   // Static method for making a POST request.
   static Future<Response> postRequest(var body, var url,
-      {dynamic headers}) async {
+      {dynamic headers, bool? authorizationHeaders}) async {
     // Perform a POST request with the specified body and return the response.
-    return await post(Uri.parse(url),
-        body: jsonEncode(body),
-        headers: headers ?? {'Content-Type': 'application/json'});
+    var token = await UserSecureStorage.fetchToken();
+    late Map<String, String> _headers;
+    if (authorizationHeaders != null && authorizationHeaders) {
+      _headers = <String, String>{
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      };
+    } else {
+      _headers = <String, String>{"Content-Type": "application/json"};
+    }
+    return await post(
+      Uri.parse(url),
+      body: jsonEncode(body),
+      headers: headers ?? _headers,
+    );
   }
 
 // Static method for making a POST request without body.

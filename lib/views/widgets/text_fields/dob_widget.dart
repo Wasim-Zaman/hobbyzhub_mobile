@@ -39,9 +39,15 @@ class DobWidget extends StatelessWidget {
           ).then((value) {
             if (value != null) {
               // set the global variable
-              birthDate = value.toIso8601String();
-              // set date to controller but in some format
-              dobController.text = value.toString().split(' ')[0];
+              // birthDate = value.toIso8601String();
+              // set date to controller but in dd-mm-yyyy format
+              dobController.text = value
+                  .toIso8601String()
+                  .split('T')[0]
+                  .split('-')
+                  .reversed
+                  .join('-');
+              birthDate = dobController.text;
             }
           });
         },

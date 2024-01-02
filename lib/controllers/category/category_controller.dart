@@ -6,21 +6,19 @@ import 'package:hobbyzhub/models/api_response.dart';
 import 'package:hobbyzhub/models/auth/finish_account_model.dart';
 import 'package:hobbyzhub/models/category/category_model.dart';
 import 'package:hobbyzhub/models/category/sub_category_model.dart';
-import 'package:hobbyzhub/utils/secure_storage.dart';
 
 class CategoryController {
   static Future<ApiResponse> getMainCategories(int page, int pageSize) async {
-    final token = await UserSecureStorage.fetchToken();
+    // final token = await UserSecureStorage.fetchToken();
     const url = MainCategoryUrl.getMainCategories;
     final body = {"page": page, "size": pageSize};
-    final headers = <String, String>{
-      "Authorization":
-          "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtdW5pckBnbWFpbC5jb20iLCJleHAiOjE3MDUzODA5OTIsImlhdCI6MTcwMjk2MTc5Mn0.ocdMEMo37yATycVlTXdWh9pzTiilcB_32mZJw6T9RDNJ9NS7rCAb-Tor6mXJmileGj0RDYsEBH7ZXZc1-Cws7A",
-      "Content-Type": "application/json",
-    };
+    // final headers = <String, String>{
+    //   "Authorization": "Bearer $token",
+    //   "Content-Type": "application/json",
+    // };
     try {
       final response =
-          await ApiManager.postRequest(body, url, headers: headers);
+          await ApiManager.postRequest(body, url, authorizationHeaders: true);
       var responseBody = jsonDecode(response.body);
       if (responseBody['success'] && responseBody['status'] == 200) {
         List<CategoryModel> categories = [];
@@ -38,17 +36,14 @@ class CategoryController {
 
   // Sub categories
   static Future<ApiResponse> getSubCategories(String categoryId) async {
-    final token = await UserSecureStorage.fetchToken();
     const url = MainCategoryUrl.getSubCategories;
     final body = {"categoryId": categoryId};
-    final headers = <String, String>{
-      "Authorization":
-          "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtdW5pckBnbWFpbC5jb20iLCJleHAiOjE3MDUzODA5OTIsImlhdCI6MTcwMjk2MTc5Mn0.ocdMEMo37yATycVlTXdWh9pzTiilcB_32mZJw6T9RDNJ9NS7rCAb-Tor6mXJmileGj0RDYsEBH7ZXZc1-Cws7A",
-      "Content-Type": "application/json",
-    };
     try {
-      final response =
-          await ApiManager.postRequest(body, url, headers: headers);
+      final response = await ApiManager.postRequest(
+        body,
+        url,
+        authorizationHeaders: true,
+      );
       var responseBody = jsonDecode(response.body);
       if (responseBody['success'] && responseBody['status'] == 200) {
         List<SubCategoryModel> subCategories = [];
@@ -76,16 +71,13 @@ class CategoryController {
       "subCategoryId": subCategoryId,
       "profilePicLink": finishAccountModel.profileImage,
     };
-    final headers = <String, String>{
-      "Authorization":
-          "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtdW5pckBnbWFpbC5jb20iLCJleHAiOjE3MDUzODA5OTIsImlhdCI6MTcwMjk2MTc5Mn0.ocdMEMo37yATycVlTXdWh9pzTiilcB_32mZJw6T9RDNJ9NS7rCAb-Tor6mXJmileGj0RDYsEBH7ZXZc1-Cws7A",
-      "Content-Type": "application/json",
-    };
 
     try {
-      final response =
-          await ApiManager.postRequest(body, url, headers: headers);
-      print(response.body);
+      final response = await ApiManager.postRequest(
+        body,
+        url,
+        authorizationHeaders: true,
+      );
       var responseBody = jsonDecode(response.body);
       if (responseBody['success'] && responseBody['status'] == 200) {
         return ApiResponse.fromJson(responseBody, (data) => null);

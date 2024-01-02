@@ -16,6 +16,10 @@ import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+// Global variables
+List<CategoryModel>? selectedCategories = [];
+List<String>? categoryIds = [];
+
 class MainCategoriesScreen extends StatefulWidget {
   final FinishAccountModel model;
   const MainCategoriesScreen({Key? key, required this.model}) : super(key: key);
@@ -30,7 +34,6 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
 
   // Lists
   List<CategoryModel> categories = [];
-  List<CategoryModel> selectedCategories = [];
 
   // Flags
   bool _isSearching = false;
@@ -49,11 +52,19 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
   @override
   void dispose() {
     categoriesBloc.close();
+    selectedCategories = null;
+    categoryIds = null;
     super.dispose();
   }
 
   getInitialCategories() {
     categoriesBloc = categoriesBloc..add(CategoriesFetchInitialEvent());
+  }
+
+  getMoreCategories() {}
+
+  searchCategoriesBySlug(slug) {
+    categoriesBloc = categoriesBloc..add(CategoriesSeachEvent(slug: slug));
   }
 
   Widget _buildSearchField() {
@@ -80,9 +91,14 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onChanged: (term) {
-              // Perform search based on the entered query
-              // You can update your search results or filter data accordingly
+            onChanged: (slug) {
+              if (slug.isEmpty) {
+                getInitialCategories();
+              } else {
+                searchCategoriesBySlug(slug);
+              }
+
+              print(selectedCategories!.length);
             },
           ),
         ),
@@ -124,8 +140,8 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                 ? Icon(Icons.cancel_rounded, size: 30)
                 : Image.asset(
                     ImageAssets.searchImage,
-                    height: 30,
-                    width: 30,
+                    height: 30.h,
+                    width: 30.w,
                   ),
             onPressed: () {
               setState(() {
@@ -150,12 +166,16 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
           if (state is CategoriesLoadingState) {
             categories.clear();
           } else if (state is CategoriesLoadedState) {
-            categories = state.categories.data;
+            categories = [...state.categories.data];
           }
         },
         builder: (context, state) {
           if (state is CategoriesLoadingState) {
             return Center(child: LoadingWidget());
+          } else if (state is CategoriesEmptyState) {
+            return Center(
+              child: Text("No Categories Found"),
+            );
           } else if (state is CategoriesErrorState) {
             return Center(
               child: Column(
@@ -202,66 +222,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                       crossAxisSpacing: 20,
                     ),
                     itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () {
-                          // add category into the selected category list
-                          setState(() {
-                            // if category is already there, remove it
-                            // otherwise add it to selected categories list
-                            if (selectedCategories
-                                .contains(categories[index])) {
-                              selectedCategories.remove(categories[index]);
-                            } else {
-                              selectedCategories.add(categories[index]);
-                            }
-                          });
-                        },
-                        child: Container(
-                          width: 80.w,
-                          height: 97.h,
-                          padding: EdgeInsets.all(5.w),
-                          decoration: ShapeDecoration(
-                            color:
-                                selectedCategories.contains(categories[index])
-                                    ? AppColors.primary.withOpacity(0.3)
-                                    : AppColors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.r),
-                            ),
-                            shadows: [
-                              BoxShadow(
-                                color: Color(0x26000000),
-                                blurRadius: 7,
-                                offset: Offset(0, 0),
-                                spreadRadius: 0,
-                              )
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CachedNetworkImage(
-                                imageUrl: categories[index].iconLink.toString(),
-                                height: 40.h,
-                                placeholder: (context, url) => LoadingWidget(),
-                                errorWidget: (context, url, error) => Icon(
-                                  Icons.image_outlined,
-                                  size: 40.sp,
-                                  color: selectedCategories
-                                          .contains(categories[index])
-                                      ? AppColors.white
-                                      : AppColors.black,
-                                ),
-                              ),
-                              10.height,
-                              Text(
-                                categories[index].categoryName.toString(),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+                      return CategoryWidget(category: categories[index]);
                     },
                   ),
                 ),
@@ -273,7 +234,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                     AppNavigator.goToPage(
                       context: context,
                       screen: SubCategoryScreen(
-                        selectedCategories: selectedCategories,
+                        selectedCategories: selectedCategories!,
                         model: widget.model,
                       ),
                     );
@@ -285,6 +246,78 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
             ).paddingAll(9.w),
           );
         },
+      ),
+    );
+  }
+}
+
+class CategoryWidget extends StatefulWidget {
+  final CategoryModel category;
+  const CategoryWidget({Key? key, required this.category}) : super(key: key);
+
+  @override
+  State<CategoryWidget> createState() => _CategoryWidgetState();
+}
+
+class _CategoryWidgetState extends State<CategoryWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // add category into the selected category list
+        setState(() {
+          // if category is already there, remove it
+          if (categoryIds!.contains(widget.category.categoryId)) {
+            selectedCategories!.remove(widget.category);
+            categoryIds!.remove(widget.category.categoryId);
+          }
+          // otherwise add it to selected categories list
+          else {
+            selectedCategories!.add(widget.category);
+            categoryIds!.add(widget.category.categoryId!);
+          }
+        });
+      },
+      child: Container(
+        width: 80.w,
+        height: 97.h,
+        padding: EdgeInsets.all(5.w),
+        decoration: ShapeDecoration(
+          color: categoryIds!.contains(widget.category.categoryId)
+              ? AppColors.primary.withOpacity(0.3)
+              : AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.r),
+          ),
+          shadows: [
+            BoxShadow(
+              color: Color(0x26000000),
+              blurRadius: 7,
+              offset: Offset(0, 0),
+              spreadRadius: 0,
+            )
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CachedNetworkImage(
+              imageUrl: widget.category.iconLink.toString(),
+              height: 40.h,
+              placeholder: (context, url) => LoadingWidget(),
+              errorWidget: (context, url, error) => Icon(
+                Icons.image_outlined,
+                size: 40.sp,
+                color: categoryIds!.contains(widget.category.categoryId)
+                    ? AppColors.white
+                    : AppColors.black,
+              ),
+            ),
+            10.height,
+            Text(widget.category.categoryName.toString()),
+          ],
+        ),
       ),
     );
   }

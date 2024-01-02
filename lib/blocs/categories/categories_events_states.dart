@@ -9,6 +9,11 @@ class CategoriesFetchMoreEvent extends CategoriesEvent {
   CategoriesFetchMoreEvent({required this.page, required this.paginatedBy});
 }
 
+class CategoriesSeachEvent extends CategoriesEvent {
+  final String slug;
+  CategoriesSeachEvent({required this.slug});
+}
+
 abstract class CategoriesState {}
 
 class CategoriesInitialState extends CategoriesState {}

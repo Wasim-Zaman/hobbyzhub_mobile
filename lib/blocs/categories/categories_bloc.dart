@@ -35,6 +35,28 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
         }
       }
 
+      // Search categories by slug
+      if (event is CategoriesSeachEvent) {
+        emit(CategoriesLoadingState());
+        try {
+          var networkstatus = await isNetworkAvailable();
+          if (networkstatus) {
+            // user controller logic here
+            final categories =
+                await CategoryController.searchCategoriesBySlug(event.slug);
+            if (categories.data.isEmpty) {
+              emit(CategoriesEmptyState());
+            } else {
+              emit(CategoriesLoadedState(categories: categories));
+            }
+          } else {
+            emit(CategoriesNoInternetState());
+          }
+        } catch (error) {
+          emit(CategoriesErrorState(error: error.toString()));
+        }
+      }
+
       // Fetch more categories
       if (event is CategoriesFetchMoreEvent) {
         try {

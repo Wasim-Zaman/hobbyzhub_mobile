@@ -49,10 +49,15 @@ abstract class PostUrl {
   static const createLike = "$baseUrl/post-service/api/likes/create";
 }
 
-abstract class MainCategoryUrl {
+abstract class CategoryUrl {
   static const baseUrl = "${AppUrl.baseUrl}/category-service";
 
+  // Main Categories URL
   static const getMainCategories = "$baseUrl/api/v1/categories/hobby/get-list";
+  static const searchCategoriesBySlug =
+      "$baseUrl/api/v1/categories/hobby/search";
+
+  // Sub-Categories URL
   static const getSubCategories =
       "$baseUrl/api/v1/categories/sub-hobby/get-list";
   static const subscribeUserToSubCategory =

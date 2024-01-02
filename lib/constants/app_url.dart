@@ -58,3 +58,8 @@ abstract class MainCategoryUrl {
   static const subscribeUserToSubCategory =
       "$baseUrl/api/v1/categories/subscription/subscribe";
 }
+
+abstract class SettingUrl {
+  static const helpCenterUrl =
+      "${AppUrl.baseUrl}/helprequest-service/api/help/get-help";
+}

@@ -34,9 +34,13 @@ class CategoryController {
   }
 
   // Search Categories by slug
-  static Future<ApiResponse> searchCategoriesBySlug(String slug) async {
+  static Future<ApiResponse> searchCategoriesBySlug(
+    String slug,
+    int page,
+    int size,
+  ) async {
     const url = CategoryUrl.searchCategoriesBySlug;
-    final body = {"search": slug};
+    final body = {"searchSlug": slug, "page": page, "size": size};
     try {
       final response = await ApiManager.postRequest(
         body,

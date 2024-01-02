@@ -42,8 +42,11 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
           var networkstatus = await isNetworkAvailable();
           if (networkstatus) {
             // user controller logic here
-            final categories =
-                await CategoryController.searchCategoriesBySlug(event.slug);
+            final categories = await CategoryController.searchCategoriesBySlug(
+              event.slug,
+              AppConfig.pageOne,
+              AppConfig.categoriesPageSize,
+            );
             if (categories.data.isEmpty) {
               emit(CategoriesEmptyState());
             } else {

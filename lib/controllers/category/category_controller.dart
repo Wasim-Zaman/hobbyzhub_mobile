@@ -9,9 +9,9 @@ import 'package:hobbyzhub/models/category/sub_category_model.dart';
 
 class CategoryController {
   // Categories
-  static Future<ApiResponse> getMainCategories(int page, int pageSize) async {
+  static Future<ApiResponse> getMainCategories(int page, int size) async {
     const url = CategoryUrl.getMainCategories;
-    final body = {"page": page, "size": pageSize};
+    final body = {"page": page, "size": size};
     try {
       final response = await ApiManager.postRequest(
         body,

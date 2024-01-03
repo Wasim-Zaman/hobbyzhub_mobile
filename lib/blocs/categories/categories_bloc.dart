@@ -16,7 +16,7 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
           var networkstatus = await isNetworkAvailable();
           if (networkstatus) {
             // user controller logic here
-            int page = AppConfig.pageOne;
+            int page = AppConfig.pageOne + 1;
             int pageSize = AppConfig.categoriesPageSize;
             final categories = await CategoryController.getMainCategories(
               page,

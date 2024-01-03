@@ -14,8 +14,6 @@ import 'package:hobbyzhub/views/widgets/text/text_value_widget.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-enum Page { posts, groups }
-
 class ThirdPersonProfileScreen extends StatefulWidget {
   const ThirdPersonProfileScreen({Key? key}) : super(key: key);
 
@@ -29,58 +27,116 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const BackAppbarWidget(),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                // profile image
-                const ProfileImageWidget(
-                  imageUrl: ImageAssets.userProfileImage,
-                  isEditable: false,
+      body: DefaultTabController(
+        length: 2,
+        child: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverAppBar(
+              expandedHeight: context.height() * 0.6,
+              floating: true,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      // profile image
+                      const ProfileImageWidget(
+                        imageUrl: ImageAssets.userProfileImage,
+                        isEditable: false,
+                      ),
+                      // Name
+                      Text("Sara Stamp", style: AppTextStyle.subHeading),
+                      20.height,
+                      // Bio
+                      const BioTextWidget(
+                        bio:
+                            'I just love the idea of not being what people expect me to be!',
+                      ),
+                      20.height,
+                      // Posts, following and followers in one row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <TextValueWidget>[
+                          const TextValueWidget(text: "85", value: "Posts"),
+                          TextValueWidget(
+                            text: "870",
+                            value: "Following",
+                            onTap: () {
+                              AppNavigator.goToPage(
+                                context: context,
+                                screen:
+                                    const FollowersFollowingScreen(index: 1),
+                              );
+                            },
+                          ),
+                          TextValueWidget(
+                            text: "15k",
+                            value: "Followers",
+                            onTap: () {
+                              AppNavigator.goToPage(
+                                context: context,
+                                screen:
+                                    const FollowersFollowingScreen(index: 0),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      20.height,
+                      const NonFollowedPersonWidget(),
+                      20.height,
+                      SizedBox(
+                        height: 60,
+                        child: ListView.builder(
+                          itemBuilder: (context, index) => Container(
+                            margin: const EdgeInsets.only(right: 8),
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                width: 1,
+                                color: AppColors.darkGrey,
+                              ),
+                              image: const DecorationImage(
+                                image: AssetImage(
+                                  ImageAssets.userProfileImage,
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          itemCount: 8,
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                // Name
-                Text("Sara Stamp", style: AppTextStyle.subHeading),
-                20.height,
-                // Bio
-                const BioTextWidget(
-                  bio:
-                      'I just love the idea of not being what people expect me to be!',
+              ),
+              bottom: const TabBar(
+                indicatorColor: AppColors.primary,
+                labelColor: AppColors.primary,
+                unselectedLabelColor: AppColors.black,
+                indicator: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: AppColors.primary, width: 3.0),
+                  ),
                 ),
-                20.height,
-                // Posts, following and followers in one row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <TextValueWidget>[
-                    const TextValueWidget(text: "85", value: "Posts"),
-                    TextValueWidget(
-                      text: "870",
-                      value: "Following",
-                      onTap: () {
-                        AppNavigator.goToPage(
-                          context: context,
-                          screen: const FollowersFollowingScreen(index: 1),
-                        );
-                      },
-                    ),
-                    TextValueWidget(
-                      text: "15k",
-                      value: "Followers",
-                      onTap: () {
-                        AppNavigator.goToPage(
-                          context: context,
-                          screen: const FollowersFollowingScreen(index: 0),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                20.height,
-                const NonFollowedPersonWidget(),
-                20.height,
-              ],
+                tabs: [
+                  Tab(text: "Posts"),
+                  Tab(text: "Groups in common"),
+                ],
+              ),
             ),
+          ],
+          body: const TabBarView(
+            children: [
+              PostScreen(),
+              GroupsInCommonScreen(),
+            ],
           ),
         ),
       ),

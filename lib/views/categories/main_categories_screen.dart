@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/animation/fade_animation.dart';
 import 'package:hobbyzhub/blocs/categories/categories_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
@@ -37,6 +38,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
 
   // Flags
   bool _isSearching = false;
+  FocusNode searchNode = FocusNode();
 
   @override
   void initState() {
@@ -67,11 +69,25 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
     categoriesBloc = categoriesBloc..add(CategoriesSeachEvent(slug: slug));
   }
 
+  next() {
+    if (selectedCategories!.isEmpty) {
+      toast("Please select at least one category");
+    } else {
+      AppNavigator.goToPage(
+        context: context,
+        screen: SubCategoryScreen(
+          selectedCategories: selectedCategories!,
+          model: widget.model,
+        ),
+      );
+    }
+  }
+
   Widget _buildSearchField() {
     return Visibility(
       visible: _isSearching,
       child: AnimatedCrossFade(
-        duration: Duration(milliseconds: 800),
+        duration: Duration(milliseconds: 300),
         firstChild: IconButton(
           icon: Image.asset(ImageAssets.searchImage, height: 30, width: 30),
           onPressed: () {
@@ -80,26 +96,28 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
             });
           },
         ),
-        secondChild: SizedBox(
-          height: 50,
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Search...',
-              contentPadding: EdgeInsets.symmetric(horizontal: 20),
-              prefixIcon: Image.asset(ImageAssets.searchImage),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+        secondChild: FadeAnimation(
+          delay: 1,
+          child: SizedBox(
+            height: 50,
+            child: TextField(
+              focusNode: searchNode,
+              decoration: InputDecoration(
+                hintText: 'Search...',
+                contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                prefixIcon: Image.asset(ImageAssets.searchImage),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
+              onChanged: (slug) {
+                if (slug.isEmpty) {
+                  getInitialCategories();
+                } else {
+                  searchCategoriesBySlug(slug);
+                }
+              },
             ),
-            onChanged: (slug) {
-              if (slug.isEmpty) {
-                getInitialCategories();
-              } else {
-                searchCategoriesBySlug(slug);
-              }
-
-              print(selectedCategories!.length);
-            },
           ),
         ),
         crossFadeState:
@@ -146,19 +164,14 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
             onPressed: () {
               setState(() {
                 _isSearching = !_isSearching;
+                // set focus to the text field
+                if (_isSearching) {
+                  searchNode.requestFocus();
+                }
               });
             },
           ),
         ],
-        // actions: [
-        //   Padding(
-        //     padding: EdgeInsets.all(8.w),
-        //     child: Icon(
-        //       Icons.search,
-        //       size: 30.sp,
-        //     ),
-        //   ),
-        // ],
       ),
       body: BlocConsumer<CategoriesBloc, CategoriesState>(
         bloc: categoriesBloc,
@@ -173,8 +186,27 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
           if (state is CategoriesLoadingState) {
             return Center(child: LoadingWidget());
           } else if (state is CategoriesEmptyState) {
-            return Center(
-              child: Text("No Categories Found"),
+            return Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    ImageAssets.searchImage,
+                    height: 200.h,
+                    width: 200.w,
+                  ),
+                  20.height,
+                  Text("Not Found", style: AppTextStyle.subHeading),
+                  20.height,
+                  Text(
+                    "Sorry, the keyword you entered cannot be found. please, check again or search with another keyword.",
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.subHeading,
+                  ),
+                ],
+              ),
             );
           } else if (state is CategoriesErrorState) {
             return Center(
@@ -207,8 +239,9 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                 Text('Hobby Categories', style: AppTextStyle.headings),
                 15.height,
                 Text(
-                    'Select your hobby category to find and connect with people of similar interest',
-                    style: AppTextStyle.subHeading),
+                  'Select your hobby category to find and connect with people of similar interest',
+                  style: AppTextStyle.subHeading,
+                ),
                 20.height,
                 Expanded(
                   child: GridView.builder(
@@ -228,17 +261,11 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                 ),
                 20.height,
                 PrimaryButtonWidget(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-                  onPressed: () {
-                    AppNavigator.goToPage(
-                      context: context,
-                      screen: SubCategoryScreen(
-                        selectedCategories: selectedCategories!,
-                        model: widget.model,
-                      ),
-                    );
-                  },
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 20.h,
+                  ),
+                  onPressed: next,
                   caption: 'Next',
                 ),
                 20.height,

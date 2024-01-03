@@ -51,6 +51,8 @@ dependencies:
   timeago:
   cached_network_image: ^3.3.0
   http_parser: ^4.0.2
+  simple_animations: ^4.1.0
+  supercharged: ^2.1.1
 
 dev_dependencies:
   flutter_test:

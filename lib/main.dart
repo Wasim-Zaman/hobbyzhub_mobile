@@ -5,6 +5,7 @@ import 'package:hobbyzhub/constants/bloc_provider.dart';
 import 'package:hobbyzhub/global/themes/app_theme.dart';
 import 'package:hobbyzhub/models/auth/finish_account_model.dart';
 import 'package:hobbyzhub/views/categories/main_categories_screen.dart';
+import 'package:hobbyzhub/views/splash_screen/splash_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -41,7 +42,7 @@ class _MyAppState extends State<MyApp> {
               title: 'HobbyzHub',
               theme: AppTheme.light,
               navigatorKey: navigatorKey,
-              home: MainCategoriesScreen(model: FinishAccountModel()),
+              home: SplashScreen(),
             ),
           );
         },

@@ -20,6 +20,7 @@ class HelpCenterCubit extends Cubit<HelpCenterState> {
         "email": email,
         "fullName": fullName
       };
+      print(helpRequestBody);
       var response =
           await settingController.submitHelpCenterRequest(helpRequestBody);
       print(response.body);

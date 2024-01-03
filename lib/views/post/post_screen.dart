@@ -968,7 +968,7 @@ class _PostScreenState extends State<PostScreen> {
                                                       .first
                                                       .data[index]
                                                       .comments
-                                                      .length, (index) {
+                                                      .length, (_index) {
                                             return Positioned(
                                                 left: 20.0 * index,
                                                 child: Align(
@@ -978,7 +978,7 @@ class _PostScreenState extends State<PostScreen> {
                                                               .postsList
                                                               .first
                                                               .data[index]
-                                                              .comments[index]
+                                                              .comments[_index]
                                                               .profileImage ==
                                                           null
                                                       ? CircleAvatar(
@@ -988,7 +988,7 @@ class _PostScreenState extends State<PostScreen> {
                                                                   .first
                                                                   .data[index]
                                                                   .comments[
-                                                                      index]
+                                                                      _index]
                                                                   .username
                                                                   .isNotEmpty
                                                               ? Text(state
@@ -996,7 +996,7 @@ class _PostScreenState extends State<PostScreen> {
                                                                   .first
                                                                   .data[index]
                                                                   .comments[
-                                                                      index]
+                                                                      _index]
                                                                   .username
                                                                   .toString()
                                                                   .substring(
@@ -1011,7 +1011,7 @@ class _PostScreenState extends State<PostScreen> {
                                                                   .first
                                                                   .data[index]
                                                                   .comments[
-                                                                      index]
+                                                                      _index]
                                                                   .profileImage),
                                                         ),
                                                 ));
@@ -1085,8 +1085,14 @@ class _PostScreenState extends State<PostScreen> {
                                                     style: AppTextStyle
                                                         .likeByTextStyle),
                                                 TextSpan(
-                                                    text:
-                                                        '${state.postsList.first.data[index].likes.first.username}',
+                                                    text: state
+                                                            .postsList
+                                                            .first
+                                                            .data[index]
+                                                            .likes
+                                                            .isNotEmpty
+                                                        ? '${state.postsList.first.data[index].likes.first.username}'
+                                                        : 'None',
                                                     style: AppTextStyle
                                                         .likeByTextStyle),
                                                 state

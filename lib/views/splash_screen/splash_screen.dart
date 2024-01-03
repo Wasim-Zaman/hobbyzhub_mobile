@@ -33,7 +33,9 @@ class _SplashScreenState extends State<SplashScreen> {
           MaterialPageRoute(builder: (builder) => const OnboardingScreen()));
     } else {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (builder) => const MainTabScreen(index: 0)));
+          builder: (builder) => const MainTabScreen(
+                index: 0,
+              )));
     }
   }
 

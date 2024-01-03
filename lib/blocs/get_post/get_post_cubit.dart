@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -19,6 +20,7 @@ class GetPostCubit extends Cubit<GetPostState> {
     emit(GetPostLoading(postsList: postModelList));
     try {
       var response = await getPostController.getPosts();
+      log(response.body);
 
       if (response.statusCode == 200) {
         var postList = PostModel.fromJson(jsonDecode(response.body));

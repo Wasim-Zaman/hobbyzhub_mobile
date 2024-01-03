@@ -6,14 +6,8 @@ class SettingController {
   submitHelpCenterRequest(body) async {
     const url = SettingUrl.helpCenterUrl;
     try {
-      final token = await UserSecureStorage.fetchToken();
-
-      final headers = <String, String>{
-        "Authorization": token.toString(),
-        "Content-Type": "application/json"
-      };
       final response =
-          await ApiManager.postRequest(body, url, headers: headers);
+          await ApiManager.postRequest(body, url, authorizationHeaders: true);
       return response;
     } catch (_) {
       rethrow;

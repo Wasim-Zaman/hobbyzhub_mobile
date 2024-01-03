@@ -66,5 +66,5 @@ abstract class CategoryUrl {
 
 abstract class SettingUrl {
   static const helpCenterUrl =
-      "${AppUrl.baseUrl}/helprequest-service/api/help/get-help";
+      "http://149.28.232.132:8765/helprequest-service/api/help/get-help";
 }

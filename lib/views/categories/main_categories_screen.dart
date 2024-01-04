@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hobbyzhub/animation/fade_animation.dart';
 import 'package:hobbyzhub/blocs/categories/categories_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
@@ -96,28 +95,25 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
             });
           },
         ),
-        secondChild: FadeAnimation(
-          delay: 1,
-          child: SizedBox(
-            height: 50,
-            child: TextField(
-              focusNode: searchNode,
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                prefixIcon: Image.asset(ImageAssets.searchImage),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+        secondChild: SizedBox(
+          height: 50,
+          child: TextField(
+            focusNode: searchNode,
+            decoration: InputDecoration(
+              hintText: 'Search...',
+              contentPadding: EdgeInsets.symmetric(horizontal: 20),
+              prefixIcon: Image.asset(ImageAssets.searchImage),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-              onChanged: (slug) {
-                if (slug.isEmpty) {
-                  getInitialCategories();
-                } else {
-                  searchCategoriesBySlug(slug);
-                }
-              },
             ),
+            onChanged: (slug) {
+              if (slug.isEmpty) {
+                getInitialCategories();
+              } else {
+                searchCategoriesBySlug(slug);
+              }
+            },
           ),
         ),
         crossFadeState:

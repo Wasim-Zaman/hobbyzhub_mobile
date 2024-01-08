@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/get_post/get_post_cubit.dart';
 import 'package:hobbyzhub/blocs/like_post/likes_cubit.dart';
 import 'package:hobbyzhub/blocs/specific_post/specific_post_cubit.dart';
 import 'package:hobbyzhub/blocs/write_comment/write_comment_cubit.dart';
@@ -82,8 +83,8 @@ class _CommentScreenState extends State<CommentScreen> {
             padding: const EdgeInsets.all(5.0),
             child: GestureDetector(
               onTap: () {
+                context.read<GetPostCubit>().getPostList();
                 context.pop();
-                initCubit();
               },
               child: Container(
                 decoration: ShapeDecoration(

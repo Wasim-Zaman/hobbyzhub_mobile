@@ -42,6 +42,7 @@ class _PostScreenState extends State<PostScreen> {
 
   fetchUserInformation() async {
     userId = await UserSecureStorage.fetchUserId();
+    print(userId);
     setState(() {});
   }
 
@@ -239,7 +240,15 @@ class _PostScreenState extends State<PostScreen> {
                 builder: (context, state) {
                   if (state is GetPostLoading) {
                     return state.postsList.length == 0
-                        ? CircularProgressIndicator()
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 2,
+                              ),
+                              CircularProgressIndicator(),
+                            ],
+                          )
                         : ListView.builder(
                             itemCount: state.postsList.first.data.length,
                             shrinkWrap: true,
@@ -371,7 +380,7 @@ class _PostScreenState extends State<PostScreen> {
                                                   i++) ...[
                                                 SizedBox(
                                                   child: Text(
-                                                      "#//${state.postsList.first.data[index].hashTags![i].tagName}",
+                                                      "#${state.postsList.first.data[index].hashTags![i].tagName}",
                                                       style: AppTextStyle
                                                           .codeTextStyle),
                                                 ),
@@ -528,21 +537,58 @@ class _PostScreenState extends State<PostScreen> {
                                           width: 120.w,
                                           height: 20.h,
                                           child: Stack(
-                                              children: List.generate(10, (i) {
+                                              children: List.generate(
+                                                  state
+                                                      .postsList
+                                                      .first
+                                                      .data[index]
+                                                      .comments
+                                                      .length, (_index) {
                                             return Positioned(
-                                                left: 20.0 * i,
+                                                left: 20.0 * index,
                                                 child: Align(
                                                   alignment:
                                                       Alignment.bottomCenter,
-                                                  child: Container(
-                                                      height: 20.h,
-                                                      width: 20.w,
-                                                      decoration: BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image: NetworkImage(
-                                                                  "https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D")),
-                                                          shape:
-                                                              BoxShape.circle)),
+                                                  child: state
+                                                              .postsList
+                                                              .first
+                                                              .data[index]
+                                                              .comments[_index]
+                                                              .profileImage ==
+                                                          null
+                                                      ? CircleAvatar(
+                                                          radius: 10.sp,
+                                                          child: state
+                                                                  .postsList
+                                                                  .first
+                                                                  .data[index]
+                                                                  .comments[
+                                                                      _index]
+                                                                  .username
+                                                                  .isNotEmpty
+                                                              ? Text(state
+                                                                  .postsList
+                                                                  .first
+                                                                  .data[index]
+                                                                  .comments[
+                                                                      _index]
+                                                                  .username
+                                                                  .toString()
+                                                                  .substring(
+                                                                      0, 1))
+                                                              : Text(''),
+                                                        )
+                                                      : CircleAvatar(
+                                                          radius: 10.sp,
+                                                          backgroundImage:
+                                                              NetworkImage(state
+                                                                  .postsList
+                                                                  .first
+                                                                  .data[index]
+                                                                  .comments[
+                                                                      _index]
+                                                                  .profileImage),
+                                                        ),
                                                 ));
                                           })),
                                         ),
@@ -551,21 +597,21 @@ class _PostScreenState extends State<PostScreen> {
                                               MainAxisAlignment.spaceAround,
                                           children: [
                                             GestureDetector(
-                                              onTap: () {
-                                                state.postsList.first
-                                                        .data[index].likes
-                                                        .any((element) =>
-                                                            element.userId ==
-                                                            userId)
-                                                    ? null
-                                                    : context
-                                                        .read<LikesCubit>()
-                                                        .createLike(state
-                                                            .postsList
-                                                            .first
-                                                            .data[index]
-                                                            .postId);
-                                              },
+                                              onTap: state.postsList.first
+                                                      .data[index].likes
+                                                      .any((element) =>
+                                                          element.userId ==
+                                                          userId)
+                                                  ? null
+                                                  : () {
+                                                      context
+                                                          .read<LikesCubit>()
+                                                          .createLike(state
+                                                              .postsList
+                                                              .first
+                                                              .data[index]
+                                                              .postId);
+                                                    },
                                               child: state.postsList.first
                                                       .data[index].likes
                                                       .any((element) =>
@@ -614,8 +660,14 @@ class _PostScreenState extends State<PostScreen> {
                                                     style: AppTextStyle
                                                         .likeByTextStyle),
                                                 TextSpan(
-                                                    text:
-                                                        '${state.postsList.first.data[index].likes.first.username}',
+                                                    text: state
+                                                            .postsList
+                                                            .first
+                                                            .data[index]
+                                                            .likes
+                                                            .isNotEmpty
+                                                        ? '${state.postsList.first.data[index].likes.first.username}'
+                                                        : 'None',
                                                     style: AppTextStyle
                                                         .likeByTextStyle),
                                                 state
@@ -650,7 +702,7 @@ class _PostScreenState extends State<PostScreen> {
                                                           .postsList
                                                           .first
                                                           .data[index]
-                                                          .postId,
+                                                          .postId!,
                                                     )));
                                       },
                                       child: Row(
@@ -1022,21 +1074,21 @@ class _PostScreenState extends State<PostScreen> {
                                               MainAxisAlignment.spaceAround,
                                           children: [
                                             GestureDetector(
-                                              onTap: () {
-                                                state.postsList.first
-                                                        .data[index].likes
-                                                        .any((element) =>
-                                                            element.userId ==
-                                                            userId)
-                                                    ? null
-                                                    : context
-                                                        .read<LikesCubit>()
-                                                        .createLike(state
-                                                            .postsList
-                                                            .first
-                                                            .data[index]
-                                                            .postId);
-                                              },
+                                              onTap: state.postsList.first
+                                                      .data[index].likes
+                                                      .any((element) =>
+                                                          element.userId ==
+                                                          userId)
+                                                  ? null
+                                                  : () {
+                                                      context
+                                                          .read<LikesCubit>()
+                                                          .createLike(state
+                                                              .postsList
+                                                              .first
+                                                              .data[index]
+                                                              .postId);
+                                                    },
                                               child: state.postsList.first
                                                       .data[index].likes
                                                       .any((element) =>

@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
               title: 'HobbyzHub',
               theme: AppTheme.light,
               navigatorKey: navigatorKey,
-              home: SplashScreen(),
+              home: const SplashScreen(),
             ),
           );
         },

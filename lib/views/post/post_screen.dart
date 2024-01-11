@@ -42,7 +42,7 @@ class _PostScreenState extends State<PostScreen> {
 
   fetchUserInformation() async {
     userId = await UserSecureStorage.fetchUserId();
-    print(userId);
+
     setState(() {});
   }
 
@@ -242,11 +242,12 @@ class _PostScreenState extends State<PostScreen> {
                     return state.postsList.length == 0
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
-                                height: MediaQuery.of(context).size.height / 2,
+                                height: MediaQuery.of(context).size.height / 4,
                               ),
-                              CircularProgressIndicator(),
+                              LoadingWidget()
                             ],
                           )
                         : ListView.builder(
@@ -725,7 +726,14 @@ class _PostScreenState extends State<PostScreen> {
                             });
                   } else if (state is GetPostLoaded) {
                     return state.postsList.length == 0
-                        ? Text('Post not found')
+                        ? Column(
+                            children: [
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 4,
+                              ),
+                              Text('Post not found'),
+                            ],
+                          )
                         : ListView.builder(
                             itemCount: state.postsList.first.data.length,
                             shrinkWrap: true,
@@ -1219,7 +1227,7 @@ class _PostScreenState extends State<PostScreen> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height / 4,
                         ),
-                        Center(child: CircularProgressIndicator()),
+                        LoadingWidget()
                       ],
                     );
                   }

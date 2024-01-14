@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/auth/auth_bloc.dart';
 import 'package:hobbyzhub/blocs/create_post/createpost_cubit.dart';
 import 'package:hobbyzhub/blocs/delete_post/delete_post_cubit.dart';
+import 'package:hobbyzhub/blocs/follower/follower_bloc.dart';
 import 'package:hobbyzhub/blocs/get_post/get_post_cubit.dart';
 import 'package:hobbyzhub/blocs/help_center/help_center_cubit.dart';
 import 'package:hobbyzhub/blocs/image_picker/image_picker_bloc.dart';
@@ -22,6 +23,7 @@ class BlocProviders {
     BlocProvider<HelpCenterCubit>(create: (context) => HelpCenterCubit()),
     BlocProvider<ImagePickerBloc>(create: (context) => ImagePickerBloc()),
     BlocProvider<GetPostCubit>(
-        create: (context) => GetPostCubit()..getPostList())
+        create: (context) => GetPostCubit()..getPostList()),
+    BlocProvider<FollowerBloc>(create: (context) => FollowerBloc()),
   ];
 }

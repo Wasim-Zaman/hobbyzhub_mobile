@@ -68,3 +68,9 @@ abstract class SettingUrl {
   static const helpCenterUrl =
       "http://149.28.232.132:8765/helprequest-service/api/help/get-help";
 }
+
+abstract class FollowersUrl {
+  static const baseUrl = '${AppUrl.baseUrl}/follower-service';
+
+  static const getMyFollowers = '$baseUrl/api/v1/follower/get';
+}

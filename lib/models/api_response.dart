@@ -17,14 +17,16 @@ class ApiResponse<T> {
   });
 
   // Factory method to create an instance of ApiResponse from JSON
-  factory ApiResponse.fromJson(Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
+  factory ApiResponse.fromJson(
+      Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
     return ApiResponse<T>(
       apiVersion: json['apiVersion'],
       organizationName: json['organizationName'],
       message: json['message'],
       success: json['success'],
       status: json['status'],
-      data: fromJsonT(json['data']), // Use the provided function to convert 'data' to the generic type
+      data: fromJsonT(json[
+          'data']), // Use the provided function to convert 'data' to the generic type
     );
   }
 }

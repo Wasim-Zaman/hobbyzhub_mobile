@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/auth/auth_bloc.dart';
 import 'package:hobbyzhub/blocs/image_picker/image_picker_bloc.dart';
-import 'package:hobbyzhub/blocs/media/media_upload_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/global/variables/global_variables.dart';
@@ -37,7 +36,6 @@ class CompleteProfileScreen2 extends StatefulWidget {
 class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
   // blocs
   ImagePickerBloc imageBloc = ImagePickerBloc();
-  MediaUploadBloc mediaUploadBloc = MediaUploadBloc();
   AuthBloc authBloc = AuthBloc();
 
   // Controllers
@@ -88,13 +86,9 @@ class _CompleteProfileScreen2State extends State<CompleteProfileScreen2> {
   @override
   void dispose() {
     imageBloc.close();
-    mediaUploadBloc.close();
-
     dobController.dispose();
-
     birthDate = null;
     image = null;
-
     super.dispose();
   }
 

@@ -42,7 +42,6 @@ class ApiManager {
     } else {
       _headers = <String, String>{"Content-Type": "application/json"};
     }
-    print(_headers);
     return await post(Uri.parse(url), body: json, headers: headers ?? _headers);
   }
 

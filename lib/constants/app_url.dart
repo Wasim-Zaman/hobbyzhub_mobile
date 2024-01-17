@@ -73,4 +73,9 @@ abstract class FollowersUrl {
   static const baseUrl = '${AppUrl.baseUrl}/follower-service';
 
   static const getMyFollowers = '$baseUrl/api/v1/follower/get';
+  static const getMyFollowings = '$baseUrl/api/v1/following/get';
+  static const followUnfollow =
+      '$baseUrl/api/v1/user-relationship/follow-unfollow';
+  static const checkFollowing =
+      '$baseUrl/api/v1/user-relationship/check-following';
 }

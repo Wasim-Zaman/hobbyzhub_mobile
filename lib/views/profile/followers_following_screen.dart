@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hobbyzhub/blocs/follower/follower_bloc.dart';
+import 'package:hobbyzhub/blocs/follower_following/follower_bloc.dart';
+import 'package:hobbyzhub/blocs/follower_following/following_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
@@ -76,11 +77,8 @@ class _FollowersScreenState extends State<FollowersScreen> {
         return ListView.builder(
           itemBuilder: (context, index) {
             return FollowerFollowingListTile(
-              name: followers[index].fullName!,
+              model: followers[index],
               activeStatus: true,
-              imageUrl: followers[index].profileImage!,
-              lastSeen: "",
-              isFollowed: followers[index].following!,
             );
           },
           itemCount: followers.length,
@@ -96,52 +94,34 @@ class FollowingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(
-      children: [
-        FollowerFollowingListTile(
-          imageUrl: "",
-          activeStatus: true,
-          name: "Wasim Zaman",
-          lastSeen: "Active 3 days ago",
-          isFollowed: true,
-        ),
-        FollowerFollowingListTile(
-          imageUrl: "",
-          activeStatus: false,
-          name: "John Doe",
-          lastSeen: "Active 2m ago",
-          isFollowed: true,
-        ),
-        FollowerFollowingListTile(
-          imageUrl: "",
-          activeStatus: false,
-          name: "John Doe",
-          lastSeen: "Active 2m ago",
-          isFollowed: true,
-        ),
-        FollowerFollowingListTile(
-          imageUrl: "",
-          activeStatus: false,
-          name: "John Doe",
-          lastSeen: "Active 2m ago",
-          isFollowed: true,
-        ),
-      ],
+      children: [],
     );
   }
 }
 
-class FollowerFollowingListTile extends StatelessWidget {
-  final String imageUrl;
-  final bool activeStatus, isFollowed;
-  final String name, lastSeen;
+class FollowerFollowingListTile extends StatefulWidget {
+  final FollowerModel model;
+  final bool activeStatus;
   const FollowerFollowingListTile({
     Key? key,
-    required this.imageUrl,
+    required this.model,
     required this.activeStatus,
-    required this.name,
-    required this.lastSeen,
-    required this.isFollowed,
   }) : super(key: key);
+
+  @override
+  State<FollowerFollowingListTile> createState() =>
+      _FollowerFollowingListTileState();
+}
+
+class _FollowerFollowingListTileState extends State<FollowerFollowingListTile> {
+  late bool _isFollow;
+
+  @override
+  void initState() {
+    _isFollow = widget.model.following!;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -155,7 +135,7 @@ class FollowerFollowingListTile extends StatelessWidget {
               height: 15,
               width: 15,
               decoration: BoxDecoration(
-                color: activeStatus ? AppColors.success : AppColors.grey,
+                color: widget.activeStatus ? AppColors.success : AppColors.grey,
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.white, width: 2),
               ),
@@ -163,19 +143,27 @@ class FollowerFollowingListTile extends StatelessWidget {
           )
         ],
       ),
-      title: Text(name),
-      subtitle: Text(lastSeen),
+      title: Text(widget.model.fullName!),
+      // subtitle: Text(widget.lastSeen),
       trailing: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          // Follow or unfollow user
+          context.read<FollowingBloc>().add(
+                FollowingFollowUnfollowEvent(otherUserId: widget.model.userId!),
+              );
+          setState(() {
+            _isFollow = !_isFollow;
+          });
+        },
         style: ElevatedButton.styleFrom(
-          backgroundColor: isFollowed ? AppColors.grey : AppColors.primary,
+          backgroundColor: _isFollow ? AppColors.grey : AppColors.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
           foregroundColor: AppColors.white,
         ),
         child: Text(
-          isFollowed ? "Following" : "follow",
+          _isFollow ? "Following" : "follow",
           style: AppTextStyle.button.copyWith(color: AppColors.white),
         ),
       ),

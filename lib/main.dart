@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/bloc_provider.dart';
 import 'package:hobbyzhub/global/themes/app_theme.dart';
 import 'package:hobbyzhub/views/profile/third_person_profile_screen.dart';
+import 'package:hobbyzhub/views/splash_screen/splash_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -39,7 +40,7 @@ class _MyAppState extends State<MyApp> {
               title: 'HobbyzHub',
               theme: AppTheme.light,
               navigatorKey: navigatorKey,
-              home: const ThirdPersonProfileScreen(),
+              home: const SplashScreen(),
             ),
           );
         },

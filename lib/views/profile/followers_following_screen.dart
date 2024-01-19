@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hobbyzhub/blocs/follower_following/follower_bloc.dart';
-import 'package:hobbyzhub/blocs/follower_following/following_bloc.dart';
+import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
@@ -50,17 +49,17 @@ class _FollowersScreenState extends State<FollowersScreen> {
   List<FollowerModel> followers = [];
   @override
   void initState() {
-    context.read<FollowerBloc>().add(FollowerGetInitialEvent());
+    context.read<FAndFBloc>().add(FAndFInitialFollowersEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FollowerBloc, FollowerState>(
+    return BlocConsumer<FAndFBloc, FAndFState>(
       listener: (context, state) {
-        if (state is FollowerGetInitialState) {
+        if (state is FAndFInitialFollowersState) {
           followers = state.response.data;
-        } else if (state is FollowerErrorState) {
+        } else if (state is FAndFErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
@@ -69,14 +68,14 @@ class _FollowersScreenState extends State<FollowersScreen> {
         }
       },
       builder: (context, state) {
-        if (state is FollowerLoadingState) {
+        if (state is FAndFLoadingState) {
           return const LoadingWidget();
-        } else if (state is FollowerErrorState) {
+        } else if (state is FAndFErrorState) {
           return Center(child: Text(state.message));
         }
         return ListView.builder(
           itemBuilder: (context, index) {
-            return FollowerFollowingListTile(
+            return FollowerTile(
               model: followers[index],
               activeStatus: true,
             );
@@ -88,38 +87,167 @@ class _FollowersScreenState extends State<FollowersScreen> {
   }
 }
 
-class FollowingScreen extends StatelessWidget {
+class FollowingScreen extends StatefulWidget {
   const FollowingScreen({super.key});
 
   @override
+  State<FollowingScreen> createState() => _FollowingScreenState();
+}
+
+class _FollowingScreenState extends State<FollowingScreen> {
+  List<FollowerModel> followings = [];
+
+  @override
+  void initState() {
+    context.read<FAndFBloc>().add(FAndFInitialFollowingEvent());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [],
+    return BlocConsumer<FAndFBloc, FAndFState>(
+      listener: (context, state) {
+        if (state is FAndFInitialFollowingState) {
+          followings = state.response.data;
+        } else if (state is FAndFErrorState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        if (state is FAndFLoadingState) {
+          return const LoadingWidget();
+        } else if (state is FAndFErrorState) {
+          return Center(child: Text(state.message));
+        }
+        return ListView.builder(
+          itemBuilder: (context, index) {
+            return FollowingTile(model: followings[index]);
+          },
+          itemCount: followings.length,
+        );
+      },
     );
   }
 }
 
-class FollowerFollowingListTile extends StatefulWidget {
+class FollowingTile extends StatefulWidget {
+  final FollowerModel model;
+  const FollowingTile({Key? key, required this.model}) : super(key: key);
+
+  @override
+  State<FollowingTile> createState() => _FollowingTileState();
+}
+
+class _FollowingTileState extends State<FollowingTile> {
+  late bool _isFollow;
+  late FAndFBloc bloc;
+
+  @override
+  void initState() {
+    _isFollow = true;
+    bloc = FAndFBloc();
+    super.initState();
+  }
+
+  followUnfollow() {
+    // Follow or unfollow user
+    bloc.add(
+      FAndFFollowUnfollowEvent(otherUserId: widget.model.userId!),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Stack(
+        children: [
+          Image.asset(ImageAssets.userProfileImage),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              height: 15,
+              width: 15,
+              decoration: BoxDecoration(
+                color: AppColors.success,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.white, width: 2),
+              ),
+            ),
+          )
+        ],
+      ),
+      title: Text(widget.model.fullName.toString()),
+      // subtitle: Text(widget.lastSeen),
+      trailing: BlocConsumer<FAndFBloc, FAndFState>(
+        bloc: bloc,
+        listener: (context, state) {
+          if (state is FAndFFollowUnfollowState) {
+            _isFollow = !_isFollow;
+          }
+        },
+        builder: (context, state) {
+          return ElevatedButton(
+            onPressed: () {
+              followUnfollow();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              foregroundColor: AppColors.white,
+            ),
+            child: (state is FAndFLoadingState)
+                ? const FittedBox(
+                    child: Center(child: LoadingWidget(color: AppColors.white)),
+                  )
+                : Text(
+                    _isFollow ? "Unfollow" : "follow",
+                    style: AppTextStyle.button.copyWith(color: AppColors.white),
+                  ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class FollowerTile extends StatefulWidget {
   final FollowerModel model;
   final bool activeStatus;
-  const FollowerFollowingListTile({
+  const FollowerTile({
     Key? key,
     required this.model,
     required this.activeStatus,
   }) : super(key: key);
 
   @override
-  State<FollowerFollowingListTile> createState() =>
-      _FollowerFollowingListTileState();
+  State<FollowerTile> createState() => _FollowerTileState();
 }
 
-class _FollowerFollowingListTileState extends State<FollowerFollowingListTile> {
+class _FollowerTileState extends State<FollowerTile> {
   late bool _isFollow;
+  late FAndFBloc bloc;
 
   @override
   void initState() {
-    _isFollow = widget.model.following!;
+    if (widget.model.following != null) {
+      _isFollow = widget.model.following ?? true;
+    }
+    bloc = FAndFBloc();
     super.initState();
+  }
+
+  followUnfollow() {
+    // Follow or unfollow user
+    bloc.add(
+      FAndFFollowUnfollowEvent(otherUserId: widget.model.userId!),
+    );
   }
 
   @override
@@ -143,29 +271,45 @@ class _FollowerFollowingListTileState extends State<FollowerFollowingListTile> {
           )
         ],
       ),
-      title: Text(widget.model.fullName!),
+      title: Text(widget.model.fullName.toString()),
       // subtitle: Text(widget.lastSeen),
-      trailing: ElevatedButton(
-        onPressed: () {
-          // Follow or unfollow user
-          context.read<FollowingBloc>().add(
-                FollowingFollowUnfollowEvent(otherUserId: widget.model.userId!),
-              );
-          setState(() {
+      trailing: BlocConsumer<FAndFBloc, FAndFState>(
+        bloc: bloc,
+        listener: (context, state) {
+          if (state is FAndFErrorState) {
+            // Show error
+            _isFollow = false;
+          } else if (state is FAndFFollowUnfollowState) {
+            // Show success
             _isFollow = !_isFollow;
-          });
+          }
         },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: _isFollow ? AppColors.grey : AppColors.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          foregroundColor: AppColors.white,
-        ),
-        child: Text(
-          _isFollow ? "Following" : "follow",
-          style: AppTextStyle.button.copyWith(color: AppColors.white),
-        ),
+        builder: (context, state) {
+          return ElevatedButton(
+            onPressed: () {
+              // Follow or unfollow user
+              followUnfollow();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _isFollow ? AppColors.grey : AppColors.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              foregroundColor: AppColors.white,
+            ),
+            child: (state is FAndFLoadingState)
+                ? FittedBox(
+                    child: Center(
+                        child: LoadingWidget(
+                      color: !_isFollow ? AppColors.grey : AppColors.primary,
+                    )),
+                  )
+                : Text(
+                    _isFollow ? "Following" : "follow",
+                    style: AppTextStyle.button.copyWith(color: AppColors.white),
+                  ),
+          );
+        },
       ),
     );
   }

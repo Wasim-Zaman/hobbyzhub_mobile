@@ -6,19 +6,19 @@ import 'package:hobbyzhub/models/api_response.dart';
 import 'package:hobbyzhub/models/follower/follower_model.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 
-class FollowerController {
+class FAndFController {
   static Future<ApiResponse> getMyFollowers() async {
     const url = FollowersUrl.getMyFollowers;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
-    var body = {"toUserId": userId};
+    var body = {"otherUserId": "5586361c17ce", "page": 0, "size": 10};
     var headers = {
       "Authorization": "Bearer $token",
       "Content-Type": "application/json",
     };
     var response = await ApiManager.postRequest(body, url, headers: headers);
     var responseBody = jsonDecode(response.body);
-    if (responseBody['success'] == true && responseBody['status'] == 200) {
+    if (responseBody['success'] == true) {
       List<FollowerModel> followers = [];
       responseBody['data'].forEach((follower) {
         followers.add(FollowerModel.fromJson(follower));
@@ -30,18 +30,18 @@ class FollowerController {
   }
 
   static Future<ApiResponse> getMyFollowings() async {
-    const url = FollowersUrl.getMyFollowers;
+    const url = FollowersUrl.getMyFollowings;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
-    var body = {"fromUserId": userId};
+    var body = {"myUserId": "5586361c17ce", "page": 0, "size": 10};
     var headers = {
       "Authorization": "Bearer $token",
       "Content-Type": "application/json",
     };
     var response = await ApiManager.postRequest(body, url, headers: headers);
     var responseBody = jsonDecode(response.body);
-
-    if (responseBody['success'] == true && responseBody['status'] == 200) {
+    print(responseBody);
+    if (responseBody['success'] == true) {
       List<FollowerModel> followers = [];
       responseBody['data'].forEach((follower) {
         followers.add(FollowerModel.fromJson(follower));
@@ -57,14 +57,14 @@ class FollowerController {
     const url = FollowersUrl.followUnfollow;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
-    var body = {"myUserId": userId, "otherUserId": otherUserId};
+    var body = {"myUserId": "5586361c17ce", "otherUserId": otherUserId};
     var headers = {
       "Authorization": "$token",
       "Content-Type": "application/json",
     };
     var response = await ApiManager.postRequest(body, url, headers: headers);
     var responseBody = jsonDecode(response.body);
-    // print(responseBody);
+    print(responseBody);
     if (responseBody['success'] == true) {
       return ApiResponse.fromJson(responseBody, (data) => null);
     } else {
@@ -76,7 +76,7 @@ class FollowerController {
     const url = FollowersUrl.checkFollowing;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
-    var body = {"fromUserId": "cbaccfe0ae2d", "toUserId": "8ab64ae1df63"};
+    var body = {"myUserId": "5586361c17ce", "otherUserId": "f08fe244157a"};
     var headers = {
       "Authorization": "$token",
       "Content-Type": "application/json",

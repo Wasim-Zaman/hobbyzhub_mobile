@@ -2,12 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hobbyzhub/blocs/follower_following/following_bloc.dart';
+import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/utils/app_navigator.dart';
-import 'package:hobbyzhub/views/profile/followers_following_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
@@ -34,14 +32,14 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
   }
 
   checkFollowing() {
-    context.read<FollowingBloc>().add(
-          FollowingCheckEvent(otherUserId: "otherUserId"),
+    context.read<FAndFBloc>().add(
+          FAndFCheckFollowingEvent(otherUserId: "otherUserId"),
         );
   }
 
   followUnfollow() {
-    context.read<FollowingBloc>().add(
-          FollowingFollowUnfollowEvent(otherUserId: "otherUserId"),
+    context.read<FAndFBloc>().add(
+          FAndFFollowUnfollowEvent(otherUserId: "otherUserId"),
         );
   }
 
@@ -116,14 +114,13 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
       appBar: const BackAppbarWidget(),
       body: MultiBlocListener(
         listeners: [
-          BlocListener<FollowingBloc, FollowingState>(
+          BlocListener<FAndFBloc, FAndFState>(
             listener: (context, state) {
-              if (state is FollowingCheckState) {
+              if (state is FAndFCheckState) {
                 setState(() {
                   isFollowing = state.response['following'];
-                  isFollowing = false;
                 });
-              } else if (state is FollowingErrorState) {
+              } else if (state is FAndFErrorState) {
                 setState(() {
                   isFollowing = false;
                 });
@@ -173,24 +170,12 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                                   TextValueWidget(
                                     text: "870",
                                     value: "Following",
-                                    onTap: () {
-                                      AppNavigator.goToPage(
-                                        context: context,
-                                        screen: const FollowersFollowingScreen(
-                                            index: 1),
-                                      );
-                                    },
+                                    onTap: () {},
                                   ),
                                   TextValueWidget(
                                     text: "15k",
                                     value: "Followers",
-                                    onTap: () {
-                                      AppNavigator.goToPage(
-                                        context: context,
-                                        screen: const FollowersFollowingScreen(
-                                            index: 0),
-                                      );
-                                    },
+                                    onTap: () {},
                                   ),
                                 ],
                               ),

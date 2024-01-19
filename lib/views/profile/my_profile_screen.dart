@@ -76,6 +76,32 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 20.height,
                 const ProfileWidgets(),
                 20.height,
+                SizedBox(
+                  height: 60,
+                  child: ListView.builder(
+                    itemBuilder: (context, index) => Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          width: 1,
+                          color: AppColors.darkGrey,
+                        ),
+                        image: const DecorationImage(
+                          image: AssetImage(
+                            ImageAssets.userProfileImage,
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    itemCount: 8,
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                ),
               ],
             ),
           ),

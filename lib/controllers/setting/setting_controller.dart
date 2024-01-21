@@ -4,7 +4,8 @@ import 'package:hobbyzhub/utils/secure_storage.dart';
 
 class SettingController {
   submitHelpCenterRequest(body) async {
-    const url = SettingUrl.helpCenterUrl;
+    final userId = await UserSecureStorage.fetchUserId();
+    var url = SettingUrl.helpCenterUrl + "/$userId";
     try {
       final response =
           await ApiManager.postRequest(body, url, authorizationHeaders: true);

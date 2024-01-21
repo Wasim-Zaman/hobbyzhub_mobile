@@ -18,7 +18,7 @@ class HelpCenterScreen extends StatefulWidget {
 
 class _HelpCenterScreenState extends State<HelpCenterScreen> {
   final nameController = TextEditingController();
-  final emailController = TextEditingController();
+
   final feedBackController = TextEditingController();
 
   // focus nodes
@@ -32,7 +32,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
   // Functions
   void submit() {
     if (formKey.currentState!.validate()) {
-      context.read<HelpCenterCubit>().helpCenter(emailController.text.trim(),
+      context.read<HelpCenterCubit>().helpCenter(
           nameController.text.trim(), feedBackController.text.trim());
     }
   }
@@ -40,7 +40,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
   @override
   void dispose() {
     nameController.dispose();
-    emailController.dispose();
+
     feedBackController.dispose();
 
     nameFocusNode.dispose();
@@ -60,9 +60,11 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
           AppDialogs.loadingDialog(context);
         } else if (state is HelpCenterSuccess) {
           AppDialogs.closeDialog(context);
+          Navigator.of(context).pop();
           toast("Request submitted successfully");
         } else if (state is HelpCenterFailed) {
           AppDialogs.closeDialog(context);
+
           toast("Request failed to submit");
         } else if (state is HelpCenterInternetError) {
           AppDialogs.closeDialog(context);
@@ -88,14 +90,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                     hintText: "Enter your name",
                     validator: AppValidators.notEmpty,
                   ),
-                  20.height,
-                  TextFieldWidget(
-                    labelText: "EMAIL",
-                    controller: emailController,
-                    hintText: "Enter your email",
-                    focusNode: emailFocusNode,
-                    validator: AppValidators.email,
-                  ),
+
                   20.height,
                   TextFieldWidget(
                     labelText: "FEEDBACK",

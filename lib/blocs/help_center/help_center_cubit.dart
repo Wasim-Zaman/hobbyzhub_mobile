@@ -12,18 +12,13 @@ class HelpCenterCubit extends Cubit<HelpCenterState> {
 
   SettingController settingController = SettingController();
 
-  helpCenter(email, fullName, feedBack) async {
+  helpCenter(fullName, feedBack) async {
     emit(HelpCenterLoading());
     try {
-      var helpRequestBody = {
-        "message": feedBack,
-        "email": email,
-        "fullName": fullName
-      };
+      var helpRequestBody = {"message": feedBack, "fullName": fullName};
       print(helpRequestBody);
       var response =
           await settingController.submitHelpCenterRequest(helpRequestBody);
-      print(response.body);
 
       if (response.statusCode == 201) {
         emit(HelpCenterSuccess());

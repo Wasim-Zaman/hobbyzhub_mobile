@@ -21,6 +21,8 @@ class FAndFBloc extends Bloc<FAndFEvent, FAndFState> {
         } catch (err) {
           emit(FAndFErrorState(message: err.toString()));
         }
+      } else if (event is FAndFMoreFollowersEvent) {
+        // ...
       } else if (event is FAndFInitialFollowingEvent) {
         emit(FAndFLoadingState());
         try {
@@ -34,6 +36,38 @@ class FAndFBloc extends Bloc<FAndFEvent, FAndFState> {
         } catch (err) {
           emit(FAndFErrorState(message: err.toString()));
         }
+      } else if (event is FAndFMoreFollowingEvent) {
+        //...
+      } else if (event is FAndFInitialOtherFollowersEvent) {
+        emit(FAndFLoadingState());
+        try {
+          var networkStatus = await isNetworkAvailable();
+          if (networkStatus) {
+            var response = await FAndFController.getOtherFollowers();
+            emit(FAndFInitialFollowersState(response: response));
+          } else {
+            emit(FAndFErrorState(message: "No Internet Connection"));
+          }
+        } catch (err) {
+          emit(FAndFErrorState(message: err.toString()));
+        }
+      } else if (event is FAndFMoreOtherFollowersEvent) {
+        // ...
+      } else if (event is FAndFInitialOtherFollowingEvent) {
+        emit(FAndFLoadingState());
+        try {
+          var networkStatus = await isNetworkAvailable();
+          if (networkStatus) {
+            var response = await FAndFController.getOtherFollowings();
+            emit(FAndFInitialFollowingState(response: response));
+          } else {
+            emit(FAndFErrorState(message: "No Internet Connection"));
+          }
+        } catch (err) {
+          emit(FAndFErrorState(message: err.toString()));
+        }
+      } else if (event is FAndFMoreOtherFollowingEvent) {
+        //...
       } else if (event is FAndFFollowUnfollowEvent) {
         emit(FAndFLoadingState());
         try {

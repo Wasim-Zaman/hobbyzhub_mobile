@@ -10,9 +10,9 @@ import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/tabs/tabs_widget.dart';
 import 'package:ionicons/ionicons.dart';
 
-class FollowersFollowingScreen extends StatelessWidget {
+class ThirdPersonFollowersFollowingScreen extends StatelessWidget {
   final int index;
-  const FollowersFollowingScreen({super.key, required this.index});
+  const ThirdPersonFollowersFollowingScreen({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class _FollowersScreenState extends State<FollowersScreen> {
   List<FollowerModel> followers = [];
   @override
   void initState() {
-    context.read<FAndFBloc>().add(FAndFInitialFollowersEvent());
+    context.read<FAndFBloc>().add(FAndFInitialOtherFollowersEvent());
     super.initState();
   }
 
@@ -99,7 +99,7 @@ class _FollowingScreenState extends State<FollowingScreen> {
 
   @override
   void initState() {
-    context.read<FAndFBloc>().add(FAndFInitialFollowingEvent());
+    context.read<FAndFBloc>().add(FAndFInitialOtherFollowingEvent());
     super.initState();
   }
 
@@ -125,94 +125,11 @@ class _FollowingScreenState extends State<FollowingScreen> {
         }
         return ListView.builder(
           itemBuilder: (context, index) {
-            return FollowingTile(model: followings[index]);
+            return FollowerTile(model: followings[index], activeStatus: true);
           },
           itemCount: followings.length,
         );
       },
-    );
-  }
-}
-
-class FollowingTile extends StatefulWidget {
-  final FollowerModel model;
-  const FollowingTile({Key? key, required this.model}) : super(key: key);
-
-  @override
-  State<FollowingTile> createState() => _FollowingTileState();
-}
-
-class _FollowingTileState extends State<FollowingTile> {
-  late bool _isFollow;
-  late FAndFBloc bloc;
-
-  @override
-  void initState() {
-    _isFollow = true;
-    bloc = FAndFBloc();
-    super.initState();
-  }
-
-  followUnfollow() {
-    // Follow or unfollow user
-    bloc.add(
-      FAndFFollowUnfollowEvent(otherUserId: widget.model.userId!),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Stack(
-        children: [
-          Image.asset(ImageAssets.userProfileImage),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: Container(
-              height: 15,
-              width: 15,
-              decoration: BoxDecoration(
-                color: AppColors.success,
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.white, width: 2),
-              ),
-            ),
-          )
-        ],
-      ),
-      title: Text(widget.model.fullName.toString()),
-      // subtitle: Text(widget.lastSeen),
-      trailing: BlocConsumer<FAndFBloc, FAndFState>(
-        bloc: bloc,
-        listener: (context, state) {
-          if (state is FAndFFollowUnfollowState) {
-            _isFollow = !_isFollow;
-          }
-        },
-        builder: (context, state) {
-          return ElevatedButton(
-            onPressed: () {
-              followUnfollow();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              foregroundColor: AppColors.white,
-            ),
-            child: (state is FAndFLoadingState)
-                ? const FittedBox(
-                    child: Center(child: LoadingWidget(color: AppColors.white)),
-                  )
-                : Text(
-                    _isFollow ? "Unfollow" : "follow",
-                    style: AppTextStyle.button.copyWith(color: AppColors.white),
-                  ),
-          );
-        },
-      ),
     );
   }
 }
@@ -305,7 +222,7 @@ class _FollowerTileState extends State<FollowerTile> {
                     )),
                   )
                 : Text(
-                    _isFollow ? "Following" : "Follow Back",
+                    _isFollow ? "Following" : "Follow",
                     style: AppTextStyle.button.copyWith(color: AppColors.white),
                   ),
           );

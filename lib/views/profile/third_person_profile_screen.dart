@@ -6,6 +6,8 @@ import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/views/profile/third_person_followers_following_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
@@ -170,12 +172,26 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                                   TextValueWidget(
                                     text: "870",
                                     value: "Following",
-                                    onTap: () {},
+                                    onTap: () {
+                                      AppNavigator.goToPage(
+                                          context: context,
+                                          screen:
+                                              const ThirdPersonFollowersFollowingScreen(
+                                            index: 1,
+                                          ));
+                                    },
                                   ),
                                   TextValueWidget(
                                     text: "15k",
                                     value: "Followers",
-                                    onTap: () {},
+                                    onTap: () {
+                                      AppNavigator.goToPage(
+                                          context: context,
+                                          screen:
+                                              const ThirdPersonFollowersFollowingScreen(
+                                            index: 0,
+                                          ));
+                                    },
                                   ),
                                 ],
                               ),

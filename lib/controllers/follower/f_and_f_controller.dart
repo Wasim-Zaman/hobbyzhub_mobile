@@ -52,6 +52,62 @@ class FAndFController {
     }
   }
 
+  // other person followers and followings
+  static Future<ApiResponse> getOtherFollowers() async {
+    const url = FollowersUrl.getOtherFollowers;
+    final userId = await UserSecureStorage.fetchUserId();
+    final token = await UserSecureStorage.fetchToken();
+    var body = {
+      "otherUserId": "5586361c17ce",
+      "myUserId": "cbaccfe0ae2d",
+      "page": 0,
+      "size": 10,
+    };
+    var headers = {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+    };
+    var response = await ApiManager.postRequest(body, url, headers: headers);
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['success'] == true) {
+      List<FollowerModel> followers = [];
+      responseBody['data'].forEach((follower) {
+        followers.add(FollowerModel.fromJson(follower));
+      });
+      return ApiResponse.fromJson(responseBody, (data) => followers);
+    } else {
+      throw Exception(responseBody['message']);
+    }
+  }
+
+  static Future<ApiResponse> getOtherFollowings() async {
+    const url = FollowersUrl.getOtherFollowings;
+    final userId = await UserSecureStorage.fetchUserId();
+    final token = await UserSecureStorage.fetchToken();
+    var body = {
+      "otherUserId": "5586361c17ce",
+      "myUserId": "cbaccfe0ae2d",
+      "page": 0,
+      "size": 10
+    };
+    var headers = {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+    };
+    var response = await ApiManager.postRequest(body, url, headers: headers);
+    var responseBody = jsonDecode(response.body);
+    print(responseBody);
+    if (responseBody['success'] == true) {
+      List<FollowerModel> followers = [];
+      responseBody['data'].forEach((follower) {
+        followers.add(FollowerModel.fromJson(follower));
+      });
+      return ApiResponse.fromJson(responseBody, (data) => followers);
+    } else {
+      throw Exception(responseBody['message']);
+    }
+  }
+
   static Future<ApiResponse> followUnfollow(
       {required String otherUserId}) async {
     const url = FollowersUrl.followUnfollow;
@@ -83,7 +139,6 @@ class FAndFController {
     };
     var response = await ApiManager.postRequest(body, url, headers: headers);
     var responseBody = jsonDecode(response.body);
-    print(responseBody);
     if (responseBody['success'] == true) {
       return responseBody['data'];
     } else {

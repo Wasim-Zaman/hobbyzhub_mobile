@@ -49,7 +49,7 @@ class _FollowersScreenState extends State<FollowersScreen> {
   List<FollowerModel> followers = [];
   @override
   void initState() {
-    context.read<FAndFBloc>().add(FAndFInitialFollowersEvent());
+    context.read<FAndFBloc>().add(FAndFInitialOtherFollowersEvent());
     super.initState();
   }
 

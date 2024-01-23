@@ -76,6 +76,7 @@ abstract class FollowersUrl {
   static const getOtherFollowers = '$baseUrl/api/v1/follower/get-third';
   static const getMyFollowings = '$baseUrl/api/v1/following/get';
   static const getOtherFollowings = '$baseUrl/api/v1/following/get-third';
+  static const getCount = '$baseUrl/api/v1/follower/count';
   static const followUnfollow =
       '$baseUrl/api/v1/user-relationship/follow-unfollow';
   static const checkFollowing =

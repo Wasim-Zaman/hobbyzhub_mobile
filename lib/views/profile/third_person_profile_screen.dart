@@ -6,19 +6,19 @@ import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/utils/app_navigator.dart';
-import 'package:hobbyzhub/views/profile/third_person_followers_following_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/text/bio_text_widget.dart';
-import 'package:hobbyzhub/views/widgets/text/text_value_widget.dart';
+import 'package:hobbyzhub/views/widgets/user_all_count_widget.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ThirdPersonProfileScreen extends StatefulWidget {
-  const ThirdPersonProfileScreen({Key? key}) : super(key: key);
+  final String userId;
+  const ThirdPersonProfileScreen({Key? key, required this.userId})
+      : super(key: key);
 
   @override
   _ThirdPersonProfileScreenState createState() =>
@@ -163,37 +163,9 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                               ),
                               20.height,
                               // Posts, following and followers in one row
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <TextValueWidget>[
-                                  const TextValueWidget(
-                                      text: "85", value: "Posts"),
-                                  TextValueWidget(
-                                    text: "870",
-                                    value: "Following",
-                                    onTap: () {
-                                      AppNavigator.goToPage(
-                                          context: context,
-                                          screen:
-                                              const ThirdPersonFollowersFollowingScreen(
-                                            index: 1,
-                                          ));
-                                    },
-                                  ),
-                                  TextValueWidget(
-                                    text: "15k",
-                                    value: "Followers",
-                                    onTap: () {
-                                      AppNavigator.goToPage(
-                                          context: context,
-                                          screen:
-                                              const ThirdPersonFollowersFollowingScreen(
-                                            index: 0,
-                                          ));
-                                    },
-                                  ),
-                                ],
+                              UserAllCountWidget(
+                                isThirdPerson: true,
+                                userId: widget.userId,
                               ),
                               20.height,
                               followFollowingButton(), 20.height,

@@ -69,6 +69,7 @@ class FAndFController {
     };
     var response = await ApiManager.postRequest(body, url, headers: headers);
     var responseBody = jsonDecode(response.body);
+    print("other followers");
     if (responseBody['success'] == true) {
       List<FollowerModel> followers = [];
       responseBody['data'].forEach((follower) {
@@ -96,7 +97,7 @@ class FAndFController {
     };
     var response = await ApiManager.postRequest(body, url, headers: headers);
     var responseBody = jsonDecode(response.body);
-    print(responseBody);
+    print("other followings");
     if (responseBody['success'] == true) {
       List<FollowerModel> followers = [];
       responseBody['data'].forEach((follower) {
@@ -108,12 +109,30 @@ class FAndFController {
     }
   }
 
+  static Future<Map<String, dynamic>> getCount({String? uid}) async {
+    const url = FollowersUrl.getCount;
+    final userId = uid ?? await UserSecureStorage.fetchUserId();
+    final token = await UserSecureStorage.fetchToken();
+    var body = {"userID": "5586361c17ce"};
+    var headers = {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+    };
+    var response = await ApiManager.postRequest(body, url, headers: headers);
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['success'] == true) {
+      return responseBody['data'];
+    } else {
+      throw Exception(responseBody['message']);
+    }
+  }
+
   static Future<ApiResponse> followUnfollow(
       {required String otherUserId}) async {
     const url = FollowersUrl.followUnfollow;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
-    var body = {"myUserId": "5586361c17ce", "otherUserId": otherUserId};
+    var body = {"myUserId": "cbaccfe0ae2d", "otherUserId": otherUserId};
     var headers = {
       "Authorization": "$token",
       "Content-Type": "application/json",

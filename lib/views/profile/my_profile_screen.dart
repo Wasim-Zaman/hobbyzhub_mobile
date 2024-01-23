@@ -6,12 +6,11 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/profile/edit_profile/edit_profile_screen.dart';
-import 'package:hobbyzhub/views/profile/followers_following_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/settings_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
 import 'package:hobbyzhub/views/widgets/text/bio_text_widget.dart';
-import 'package:hobbyzhub/views/widgets/text/text_value_widget.dart';
+import 'package:hobbyzhub/views/widgets/user_all_count_widget.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -47,32 +46,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
                 20.height,
                 // Posts, following and followers in one row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <TextValueWidget>[
-                    const TextValueWidget(text: "85", value: "Posts"),
-                    TextValueWidget(
-                      text: "870",
-                      value: "Following",
-                      onTap: () {
-                        AppNavigator.goToPage(
-                          context: context,
-                          screen: const FollowersFollowingScreen(index: 1),
-                        );
-                      },
-                    ),
-                    TextValueWidget(
-                      text: "15k",
-                      value: "Followers",
-                      onTap: () {
-                        AppNavigator.goToPage(
-                          context: context,
-                          screen: const FollowersFollowingScreen(index: 0),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                const UserAllCountWidget(),
                 20.height,
                 const ProfileWidgets(),
                 20.height,

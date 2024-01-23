@@ -11,9 +11,11 @@ import 'package:hobbyzhub/blocs/like_post/likes_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/post/comments/comment_screen.dart';
 import 'package:hobbyzhub/views/post/story/story_screen.dart';
+import 'package:hobbyzhub/views/profile/third_person_profile_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/basic_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -787,11 +789,25 @@ class _PostScreenState extends State<PostScreen> {
                                               SizedBox(
                                                 height: 3.h,
                                               ),
-                                              Text(
-                                                  state.postsList.first
-                                                      .data[index].username,
-                                                  style: AppTextStyle
-                                                      .notificationTitleTextStyle),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  AppNavigator.goToPage(
+                                                    context: context,
+                                                    screen:
+                                                        ThirdPersonProfileScreen(
+                                                            userId: state
+                                                                .postsList
+                                                                .first
+                                                                .data[index]
+                                                                .userId),
+                                                  );
+                                                },
+                                                child: Text(
+                                                    state.postsList.first
+                                                        .data[index].username,
+                                                    style: AppTextStyle
+                                                        .notificationTitleTextStyle),
+                                              ),
                                               Text(
                                                   formatDateTime(state
                                                       .postsList

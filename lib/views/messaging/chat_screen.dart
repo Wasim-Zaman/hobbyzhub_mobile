@@ -135,7 +135,9 @@ class _ChatScreenState extends State<ChatScreen> {
                       onTap: () {
                         AppNavigator.goToPage(
                           context: context,
-                          screen: MessagingScreen(),
+                          screen: MessagingScreen(
+                            userId: "",
+                          ),
                         );
                       },
                       child: Padding(

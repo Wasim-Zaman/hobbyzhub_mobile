@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
+import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/images/network_image_widget.dart';
 import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/text/bio_text_widget.dart';
@@ -27,6 +29,11 @@ class ThirdPersonProfileScreen extends StatefulWidget {
 
 class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
   bool? isFollowing;
+
+  late ProfileCubit profileCubit;
+
+  initCubit() async {}
+
   @override
   void initState() {
     checkFollowing();
@@ -34,6 +41,8 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
   }
 
   checkFollowing() {
+    profileCubit = context.read<ProfileCubit>();
+    profileCubit.getProfileInfo(widget.userId);
     context.read<FAndFBloc>().add(
           FAndFCheckFollowingEvent(otherUserId: "otherUserId"),
         );
@@ -145,58 +154,70 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                       flexibleSpace: FlexibleSpaceBar(
                         background: Container(
                           padding: const EdgeInsets.all(16),
-                          child: Column(
-                            children: [
-                              // profile image
-                              const ProfileImageWidget(
-                                imageUrl: ImageAssets.userProfileImage,
-                                isEditable: false,
-                              ),
-                              // Name
-                              Text("Sara Stamp",
-                                  style: AppTextStyle.subHeading),
-                              20.height,
-                              // Bio
-                              const BioTextWidget(
-                                bio:
-                                    'I just love the idea of not being what people expect me to be!',
-                              ),
-                              20.height,
-                              // Posts, following and followers in one row
-                              UserAllCountWidget(
-                                isThirdPerson: true,
-                                userId: widget.userId,
-                              ),
-                              20.height,
-                              followFollowingButton(), 20.height,
-                              SizedBox(
-                                height: 60,
-                                child: ListView.builder(
-                                  itemBuilder: (context, index) => Container(
-                                    margin: const EdgeInsets.only(right: 8),
-                                    width: 60,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        width: 1,
-                                        color: AppColors.darkGrey,
-                                      ),
-                                      image: const DecorationImage(
-                                        image: AssetImage(
-                                          ImageAssets.userProfileImage,
+                          child: BlocBuilder<ProfileCubit, ProfileState>(
+                            builder: (context, state) {
+                              if (state is GetProfileLoading) {
+                                return const LoadingWidget();
+                              } else if (state is GetProfileLoaded) {
+                                return Column(
+                                  children: [
+                                    // profile image
+                                    NetworkImageWidget(
+                                      imageUrl: state
+                                          .userProfile.first.data.profileImage,
+                                      isEditable: false,
+                                    ),
+                                    // Name
+                                    Text(state.userProfile.first.data.fullName,
+                                        style: AppTextStyle.subHeading),
+                                    20.height,
+                                    // Bio
+                                    BioTextWidget(
+                                      bio: state.userProfile.first.data.bio,
+                                    ),
+                                    20.height,
+                                    // Posts, following and followers in one row
+                                    UserAllCountWidget(
+                                      isThirdPerson: true,
+                                      userId: widget.userId,
+                                    ),
+                                    20.height,
+                                    followFollowingButton(), 20.height,
+                                    SizedBox(
+                                      height: 60,
+                                      child: ListView.builder(
+                                        itemBuilder: (context, index) =>
+                                            Container(
+                                          margin:
+                                              const EdgeInsets.only(right: 8),
+                                          width: 60,
+                                          height: 60,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              width: 1,
+                                              color: AppColors.darkGrey,
+                                            ),
+                                            image: const DecorationImage(
+                                              image: AssetImage(
+                                                ImageAssets.userProfileImage,
+                                              ),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
                                         ),
-                                        fit: BoxFit.cover,
+                                        itemCount: 8,
+                                        scrollDirection: Axis.horizontal,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8),
                                       ),
                                     ),
-                                  ),
-                                  itemCount: 8,
-                                  scrollDirection: Axis.horizontal,
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8),
-                                ),
-                              ),
-                            ],
+                                  ],
+                                );
+                              } else {
+                                return SizedBox();
+                              }
+                            },
                           ),
                         ),
                       ),

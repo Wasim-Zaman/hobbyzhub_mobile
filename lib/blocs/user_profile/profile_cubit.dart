@@ -17,7 +17,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   getProfileInfo(userId) async {
     emit(GetProfileLoading());
     try {
-      var profileBody = {"userId": "f08fe244157a"};
+      var profileBody = {"userId": userId};
       var response = await userController.getUserProfile(profileBody);
       log(response.body);
 

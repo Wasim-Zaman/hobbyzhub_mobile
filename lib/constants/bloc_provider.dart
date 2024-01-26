@@ -10,6 +10,7 @@ import 'package:hobbyzhub/blocs/image_picker/image_picker_bloc.dart';
 import 'package:hobbyzhub/blocs/like_post/likes_cubit.dart';
 import 'package:hobbyzhub/blocs/specific_post/specific_post_cubit.dart';
 import 'package:hobbyzhub/blocs/timer_cubit/timer_cubit_cubit.dart';
+import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/blocs/write_comment/write_comment_cubit.dart';
 
 class BlocProviders {
@@ -27,5 +28,6 @@ class BlocProviders {
         create: (context) => GetPostCubit()..getPostList()),
     BlocProvider<FAndFBloc>(create: (context) => FAndFBloc()),
     BlocProvider<ChatBloc>(create: (context) => ChatBloc()),
+    BlocProvider<ProfileCubit>(create: (context) => ProfileCubit()),
   ];
 }

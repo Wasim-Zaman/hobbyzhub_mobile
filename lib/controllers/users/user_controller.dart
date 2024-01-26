@@ -3,7 +3,7 @@ import 'package:hobbyzhub/constants/app_url.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 
 class UserController {
-  getUserProfile() async {
+  getUserProfile(userId) async {
     const url = UserProfileUrl.userProfileUrl;
     try {
       final token = await UserSecureStorage.fetchToken();
@@ -12,7 +12,8 @@ class UserController {
         "Authorization": token.toString(),
         "Content-Type": "application/json"
       };
-      final response = await ApiManager.getRequest(url, headers: headers);
+      final response =
+          await ApiManager.postRequest(userId, url, headers: headers);
       return response;
     } catch (_) {
       rethrow;

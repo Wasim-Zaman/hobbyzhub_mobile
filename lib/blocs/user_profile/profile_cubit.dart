@@ -14,10 +14,11 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   UserController userController = UserController();
 
-  getProfileInfo() async {
+  getProfileInfo(userId) async {
     emit(GetProfileLoading());
     try {
-      var response = await userController.getUserProfile();
+      var profileBody = {"userId": "f08fe244157a"};
+      var response = await userController.getUserProfile(profileBody);
       log(response.body);
 
       if (response.statusCode == 200) {

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/auth/auth_bloc.dart';
+import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
 import 'package:hobbyzhub/blocs/create_post/createpost_cubit.dart';
 import 'package:hobbyzhub/blocs/delete_post/delete_post_cubit.dart';
 import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
@@ -25,5 +26,6 @@ class BlocProviders {
     BlocProvider<GetPostCubit>(
         create: (context) => GetPostCubit()..getPostList()),
     BlocProvider<FAndFBloc>(create: (context) => FAndFBloc()),
+    BlocProvider<ChatBloc>(create: (context) => ChatBloc()),
   ];
 }

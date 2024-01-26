@@ -1,21 +1,41 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, depend_on_referenced_packages
+
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 class MessagingScreen extends StatefulWidget {
-  const MessagingScreen({super.key});
+  final String userId;
+  const MessagingScreen({super.key, required this.userId});
 
   @override
   State<MessagingScreen> createState() => _MessagingScreenState();
 }
 
 class _MessagingScreenState extends State<MessagingScreen> {
+  late StompClient stompClient;
+  late String? myUserId;
+  List<MessageModel> messages = [];
+
+  @override
+  void initState() {
+    initializeSocket();
+    super.initState();
+  }
+
+  final TextEditingController _messageController = TextEditingController();
   void handleClick(int value) {
     switch (value) {
       case 0:
@@ -25,10 +45,95 @@ class _MessagingScreenState extends State<MessagingScreen> {
     }
   }
 
+  initializeSocket() async {
+    // myUserId = await UserSecureStorage.fetchUserId();
+    myUserId = 'ws5678';
+    stompClient = StompClient(
+      config: StompConfig.sockJS(
+        url: 'http://149.28.232.132:9101/ws-registry',
+        beforeConnect: () async {
+          log("Connecting...");
+        },
+        onConnect: onConnectCallback,
+        onStompError: (p0) {
+          log("Stomp error ${p0.body}");
+        },
+        onWebSocketError: (p0) {
+          log("Websocket error $p0");
+        },
+        onUnhandledFrame: (p0) {
+          log("Unhandled frame $p0");
+        },
+        onUnhandledMessage: (p0) {
+          log("Unhandled message $p0");
+        },
+      ),
+    );
+    stompClient.activate();
+  }
+
+  void onConnectCallback(StompFrame connectFrame) {
+    // _senderIdController.text = 'ws5678';
+    // _recipientIdController.text = 'ws1234';
+    print('Connected');
+    stompClient.subscribe(
+      destination: '/queue/user-$myUserId',
+      callback: (frame) {
+        if (frame.binaryBody != null) {
+          try {
+            var decodedData = utf8.decode(frame.binaryBody!);
+            log("Received message: $decodedData");
+
+            // assing the message to the list of messages
+            context.read<ChatBloc>().add(
+                  ChatReceiveMessageEvent(
+                    message: MessageModel.fromJson(
+                      jsonDecode(decodedData),
+                    ),
+                  ),
+                );
+          } on FormatException catch (e) {
+            log("Error decoding message: $e");
+          }
+        }
+      },
+    );
+  }
+
+  void sendMessage() {
+    if (_messageController.text.isNotEmpty) {
+      try {
+        // use utc formate for the date
+        var date = DateTime.now().toUtc().toString();
+        MessageModel message = MessageModel(
+          message: _messageController.text,
+          fromUserId: myUserId.toString(),
+          toUserId: widget.userId,
+          dateSent: date,
+        );
+        stompClient.send(
+          destination: '/app/private',
+          body: jsonEncode(message.toJson()),
+          headers: {},
+        );
+        // save the message to the list of messages
+        context.read<ChatBloc>().add(ChatSendMessageEvent(message: message));
+        _messageController.clear();
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    stompClient.deactivate();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: Padding(
           padding: EdgeInsets.all(8.w),
@@ -177,203 +282,156 @@ class _MessagingScreenState extends State<MessagingScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        color: Colors.white,
-        child: Padding(
-          padding:
-              EdgeInsets.only(bottom: 12.w, left: 12.w, right: 12.w, top: 10.h),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+      body: BlocConsumer<ChatBloc, ChatState>(
+        listener: (context, state) {
+          if (state is ChatMessageSentState) {
+            messages = state.messages;
+          }
+        },
+        builder: (context, state) {
+          return Column(
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width / 1.4,
-                height: 56.h,
-                padding: const EdgeInsets.only(
-                  left: 22,
-                ),
-                decoration: ShapeDecoration(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  shadows: [
-                    BoxShadow(
-                      color: Color(0x21000000),
-                      blurRadius: 30,
-                      offset: Offset(5, 4),
-                      spreadRadius: 0,
-                    )
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
+              ListView.builder(
+                  itemCount: messages.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return Column(
                       children: [
-                        Icon(Icons.attach_file),
-                        SizedBox(width: 10.w),
-                        Text(
-                          'Write your message',
-                          style: AppTextStyle.subcategoryUnSelectedTextStyle,
+                        MessageBubble(
+                          message: messages[index],
+                          myUserId: myUserId.toString(),
+                        ),
+                      ],
+                    );
+                  }),
+              Expanded(child: Container()),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.4,
+                    height: 56.h,
+                    padding: const EdgeInsets.only(
+                      left: 22,
+                    ),
+                    decoration: ShapeDecoration(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      shadows: [
+                        BoxShadow(
+                          color: Color(0x21000000),
+                          blurRadius: 30,
+                          offset: Offset(5, 4),
+                          spreadRadius: 0,
+                        )
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _messageController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Write your message',
+                              prefixIcon: Icon(Icons.attach_file),
+                            ),
+                            style: AppTextStyle.subcategoryUnSelectedTextStyle,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(12.w),
+                          child: IconButton(
+                            icon: Icon(Icons.send),
+                            color: AppColors.primary,
+                            onPressed: () {
+                              sendMessage();
+                            },
+                          ),
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(12.w),
-                      child: Icon(
-                        Icons.send,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              Container(
-                  width: 55.w,
-                  height: 56.h,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x21000000),
-                        blurRadius: 30,
-                        offset: Offset(5, 4),
-                        spreadRadius: 0,
-                      )
-                    ],
                   ),
-                  child: Center(
-                    child: Icon(
-                      Icons.camera_alt_outlined,
-                    ),
-                  )),
+                  const SizedBox(width: 10),
+                  Container(
+                      width: 55.w,
+                      height: 56.h,
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        shadows: [
+                          BoxShadow(
+                            color: Color(0x21000000),
+                            blurRadius: 30,
+                            offset: Offset(5, 4),
+                            spreadRadius: 0,
+                          )
+                        ],
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.camera_alt_outlined,
+                        ),
+                      )),
+                ],
+              ),
+              Container(height: 20),
             ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class MessageBubble extends StatelessWidget {
+  final MessageModel message; // Replace with your actual Message class
+  final String myUserId;
+
+  const MessageBubble(
+      {super.key, required this.message, required this.myUserId});
+
+  @override
+  Widget build(BuildContext context) {
+    bool isMe = message.fromUserId == myUserId;
+
+    return Row(
+      mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          margin: EdgeInsets.only(
+            top: 10,
+            bottom: 10,
+            left: isMe ? 0 : 10,
+            right: isMe ? 10 : 0,
+          ),
+          decoration: BoxDecoration(
+            color: isMe ? AppColors.primary : Colors.grey[300],
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15),
+              topRight: Radius.circular(15),
+              bottomLeft: isMe ? Radius.circular(15) : Radius.circular(0),
+              bottomRight: isMe ? Radius.circular(0) : Radius.circular(15),
+            ),
+          ),
+          child: Text(
+            message.message.toString(), // Replace with your actual text field
+            style: TextStyle(
+              color: isMe ? Colors.white : Colors.black,
+            ),
           ),
         ),
-      ),
-      body: ListView.builder(
-          itemCount: 20,
-          shrinkWrap: true,
-          itemBuilder: (context, inde) {
-            return Column(
-              children: [
-                SizedBox(
-                  height: 10.h,
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.w),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: 268.w,
-                          height: 72.h,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 42.w, vertical: 27.h),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Color(0xFF26A4FF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(41.80),
-                                topRight: Radius.circular(41.80),
-                                bottomLeft: Radius.circular(41.80),
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 184.w,
-                                child: Text(
-                                  'Hello man how are you doing?',
-                                  textAlign: TextAlign.right,
-                                  style:
-                                      AppTextStyle.subcategorySelectedTextStyle,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Text(
-                          '12:10',
-                          textAlign: TextAlign.right,
-                          style: AppTextStyle.subcategoryUnSelectedTextStyle,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.w),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 268.w,
-                          height: 72.h,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 42.w, vertical: 27.h),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Color(0x1926A4FF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(41.80),
-                                topRight: Radius.circular(41.80),
-                                bottomRight: Radius.circular(41.80),
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 184,
-                                child: Text(
-                                  'I’m fine bro how are you?',
-                                  style: AppTextStyle
-                                      .subcategoryUnSelectedTextStyle,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Text(
-                          '12:10',
-                          textAlign: TextAlign.right,
-                          style: AppTextStyle.subcategoryUnSelectedTextStyle,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }),
+      ],
     );
   }
 }

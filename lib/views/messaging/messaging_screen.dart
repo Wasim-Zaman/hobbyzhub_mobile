@@ -47,7 +47,6 @@ class _MessagingScreenState extends State<MessagingScreen> {
   }
 
   initializeSocket() {
-    myUserId = 'ws1234';
     stompClient = StompClient(
       config: StompConfig.sockJS(
         url: dotenv.env['SOCKET_URL']!,
@@ -76,6 +75,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
   void onConnectCallback(StompFrame connectFrame) {
     // _senderIdController.text = 'ws5678';
     // _recipientIdController.text = 'ws1234';
+    myUserId = 'ws7890';
     print('Connected');
     stompClient.subscribe(
       destination: '/queue/user-$myUserId',
@@ -109,7 +109,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
         MessageModel message = MessageModel(
           message: _messageController.text,
           fromUserId: myUserId.toString(),
-          toUserId: widget.userId,
+          toUserId: "ws1234",
           dateSent: date,
         );
         stompClient.send(
@@ -293,13 +293,17 @@ class _MessagingScreenState extends State<MessagingScreen> {
         listener: (context, state) {
           if (state is ChatMessageSentState) {
             messages = state.messages;
+          } else if (state is ChatMessageReceivedState) {
+            messages = state.messages;
           }
         },
         builder: (context, state) {
           return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ListView.builder(
                   itemCount: messages.length,
+                  reverse: false,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return Column(
@@ -311,7 +315,8 @@ class _MessagingScreenState extends State<MessagingScreen> {
                       ],
                     );
                   }),
-              Expanded(child: Container()),
+              // Expanded(child: Container()),
+              20.height,
               Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -9,7 +9,8 @@ class ChatConnectedState extends ChatState {}
 class ChatDisconnectedState extends ChatState {}
 
 class ChatMessageReceivedState extends ChatState {
-  ChatMessageReceivedState({required List<MessageModel> messages});
+  final List<MessageModel> messages;
+  ChatMessageReceivedState({required this.messages});
 }
 
 class ChatMessageSentState extends ChatState {

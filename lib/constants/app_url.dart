@@ -84,3 +84,8 @@ abstract class FollowersUrl {
   static final checkFollowing =
       '$baseUrl/api/v1/user-relationship/check-following';
 }
+
+abstract class UserProfileUrl {
+  static const userProfileUrl =
+      "${AppUrl.baseUrl}/accounts-service/api/v1/accounts/get-details";
+}

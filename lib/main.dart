@@ -41,9 +41,7 @@ class _MyAppState extends State<MyApp> {
               title: 'HobbyzHub',
               theme: AppTheme.light,
               navigatorKey: navigatorKey,
-              home: const MessagingScreen(
-                userId: "ws5678",
-              ),
+              home: const MessagingScreen(userId: "ws5678"),
             ),
           );
         },

@@ -10,7 +10,7 @@ import 'package:hobbyzhub/models/category/sub_category_model.dart';
 class CategoryController {
   // Categories
   static Future<ApiResponse> getMainCategories(int page, int size) async {
-    const url = CategoryUrl.getMainCategories;
+    final url = CategoryUrl.getMainCategories;
     final body = {"page": page, "size": size};
     try {
       final response = await ApiManager.postRequest(
@@ -39,7 +39,7 @@ class CategoryController {
     int page,
     int size,
   ) async {
-    const url = CategoryUrl.searchCategoriesBySlug;
+    final url = CategoryUrl.searchCategoriesBySlug;
     final body = {"searchSlug": slug, "page": page, "size": size};
     try {
       final response = await ApiManager.postRequest(
@@ -64,7 +64,7 @@ class CategoryController {
 
   // Sub categories
   static Future<ApiResponse> getSubCategories(String categoryId) async {
-    const url = CategoryUrl.getSubCategories;
+    final url = CategoryUrl.getSubCategories;
     final body = {"categoryId": categoryId};
     try {
       final response = await ApiManager.postRequest(
@@ -92,7 +92,7 @@ class CategoryController {
     String subCategoryId,
     FinishAccountModel finishAccountModel,
   ) async {
-    const url = CategoryUrl.subscribeUserToSubCategory;
+    final url = CategoryUrl.subscribeUserToSubCategory;
     final body = {
       "userId": finishAccountModel.userId,
       "userName": finishAccountModel.fullName,

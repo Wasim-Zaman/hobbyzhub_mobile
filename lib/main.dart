@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/bloc_provider.dart';
 import 'package:hobbyzhub/global/themes/app_theme.dart';
@@ -8,6 +9,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 void main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   await initialize();
   timeago.setLocaleMessages('fr', timeago.EnMessages());
@@ -40,7 +42,7 @@ class _MyAppState extends State<MyApp> {
               theme: AppTheme.light,
               navigatorKey: navigatorKey,
               home: const MessagingScreen(
-                userId: "ws1234",
+                userId: "ws5678",
               ),
             ),
           );

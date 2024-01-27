@@ -1,34 +1,36 @@
-abstract class AppUrl {
-  static const String developmentUrl = "http://149.28.232.132:8765";
-  static const String productionUrl = "http://149.28.232.132:8765";
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-  static const String baseUrl = developmentUrl;
+abstract class AppUrl {
+  static String developmentUrl = dotenv.env['DEVELOPMENT_URL']!;
+  static String productionUrl = dotenv.env['PRODUCTION_URL']!;
+
+  static String baseUrl = developmentUrl;
 }
 
 abstract class AuthUrl {
   // Auth Service
   static const authService = "/auth-service";
 
-  static const register = "${AppUrl.baseUrl}$authService/api/v1/auth/register";
-  static const login = "${AppUrl.baseUrl}$authService/api/v1/auth/login";
-  static const activateAccount =
+  static final register = "${AppUrl.baseUrl}$authService/api/v1/auth/register";
+  static final login = "${AppUrl.baseUrl}$authService/api/v1/auth/login";
+  static final activateAccount =
       "${AppUrl.baseUrl}$authService/api/v1/auth/activate-account";
-  static const changePassword =
+  static final changePassword =
       "${AppUrl.baseUrl}$authService/api/v1/auth/reset-password";
 
   // Account Service
   static const accountService = "/accounts-service";
 
-  static const sendSignupVerificationEmail =
+  static final sendSignupVerificationEmail =
       "${AppUrl.baseUrl}$accountService/api/v1/accounts/email-otp?intent=verify-email";
-  static const verifyOtp =
+  static final verifyOtp =
       "${AppUrl.baseUrl}$accountService/api/v1/accounts/verify-otp";
-  static const completeProfile =
+  static final completeProfile =
       "${AppUrl.baseUrl}$accountService/api/v1/accounts/update-details";
-  static const sendVerificationMailForPasswordReset =
+  static final sendVerificationMailForPasswordReset =
       "${AppUrl.baseUrl}$accountService/api/v1/accounts/email-otp?intent=reset-password";
 
-  // static const String emailVerification =
+  // static final String emailVerification =
   //     "${AppUrl.baseUrl}/api/auth/verify-account";
 }
 
@@ -50,17 +52,17 @@ abstract class PostUrl {
 }
 
 abstract class CategoryUrl {
-  static const baseUrl = "${AppUrl.baseUrl}/category-service";
+  static final baseUrl = "${AppUrl.baseUrl}/category-service";
 
   // Main Categories URL
-  static const getMainCategories = "$baseUrl/api/v1/categories/hobby/get-list";
-  static const searchCategoriesBySlug =
+  static final getMainCategories = "$baseUrl/api/v1/categories/hobby/get-list";
+  static final searchCategoriesBySlug =
       "$baseUrl/api/v1/categories/hobby/search";
 
   // Sub-Categories URL
-  static const getSubCategories =
+  static final getSubCategories =
       "$baseUrl/api/v1/categories/sub-hobby/get-list";
-  static const subscribeUserToSubCategory =
+  static final subscribeUserToSubCategory =
       "$baseUrl/api/v1/categories/subscription/subscribe";
 }
 
@@ -70,15 +72,15 @@ abstract class SettingUrl {
 }
 
 abstract class FollowersUrl {
-  static const baseUrl = '${AppUrl.baseUrl}/follower-service';
+  static final baseUrl = '${AppUrl.baseUrl}/follower-service';
 
-  static const getMyFollowers = '$baseUrl/api/v1/follower/get';
-  static const getOtherFollowers = '$baseUrl/api/v1/follower/get-third';
-  static const getMyFollowings = '$baseUrl/api/v1/following/get';
-  static const getOtherFollowings = '$baseUrl/api/v1/following/get-third';
-  static const getCount = '$baseUrl/api/v1/follower/count';
-  static const followUnfollow =
+  static final getMyFollowers = '$baseUrl/api/v1/follower/get';
+  static final getOtherFollowers = '$baseUrl/api/v1/follower/get-third';
+  static final getMyFollowings = '$baseUrl/api/v1/following/get';
+  static final getOtherFollowings = '$baseUrl/api/v1/following/get-third';
+  static final getCount = '$baseUrl/api/v1/follower/count';
+  static final followUnfollow =
       '$baseUrl/api/v1/user-relationship/follow-unfollow';
-  static const checkFollowing =
+  static final checkFollowing =
       '$baseUrl/api/v1/user-relationship/check-following';
 }

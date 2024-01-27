@@ -8,7 +8,7 @@ import 'package:hobbyzhub/utils/secure_storage.dart';
 
 class FAndFController {
   static Future<ApiResponse> getMyFollowers() async {
-    const url = FollowersUrl.getMyFollowers;
+    final url = FollowersUrl.getMyFollowers;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
     var body = {"otherUserId": "5586361c17ce", "page": 0, "size": 10};
@@ -30,7 +30,7 @@ class FAndFController {
   }
 
   static Future<ApiResponse> getMyFollowings() async {
-    const url = FollowersUrl.getMyFollowings;
+    final url = FollowersUrl.getMyFollowings;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
     var body = {"myUserId": "5586361c17ce", "page": 0, "size": 10};
@@ -54,7 +54,7 @@ class FAndFController {
 
   // other person followers and followings
   static Future<ApiResponse> getOtherFollowers() async {
-    const url = FollowersUrl.getOtherFollowers;
+    final url = FollowersUrl.getOtherFollowers;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
     var body = {
@@ -82,7 +82,7 @@ class FAndFController {
   }
 
   static Future<ApiResponse> getOtherFollowings() async {
-    const url = FollowersUrl.getOtherFollowings;
+    final url = FollowersUrl.getOtherFollowings;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
     var body = {
@@ -110,7 +110,7 @@ class FAndFController {
   }
 
   static Future<Map<String, dynamic>> getCount({String? uid}) async {
-    const url = FollowersUrl.getCount;
+    final url = FollowersUrl.getCount;
     final userId = uid ?? await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
     var body = {"userID": "5586361c17ce"};
@@ -129,7 +129,7 @@ class FAndFController {
 
   static Future<ApiResponse> followUnfollow(
       {required String otherUserId}) async {
-    const url = FollowersUrl.followUnfollow;
+    final url = FollowersUrl.followUnfollow;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
     var body = {"myUserId": "cbaccfe0ae2d", "otherUserId": otherUserId};
@@ -148,7 +148,7 @@ class FAndFController {
   }
 
   static Future<Map> checkFollowing(String otherUserId) async {
-    const url = FollowersUrl.checkFollowing;
+    final url = FollowersUrl.checkFollowing;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
     var body = {"myUserId": "5586361c17ce", "otherUserId": "f08fe244157a"};

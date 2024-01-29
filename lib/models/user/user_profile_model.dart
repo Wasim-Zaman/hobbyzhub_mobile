@@ -72,7 +72,7 @@ class Data {
         email: json["email"],
         userId: json["userId"],
         fullName: json["fullName"],
-        gender: json["gender"],
+        gender: json["gender"] ?? '',
         bio: json["bio"],
         profileImage: json["profileImage"],
         joinedDate: json["joinedDate"],

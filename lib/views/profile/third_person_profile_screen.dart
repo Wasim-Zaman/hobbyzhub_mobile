@@ -10,7 +10,6 @@ import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/images/network_image_widget.dart';
-import 'package:hobbyzhub/views/widgets/images/profile_image_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/text/bio_text_widget.dart';
 import 'package:hobbyzhub/views/widgets/user_all_count_widget.dart';
@@ -44,13 +43,13 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
     profileCubit = context.read<ProfileCubit>();
     profileCubit.getProfileInfo(widget.userId);
     context.read<FAndFBloc>().add(
-          FAndFCheckFollowingEvent(otherUserId: "otherUserId"),
+          FAndFCheckFollowingEvent(otherUserId: widget.userId),
         );
   }
 
   followUnfollow() {
     context.read<FAndFBloc>().add(
-          FAndFFollowUnfollowEvent(otherUserId: "otherUserId"),
+          FAndFFollowUnfollowEvent(otherUserId: widget.userId),
         );
   }
 

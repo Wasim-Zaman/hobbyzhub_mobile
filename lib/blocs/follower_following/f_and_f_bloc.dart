@@ -43,7 +43,8 @@ class FAndFBloc extends Bloc<FAndFEvent, FAndFState> {
         try {
           var networkStatus = await isNetworkAvailable();
           if (networkStatus) {
-            var response = await FAndFController.getOtherFollowers();
+            var response =
+                await FAndFController.getOtherFollowers(event.otherUserId);
             emit(FAndFInitialFollowersState(response: response));
           } else {
             emit(FAndFErrorState(message: "No Internet Connection"));
@@ -58,7 +59,8 @@ class FAndFBloc extends Bloc<FAndFEvent, FAndFState> {
         try {
           var networkStatus = await isNetworkAvailable();
           if (networkStatus) {
-            var response = await FAndFController.getOtherFollowings();
+            var response =
+                await FAndFController.getOtherFollowings(event.otherUserId);
             emit(FAndFInitialFollowingState(response: response));
           } else {
             emit(FAndFErrorState(message: "No Internet Connection"));

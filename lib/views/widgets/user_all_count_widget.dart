@@ -21,7 +21,10 @@ class _UserAllCountWidgetState extends State<UserAllCountWidget> {
     AppNavigator.goToPage(
       context: context,
       screen: widget.isThirdPerson != null
-          ? const ThirdPersonFollowersFollowingScreen(index: 0)
+          ? ThirdPersonFollowersFollowingScreen(
+              index: 0,
+              otherUserId: widget.userId!,
+            )
           : const FollowersFollowingScreen(index: 0),
     );
   }
@@ -30,7 +33,10 @@ class _UserAllCountWidgetState extends State<UserAllCountWidget> {
     AppNavigator.goToPage(
       context: context,
       screen: widget.isThirdPerson != null
-          ? const ThirdPersonFollowersFollowingScreen(index: 1)
+          ? ThirdPersonFollowersFollowingScreen(
+              index: 1,
+              otherUserId: widget.userId!,
+            )
           : const FollowersFollowingScreen(index: 1),
     );
   }
@@ -80,23 +86,14 @@ class _UserAllCountWidgetState extends State<UserAllCountWidget> {
               text: followings,
               value: "Following",
               onTap: () {
-                AppNavigator.goToPage(
-                    context: context,
-                    screen: const ThirdPersonFollowersFollowingScreen(
-                      index: 1,
-                    ));
+                followingsClick();
               },
             ),
             TextValueWidget(
               text: followers,
               value: "Followers",
               onTap: () {
-                AppNavigator.goToPage(
-                  context: context,
-                  screen: const ThirdPersonFollowersFollowingScreen(
-                    index: 0,
-                  ),
-                );
+                followersClick();
               },
             ),
           ],

@@ -23,7 +23,7 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
               pageSize,
             );
             if (categories.data.isEmpty) {
-              emit(CategoriesEmptyState());
+              emit(CategoriesNotFoundState());
             } else {
               emit(CategoriesLoadedState(categories: categories));
             }

@@ -12,7 +12,12 @@ import 'package:ionicons/ionicons.dart';
 
 class ThirdPersonFollowersFollowingScreen extends StatelessWidget {
   final int index;
-  const ThirdPersonFollowersFollowingScreen({super.key, required this.index});
+  final String otherUserId;
+  const ThirdPersonFollowersFollowingScreen({
+    super.key,
+    required this.index,
+    required this.otherUserId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,16 +35,17 @@ class ThirdPersonFollowersFollowingScreen extends StatelessWidget {
       ),
       index: index,
       length: 2,
-      children: const [
-        FollowersScreen(), // Content for the first tab
-        FollowingScreen(), // Content for the second tab
+      children: [
+        FollowersScreen(userId: otherUserId), // Content for the first tab
+        FollowingScreen(userId: otherUserId), // Content for the second tab
       ],
     );
   }
 }
 
 class FollowersScreen extends StatefulWidget {
-  const FollowersScreen({super.key});
+  final String userId;
+  const FollowersScreen({super.key, required this.userId});
 
   @override
   State<FollowersScreen> createState() => _FollowersScreenState();
@@ -49,7 +55,9 @@ class _FollowersScreenState extends State<FollowersScreen> {
   List<FollowerModel> followers = [];
   @override
   void initState() {
-    context.read<FAndFBloc>().add(FAndFInitialOtherFollowersEvent());
+    context.read<FAndFBloc>().add(
+          FAndFInitialOtherFollowersEvent(otherUserId: widget.userId),
+        );
     super.initState();
   }
 
@@ -88,7 +96,8 @@ class _FollowersScreenState extends State<FollowersScreen> {
 }
 
 class FollowingScreen extends StatefulWidget {
-  const FollowingScreen({super.key});
+  final String userId;
+  const FollowingScreen({super.key, required this.userId});
 
   @override
   State<FollowingScreen> createState() => _FollowingScreenState();
@@ -99,7 +108,9 @@ class _FollowingScreenState extends State<FollowingScreen> {
 
   @override
   void initState() {
-    context.read<FAndFBloc>().add(FAndFInitialOtherFollowingEvent());
+    context
+        .read<FAndFBloc>()
+        .add(FAndFInitialOtherFollowingEvent(otherUserId: widget.userId));
     super.initState();
   }
 

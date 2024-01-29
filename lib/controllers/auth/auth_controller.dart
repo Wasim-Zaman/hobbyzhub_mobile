@@ -77,7 +77,6 @@ abstract class AuthController {
           ),
         );
       }
-      // print(model.profilePicture!.path.split('/').last);
       // send other fields
       request.fields["userId"] = model.userId.toString();
       request.fields["fullName"] = model.name.toString();

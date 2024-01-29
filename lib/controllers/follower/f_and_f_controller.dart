@@ -11,7 +11,7 @@ class FAndFController {
     final url = FollowersUrl.getMyFollowers;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
-    var body = {"otherUserId": "5586361c17ce", "page": 0, "size": 10};
+    var body = {"otherUserId": userId, "page": 0, "size": 10};
     var headers = {
       "Authorization": "Bearer $token",
       "Content-Type": "application/json",
@@ -33,7 +33,7 @@ class FAndFController {
     final url = FollowersUrl.getMyFollowings;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
-    var body = {"myUserId": "5586361c17ce", "page": 0, "size": 10};
+    var body = {"myUserId": userId, "page": 0, "size": 10};
     var headers = {
       "Authorization": "Bearer $token",
       "Content-Type": "application/json",
@@ -53,13 +53,13 @@ class FAndFController {
   }
 
   // other person followers and followings
-  static Future<ApiResponse> getOtherFollowers() async {
+  static Future<ApiResponse> getOtherFollowers(String otherUserId) async {
     final url = FollowersUrl.getOtherFollowers;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
     var body = {
-      "otherUserId": "5586361c17ce",
-      "myUserId": "cbaccfe0ae2d",
+      "otherUserId": otherUserId,
+      "myUserId": userId,
       "page": 0,
       "size": 10,
     };
@@ -69,7 +69,6 @@ class FAndFController {
     };
     var response = await ApiManager.postRequest(body, url, headers: headers);
     var responseBody = jsonDecode(response.body);
-    print("other followers");
     if (responseBody['success'] == true) {
       List<FollowerModel> followers = [];
       responseBody['data'].forEach((follower) {
@@ -81,13 +80,13 @@ class FAndFController {
     }
   }
 
-  static Future<ApiResponse> getOtherFollowings() async {
+  static Future<ApiResponse> getOtherFollowings(String otherUserId) async {
     final url = FollowersUrl.getOtherFollowings;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
     var body = {
-      "otherUserId": "5586361c17ce",
-      "myUserId": "cbaccfe0ae2d",
+      "otherUserId": otherUserId,
+      "myUserId": userId,
       "page": 0,
       "size": 10
     };
@@ -113,7 +112,7 @@ class FAndFController {
     final url = FollowersUrl.getCount;
     final userId = uid ?? await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
-    var body = {"userID": "5586361c17ce"};
+    var body = {"userID": userId};
     var headers = {
       "Authorization": "Bearer $token",
       "Content-Type": "application/json",
@@ -132,7 +131,7 @@ class FAndFController {
     final url = FollowersUrl.followUnfollow;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
-    var body = {"myUserId": "cbaccfe0ae2d", "otherUserId": otherUserId};
+    var body = {"myUserId": userId, "otherUserId": otherUserId};
     var headers = {
       "Authorization": "$token",
       "Content-Type": "application/json",
@@ -151,7 +150,7 @@ class FAndFController {
     final url = FollowersUrl.checkFollowing;
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
-    var body = {"myUserId": "5586361c17ce", "otherUserId": "f08fe244157a"};
+    var body = {"myUserId": userId, "otherUserId": otherUserId};
     var headers = {
       "Authorization": "$token",
       "Content-Type": "application/json",

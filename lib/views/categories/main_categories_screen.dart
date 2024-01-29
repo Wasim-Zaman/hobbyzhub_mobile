@@ -181,7 +181,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
         builder: (context, state) {
           if (state is CategoriesLoadingState) {
             return Center(child: LoadingWidget());
-          } else if (state is CategoriesEmptyState) {
+          } else if (state is CategoriesNotFoundState) {
             return Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -198,6 +198,29 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                   20.height,
                   Text(
                     "Sorry, the keyword you entered cannot be found. please, check again or search with another keyword.",
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.subHeading,
+                  ),
+                ],
+              ),
+            );
+          } else if (state is CategoriesEmptyState) {
+            return Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    ImageAssets.searchImage,
+                    height: 200.h,
+                    width: 200.w,
+                  ),
+                  20.height,
+                  Text("Not Found", style: AppTextStyle.subHeading),
+                  20.height,
+                  Text(
+                    "Sorry, No Categories Found This Time",
                     textAlign: TextAlign.center,
                     style: AppTextStyle.subHeading,
                   ),

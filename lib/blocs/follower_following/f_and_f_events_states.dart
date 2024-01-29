@@ -15,14 +15,20 @@ class FAndFInitialFollowingEvent extends FAndFEvent {}
 class FAndFMoreFollowingEvent extends FAndFEvent {}
 
 // other followers and followings
-class FAndFInitialOtherFollowersEvent extends FAndFEvent {}
+class FAndFInitialOtherFollowersEvent extends FAndFEvent {
+  final String otherUserId;
+  FAndFInitialOtherFollowersEvent({required this.otherUserId});
+}
 
 class FAndFMoreOtherFollowersEvent extends FAndFEvent {
   int page, size;
   FAndFMoreOtherFollowersEvent({required this.page, required this.size});
 }
 
-class FAndFInitialOtherFollowingEvent extends FAndFEvent {}
+class FAndFInitialOtherFollowingEvent extends FAndFEvent {
+  final String otherUserId;
+  FAndFInitialOtherFollowingEvent({required this.otherUserId});
+}
 
 class FAndFMoreOtherFollowingEvent extends FAndFEvent {}
 

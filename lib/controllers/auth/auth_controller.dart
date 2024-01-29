@@ -11,7 +11,7 @@ import 'package:http/http.dart';
 
 abstract class AuthController {
   static Future<ApiResponse> register(String email, String password) async {
-    const url = AuthUrl.register;
+    final url = AuthUrl.register;
     try {
       final response = await ApiManager.postRequest({
         'email': email,
@@ -24,7 +24,7 @@ abstract class AuthController {
   }
 
   static Future<ApiResponse> sendSignupVerificationMail(String email) async {
-    const url = AuthUrl.sendSignupVerificationEmail;
+    final url = AuthUrl.sendSignupVerificationEmail;
     try {
       final response = await ApiManager.postRequest({'email': email}, url);
       return ApiManager.returnModel(response);
@@ -34,7 +34,7 @@ abstract class AuthController {
   }
 
   static Future<ApiResponse> verifyOtpForBoth(String email, String otp) async {
-    const url = AuthUrl.verifyOtp;
+    final url = AuthUrl.verifyOtp;
     final body = {"email": email, "temporaryOtp": otp};
     try {
       final response = await ApiManager.putRequest(body, url);
@@ -45,7 +45,7 @@ abstract class AuthController {
   }
 
   static Future<ApiResponse> verifyAccount(String email) async {
-    const url = AuthUrl.activateAccount;
+    final url = AuthUrl.activateAccount;
 
     try {
       final response = await ApiManager.putRequest({"email": email}, url);
@@ -58,7 +58,7 @@ abstract class AuthController {
   static Future<ApiResponse> completeProfile({
     required CompleteProfileModel model,
   }) async {
-    const url = AuthUrl.completeProfile;
+    final url = AuthUrl.completeProfile;
     try {
       var request = MultipartRequest('PUT', Uri.parse(url));
 
@@ -77,7 +77,6 @@ abstract class AuthController {
           ),
         );
       }
-      // print(model.profilePicture!.path.split('/').last);
       // send other fields
       request.fields["userId"] = model.userId.toString();
       request.fields["fullName"] = model.name.toString();
@@ -109,7 +108,7 @@ abstract class AuthController {
     String email,
     String password,
   ) async {
-    const url = AuthUrl.login;
+    final url = AuthUrl.login;
     Map body = {'email': email, 'password': password};
     try {
       final response = await ApiManager.postRequest(body, url);
@@ -129,7 +128,7 @@ abstract class AuthController {
     // get the token from local database
     final token = await UserSecureStorage.fetchToken();
 
-    const url = AuthUrl.sendVerificationMailForPasswordReset;
+    final url = AuthUrl.sendVerificationMailForPasswordReset;
     final body = {'email': email};
     final headers = <String, String>{
       "Authorization": token.toString(),
@@ -144,7 +143,7 @@ abstract class AuthController {
     String email,
     String password,
   ) async {
-    const url = AuthUrl.changePassword;
+    final url = AuthUrl.changePassword;
     final body = {"email": email, "newPassword": password};
 
     final response = await ApiManager.putRequest(body, url);

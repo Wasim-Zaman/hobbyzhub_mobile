@@ -4,7 +4,7 @@ import 'package:hobbyzhub/utils/secure_storage.dart';
 
 class UserController {
   getUserProfile(userId) async {
-    const url = UserProfileUrl.userProfileUrl;
+    final url = UserProfileUrl.userProfileUrl;
     try {
       final token = await UserSecureStorage.fetchToken();
 

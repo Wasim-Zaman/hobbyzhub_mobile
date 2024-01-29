@@ -32,4 +32,6 @@ class CategoriesErrorState extends CategoriesState {
 
 class CategoriesEmptyState extends CategoriesState {}
 
+class CategoriesNotFoundState extends CategoriesState {}
+
 class CategoriesNoInternetState extends CategoriesState {}

@@ -5,12 +5,13 @@ class MessageModel {
   String? dateSent;
   String? messageType;
 
-  MessageModel(
-      {this.fromUserId,
-      this.toUserId,
-      this.message,
-      this.dateSent,
-      this.messageType});
+  MessageModel({
+    this.fromUserId,
+    this.toUserId,
+    this.message,
+    this.dateSent,
+    this.messageType,
+  });
 
   MessageModel.fromJson(Map<String, dynamic> json) {
     fromUserId = json['fromUserId'];
@@ -26,7 +27,7 @@ class MessageModel {
     data['toUserId'] = toUserId;
     data['message'] = message;
     data['dateSent'] = dateSent;
-    data['messageType'] = messageType;
+    // data['messageType'] = messageType;
     return data;
   }
 }

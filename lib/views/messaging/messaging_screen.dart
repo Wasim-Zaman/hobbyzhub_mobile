@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
@@ -45,13 +46,12 @@ class _MessagingScreenState extends State<MessagingScreen> {
     }
   }
 
-  initializeSocket() async {
-    // myUserId = await UserSecureStorage.fetchUserId();
-    myUserId = 'ws5678';
+  initializeSocket() {
     stompClient = StompClient(
       config: StompConfig.sockJS(
-        url: 'http://149.28.232.132:9101/ws-registry',
+        url: dotenv.env['SOCKET_URL']!,
         beforeConnect: () async {
+          // myUserId = await UserSecureStorage.fetchUserId();
           log("Connecting...");
         },
         onConnect: onConnectCallback,
@@ -75,6 +75,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
   void onConnectCallback(StompFrame connectFrame) {
     // _senderIdController.text = 'ws5678';
     // _recipientIdController.text = 'ws1234';
+    myUserId = 'ws7890';
     print('Connected');
     stompClient.subscribe(
       destination: '/queue/user-$myUserId',
@@ -108,7 +109,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
         MessageModel message = MessageModel(
           message: _messageController.text,
           fromUserId: myUserId.toString(),
-          toUserId: widget.userId,
+          toUserId: "ws1234",
           dateSent: date,
         );
         stompClient.send(
@@ -128,6 +129,12 @@ class _MessagingScreenState extends State<MessagingScreen> {
   @override
   void dispose() {
     stompClient.deactivate();
+
+    // before we actually close the chat, i want to cache top 100 messages
+    // so that when the user opens the chat again, they can see the last 100 messages
+    // this is to avoid making a call to the server to fetch the messages
+    // use hive database to do so for last 100 messages
+
     super.dispose();
   }
 
@@ -286,13 +293,17 @@ class _MessagingScreenState extends State<MessagingScreen> {
         listener: (context, state) {
           if (state is ChatMessageSentState) {
             messages = state.messages;
+          } else if (state is ChatMessageReceivedState) {
+            messages = state.messages;
           }
         },
         builder: (context, state) {
           return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ListView.builder(
                   itemCount: messages.length,
+                  reverse: false,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return Column(
@@ -304,7 +315,8 @@ class _MessagingScreenState extends State<MessagingScreen> {
                       ],
                     );
                   }),
-              Expanded(child: Container()),
+              // Expanded(child: Container()),
+              20.height,
               Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,

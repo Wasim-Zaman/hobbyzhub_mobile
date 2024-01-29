@@ -43,13 +43,13 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
     profileCubit = context.read<ProfileCubit>();
     profileCubit.getProfileInfo(widget.userId);
     context.read<FAndFBloc>().add(
-          FAndFCheckFollowingEvent(otherUserId: "otherUserId"),
+          FAndFCheckFollowingEvent(otherUserId: widget.userId),
         );
   }
 
   followUnfollow() {
     context.read<FAndFBloc>().add(
-          FAndFFollowUnfollowEvent(otherUserId: "otherUserId"),
+          FAndFFollowUnfollowEvent(otherUserId: widget.userId),
         );
   }
 

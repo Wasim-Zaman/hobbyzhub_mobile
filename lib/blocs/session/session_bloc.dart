@@ -14,7 +14,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
           'isVerified': true,
           'token': await UserSecureStorage.fetchToken(),
           'newUser': false,
-          'categoryStatus': false
+          'categoryStatus': true
         }));
       } catch (err) {
         emit(SessionFailure(message: err.toString()));

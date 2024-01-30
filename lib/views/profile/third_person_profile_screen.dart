@@ -214,7 +214,7 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                                   ],
                                 );
                               } else {
-                                return SizedBox();
+                                return const SizedBox();
                               }
                             },
                           ),

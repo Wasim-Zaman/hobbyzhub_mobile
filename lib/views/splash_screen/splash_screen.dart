@@ -11,6 +11,7 @@ import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/auth/complete_profile_screen1.dart';
 import 'package:hobbyzhub/views/bottom_nav_bar/main_tabs_screen.dart';
 import 'package:hobbyzhub/views/onboarding/onboarding_screen.dart';
+import 'package:hobbyzhub/views/welcome/welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -60,7 +61,12 @@ class _SplashScreenState extends State<SplashScreen> {
           screen: const OnboardingScreen(),
         );
       }
-    } else {}
+    } else {
+      AppNavigator.goToPageWithReplacement(
+        context: context,
+        screen: const WelcomeScreen(),
+      );
+    }
 
     // if (token == null || userId == null) {
     //   Navigator.of(context).push(

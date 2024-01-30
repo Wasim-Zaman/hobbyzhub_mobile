@@ -88,4 +88,6 @@ abstract class FollowersUrl {
 abstract class UserProfileUrl {
   static final userProfileUrl =
       "${AppUrl.baseUrl}/accounts-service/api/v1/accounts/get-details";
+  static final userPostsUrl =
+      "${AppUrl.baseUrl}/post-service/api/v1/posts/user-posts";
 }

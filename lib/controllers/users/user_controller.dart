@@ -19,4 +19,21 @@ class UserController {
       rethrow;
     }
   }
+
+  getUserPost(userId) async {
+    final url = UserProfileUrl.userPostsUrl;
+    try {
+      final token = await UserSecureStorage.fetchToken();
+
+      final headers = <String, String>{
+        "Authorization": token.toString(),
+        "Content-Type": "application/json"
+      };
+      final response =
+          await ApiManager.postRequest(userId, url, headers: headers);
+      return response;
+    } catch (_) {
+      rethrow;
+    }
+  }
 }

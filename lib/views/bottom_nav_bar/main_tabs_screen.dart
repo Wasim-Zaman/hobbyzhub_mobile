@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/group/group_screen.dart';
 import 'package:hobbyzhub/views/messaging/chat_screen.dart';
 import 'package:hobbyzhub/views/post/create_post_screen.dart';
@@ -104,7 +107,12 @@ class _MainTabScreenState extends State<MainTabScreen> {
             ),
           ),
         ],
-        onTap: (value) {
+        onTap: (value) async {
+          if (value == 4) {
+            final userId = await UserSecureStorage.fetchUserId();
+
+            context.read<ProfileCubit>().getProfileInfo(userId);
+          }
           selectedIndex(value);
         },
         currentIndex: pageIndex,

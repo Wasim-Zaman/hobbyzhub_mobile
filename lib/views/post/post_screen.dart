@@ -791,16 +791,24 @@ class _PostScreenState extends State<PostScreen> {
                                               ),
                                               GestureDetector(
                                                 onTap: () {
-                                                  AppNavigator.goToPage(
-                                                    context: context,
-                                                    screen:
-                                                        ThirdPersonProfileScreen(
-                                                            userId: state
-                                                                .postsList
-                                                                .first
-                                                                .data[index]
-                                                                .userId),
-                                                  );
+                                                  userId ==
+                                                          state
+                                                              .postsList
+                                                              .first
+                                                              .data[index]
+                                                              .userId
+                                                      ? null
+                                                      : AppNavigator.goToPage(
+                                                          context: context,
+                                                          screen:
+                                                              ThirdPersonProfileScreen(
+                                                                  userId: state
+                                                                      .postsList
+                                                                      .first
+                                                                      .data[
+                                                                          index]
+                                                                      .userId),
+                                                        );
                                                 },
                                                 child: Text(
                                                     state.postsList.first

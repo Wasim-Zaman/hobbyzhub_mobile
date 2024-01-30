@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
+import 'package:hobbyzhub/blocs/user_posts/user_post_cubit.dart';
 import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/views/profile/tab_thirdPersonPost_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/images/network_image_widget.dart';
@@ -150,6 +152,7 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                       expandedHeight: context.height() * 0.6,
                       floating: true,
                       pinned: true,
+                      leading: SizedBox(),
                       flexibleSpace: FlexibleSpaceBar(
                         background: Container(
                           padding: const EdgeInsets.all(16),
@@ -237,30 +240,17 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                       ),
                     ),
                   ],
-                  body: const TabBarView(
+                  body: TabBarView(
                     children: [
-                      PostScreen(),
+                      TabThirdPersonPostScreen(
+                        userId: widget.userId,
+                      ),
                       GroupsInCommonScreen(),
                     ],
                   ),
                 ),
               ),
       ),
-    );
-  }
-}
-
-class PostScreen extends StatelessWidget {
-  const PostScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        Center(
-          child: Text("Hello"),
-        ),
-      ],
     );
   }
 }

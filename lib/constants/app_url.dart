@@ -29,7 +29,8 @@ abstract class AuthUrl {
       "${AppUrl.baseUrl}$accountService/api/v1/accounts/update-details";
   static final sendVerificationMailForPasswordReset =
       "${AppUrl.baseUrl}$accountService/api/v1/accounts/email-otp?intent=reset-password";
-
+  static final searchUserByName =
+      '${AppUrl.baseUrl}$accountService/api/v1/accounts/search';
   // static final String emailVerification =
   //     "${AppUrl.baseUrl}/api/auth/verify-account";
 }

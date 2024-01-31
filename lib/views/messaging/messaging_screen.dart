@@ -10,7 +10,10 @@ import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/chat/chat_model.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
+import 'package:hobbyzhub/utils/app_date.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:stomp_dart_client/stomp.dart';
@@ -18,8 +21,8 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 
 class MessagingScreen extends StatefulWidget {
-  final String userId;
-  const MessagingScreen({super.key, required this.userId});
+  final ChatModel chat;
+  const MessagingScreen({super.key, required this.chat});
 
   @override
   State<MessagingScreen> createState() => _MessagingScreenState();
@@ -72,11 +75,11 @@ class _MessagingScreenState extends State<MessagingScreen> {
     stompClient.activate();
   }
 
-  void onConnectCallback(StompFrame connectFrame) {
+  void onConnectCallback(StompFrame connectFrame) async {
     // _senderIdController.text = 'ws5678';
     // _recipientIdController.text = 'ws1234';
-    myUserId = 'ws7890';
-    print('Connected');
+    myUserId = await UserSecureStorage.fetchUserId();
+    print('Connected as $myUserId');
     stompClient.subscribe(
       destination: '/queue/user-$myUserId',
       callback: (frame) {
@@ -105,12 +108,14 @@ class _MessagingScreenState extends State<MessagingScreen> {
     if (_messageController.text.isNotEmpty) {
       try {
         // use utc formate for the date
-        var date = DateTime.now().toUtc().toString();
+        // var date = DateTime.now().toUtc().toString();
         MessageModel message = MessageModel(
           message: _messageController.text,
+          chatId: widget.chat.chatId,
           fromUserId: myUserId.toString(),
-          toUserId: "ws1234",
-          dateSent: date,
+          toUserId: widget.chat.chatParticipants?[0].userId,
+          dateTimeSent: AppDate.generateTimeString(),
+          type: "text",
         );
         stompClient.send(
           destination: '/app/private',
@@ -140,6 +145,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var participant = widget.chat.chatParticipants![0];
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -179,7 +185,8 @@ class _MessagingScreenState extends State<MessagingScreen> {
                 decoration: ShapeDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                        "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),
+                      participant.profileImage!,
+                    ),
                     fit: BoxFit.fill,
                   ),
                   shape: RoundedRectangleBorder(
@@ -196,7 +203,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                 children: [
                   SizedBox(
                     child: Text(
-                      'Jane Smith',
+                      widget.chat.chatParticipants![0].fullName!,
                       style: AppTextStyle.listTileTitle,
                     ),
                   ),
@@ -298,9 +305,12 @@ class _MessagingScreenState extends State<MessagingScreen> {
           }
         },
         builder: (context, state) {
+          // var date =
+          //     AppDate.parseTimeStringToDateTime(widget.chat.dateTimeCreated!);
           return Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              // Text('Chat started on ${date.day}'),
               ListView.builder(
                   itemCount: messages.length,
                   reverse: false,

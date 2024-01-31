@@ -10,29 +10,34 @@ abstract class AppUrl {
 abstract class AuthUrl {
   // Auth Service
   static const authService = "/auth-service";
+  static final authBase = AppUrl.baseUrl;
 
-  static final register = "${AppUrl.baseUrl}$authService/api/v1/auth/register";
-  static final login = "${AppUrl.baseUrl}$authService/api/v1/auth/login";
-  static final activateAccount =
-      "${AppUrl.baseUrl}$authService/api/v1/auth/activate-account";
-  static final changePassword =
-      "${AppUrl.baseUrl}$authService/api/v1/auth/reset-password";
+  static final register = "$authBase/api/v1/auth/register";
+  static final login = "$authBase/api/v1/auth/login";
+  static final activateAccount = "$authBase/api/v1/auth/activate-account";
+  static final changePassword = "$authBase/api/v1/auth/reset-password";
 
   // Account Service
   static const accountService = "/accounts-service";
+  static final accountBase = AppUrl.baseUrl;
 
   static final sendSignupVerificationEmail =
-      "${AppUrl.baseUrl}$accountService/api/v1/accounts/email-otp?intent=verify-email";
-  static final verifyOtp =
-      "${AppUrl.baseUrl}$accountService/api/v1/accounts/verify-otp";
-  static final completeProfile =
-      "${AppUrl.baseUrl}$accountService/api/v1/accounts/update-details";
+      "$accountBase/api/v1/accounts/email-otp?intent=verify-email";
+  static final verifyOtp = "$accountBase/api/v1/accounts/verify-otp";
+  static final completeProfile = "$accountBase/api/v1/accounts/update-details";
   static final sendVerificationMailForPasswordReset =
-      "${AppUrl.baseUrl}$accountService/api/v1/accounts/email-otp?intent=reset-password";
-  static final searchUserByName =
-      '${AppUrl.baseUrl}$accountService/api/v1/accounts/search';
+      "$accountBase/api/v1/accounts/email-otp?intent=reset-password";
+  static final searchUserByName = '$accountBase/api/v1/accounts/search';
   // static final String emailVerification =
   //     "${AppUrl.baseUrl}/api/auth/verify-account";
+}
+
+abstract class ChatUrl {
+  static final chatBase = AppUrl.baseUrl;
+
+  static final searchUsersByName = "$chatBase/api/v1/accounts/search";
+  static final createPrivateChat = "$chatBase/api/v1/chats/private/create-new";
+  static final getChats = "$chatBase/api/v1/chats/private/get-chats";
 }
 
 abstract class MediaUrl {

@@ -4,6 +4,10 @@ abstract class ChatState {}
 
 class ChatInitialState extends ChatState {}
 
+class ChatLoadingState extends ChatState {}
+
+class ChatCreatePrivateChatLoadingState extends ChatState {}
+
 class ChatConnectedState extends ChatState {}
 
 class ChatDisconnectedState extends ChatState {}
@@ -22,4 +26,15 @@ class ChatErrorState extends ChatState {
   final String message;
 
   ChatErrorState({required this.message});
+}
+
+class ChatCreatePrivateSuccessState extends ChatState {
+  final ChatModel chat;
+  ChatCreatePrivateSuccessState({required this.chat});
+}
+
+class ChatGetSuccessState extends ChatState {
+  final List<ChatModel> chats;
+
+  ChatGetSuccessState({required this.chats});
 }

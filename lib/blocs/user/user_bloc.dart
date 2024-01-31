@@ -15,7 +15,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       try {
         var networkStatus = await isNetworkAvailable();
         if (networkStatus) {
-          final response = await UserController.searchUserByName(
+          final response = await UserController.searchUsersByName(
             slug: event.slug,
             page: event.page,
             pageSize: event.pageSize,
@@ -36,7 +36,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       try {
         var networkStatus = await isNetworkAvailable();
         if (networkStatus) {
-          final response = await UserController.searchUserByName(
+          final response = await UserController.searchUsersByName(
             slug: event.slug,
             page: event.page,
             pageSize: event.pageSize,

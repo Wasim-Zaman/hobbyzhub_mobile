@@ -3,13 +3,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/chat/chat_model.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/messaging/messaging_screen.dart';
+import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -21,16 +24,21 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   // Blocs
   UserBloc userBloc = UserBloc();
+  ChatBloc chatBloc = ChatBloc();
 
   // Lists
   List<User> searchedUsers = [];
+  List<ChatModel> chats = [];
 
   // Controllers
   ScrollController searchedUserController = ScrollController();
 
   // Pagination
   int page = 0;
-  int pageSize = 2;
+  int pageSize = 20;
+
+  int chatPage = 0;
+  int chatPageSize = 20;
 
   // Others
   String slug = '';
@@ -59,6 +67,14 @@ class _ChatScreenState extends State<ChatScreen> {
     userBloc.add(
       UserSearchByNameMoreEvent(slug: slug, page: page, pageSize: pageSize),
     );
+  }
+
+  @override
+  void dispose() {
+    userBloc.close();
+    chatBloc.close();
+    searchedUserController.dispose();
+    super.dispose();
   }
 
   @override
@@ -170,140 +186,184 @@ class _ChatScreenState extends State<ChatScreen> {
             SizedBox(
               height: 20.h,
             ),
-            Expanded(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        AppNavigator.goToPage(
-                          context: context,
-                          screen: MessagingScreen(
-                            userId: "",
-                          ),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          color: AppColors.lightGrey,
-                          width: double.infinity,
+            BlocConsumer<ChatBloc, ChatState>(
+              bloc: chatBloc
+                ..add(
+                  ChatGetPeoplesEvent(
+                    page: chatPage,
+                    size: chatPageSize,
+                  ),
+                ),
+              listener: (context, state) {
+                if (state is ChatGetSuccessState) {
+                  chats = state.chats;
+                }
+                if (state is ChatCreatePrivateSuccessState) {
+                  AppNavigator.goToPage(
+                    context: context,
+                    screen: MessagingScreen(
+                      chat: state.chat,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                if (state is ChatLoadingState) {
+                  return Center(
+                    child: LoadingWidget(),
+                  );
+                } else if (state is ChatErrorState) {
+                  return Center(
+                    child: Text(state.message),
+                  );
+                }
+                return Expanded(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: chats.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            AppNavigator.goToPage(
+                              context: context,
+                              screen: MessagingScreen(chat: chats[index]),
+                            );
+                          },
                           child: Padding(
-                            padding: EdgeInsets.only(
-                                top: 20.h, bottom: 20.h, left: 5.w, right: 5.w),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Container(
+                              color: AppColors.lightGrey,
+                              width: double.infinity,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    top: 20.h,
+                                    bottom: 20.h,
+                                    left: 5.w,
+                                    right: 5.w),
+                                child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(
-                                      width: 10.h,
-                                    ),
-                                    Expanded(
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            width: 45.w,
-                                            height: 45.h,
-                                            decoration: ShapeDecoration(
-                                              image: DecorationImage(
-                                                image: NetworkImage(
-                                                    "https://via.placeholder.com/44x45"),
-                                                fit: BoxFit.fill,
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 10.h,
+                                        ),
+                                        Expanded(
+                                          child: Stack(
+                                            children: [
+                                              Container(
+                                                width: 45.w,
+                                                height: 45.h,
+                                                decoration: ShapeDecoration(
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(
+                                                      chats[index]
+                                                          .chatParticipants![0]
+                                                          .profileImage!,
+                                                    ),
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
                                               ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
+                                              Positioned(
+                                                left: 35.w,
+                                                top: 33.h,
+                                                child: Container(
+                                                  width: 12.w,
+                                                  height: 12.h,
+                                                  decoration: ShapeDecoration(
+                                                    color: Color(0xFF12B669),
+                                                    shape: OvalBorder(),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                          Positioned(
-                                            left: 35.w,
-                                            top: 33.h,
-                                            child: Container(
-                                              width: 12.w,
-                                              height: 12.h,
-                                              decoration: ShapeDecoration(
-                                                color: Color(0xFF12B669),
-                                                shape: OvalBorder(),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                chats[index]
+                                                    .chatParticipants![0]
+                                                    .fullName!,
+                                                style:
+                                                    AppTextStyle.listTileTitle,
                                               ),
-                                            ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
+                                              SizedBox(
+                                                width: 250.w,
+                                                child: Text(
+                                                  'It is a long established fact that a read and will be distracted lisece.',
+                                                  maxLines: 2,
+                                                  style: AppTextStyle
+                                                      .listTileSubHeading,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Jane Smith',
-                                            style: AppTextStyle.listTileTitle,
-                                          ),
-                                          SizedBox(
-                                            height: 5.h,
-                                          ),
-                                          SizedBox(
-                                            width: 250.w,
-                                            child: Text(
-                                              'It is a long established fact that a read and will be distracted lisece.',
-                                              maxLines: 2,
-                                              style: AppTextStyle
-                                                  .listTileSubHeading,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            '22.51',
-                                            style: AppTextStyle.likeByTextStyle,
-                                          ),
-                                          SizedBox(
-                                            height: 10.h,
-                                          ),
-                                          Container(
-                                            width: 20.w,
-                                            height: 20.h,
-                                            decoration: ShapeDecoration(
-                                              color: Color(0xFF26A4FF),
-                                              shape: OvalBorder(),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                '3',
-                                                textAlign: TextAlign.center,
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '22.51',
                                                 style: AppTextStyle
-                                                    .subcategorySelectedTextStyle,
+                                                    .likeByTextStyle,
                                               ),
-                                            ),
+                                              SizedBox(
+                                                height: 10.h,
+                                              ),
+                                              Container(
+                                                width: 20.w,
+                                                height: 20.h,
+                                                decoration: ShapeDecoration(
+                                                  color: Color(0xFF26A4FF),
+                                                  shape: OvalBorder(),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    '3',
+                                                    textAlign: TextAlign.center,
+                                                    style: AppTextStyle
+                                                        .subcategorySelectedTextStyle,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    )
+                                        )
+                                      ],
+                                    ),
                                   ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    );
-                  }),
+                        );
+                      }),
+                );
+              },
             )
           ],
         ),
@@ -392,16 +452,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           itemCount: searchedUsers.length,
                           itemBuilder: (context, index) {
                             return ListTile(
-                                onTap: () {
-                                  AppNavigator.goToPage(
-                                    context: context,
-                                    screen: MessagingScreen(
-                                      userId: searchedUsers[index]
-                                          .userId
-                                          .toString(),
-                                    ),
-                                  );
-                                },
+                                onTap: () {},
                                 leading: SizedBox(
                                   width: 45.w,
                                   height: 45.h,
@@ -449,7 +500,15 @@ class _ChatScreenState extends State<ChatScreen> {
                                 //   style: AppTextStyle.listTileSubHeading,
                                 // ),
                                 trailing: TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    chatBloc.add(
+                                      ChatCreateNewPrivateCatEvent(
+                                        otherUserId: searchedUsers[index]
+                                            .userId
+                                            .toString(),
+                                      ),
+                                    );
+                                  },
                                   child: Text('Start Chat'),
                                 ));
                           });

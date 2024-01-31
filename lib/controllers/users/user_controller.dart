@@ -41,7 +41,7 @@ class UserController {
     }
   }
 
-  static Future<ApiResponse> searchUserByName({
+  static Future<ApiResponse> searchUsersByName({
     required String slug,
     int page = 0,
     int pageSize = 20,

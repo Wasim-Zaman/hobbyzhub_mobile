@@ -33,6 +33,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // Controllers
   ScrollController searchedUserController = ScrollController();
+  ScrollController chatController = ScrollController();
 
   // Pagination
   int page = 0;
@@ -55,12 +56,22 @@ class _ChatScreenState extends State<ChatScreen> {
         searchUserMore();
       }
     });
+    chatController.addListener(() {
+      // when we scroll all users then increase the page size by 1 and call searchMoreUser function
+      if (chatController.position.pixels ==
+          chatController.position.maxScrollExtent) {
+        chatPage = chatPage + 1;
+        getMoreChats();
+      }
+    });
     super.initState();
   }
 
   initBlocs() {
     chatBloc = context.read<ChatBloc>();
   }
+
+  getMoreChats() {}
 
   searchUserInit() {
     slug = '';
@@ -77,7 +88,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    print("Disposed");
     userBloc.close();
     chatBloc.close();
     searchedUserController.dispose();
@@ -226,144 +236,151 @@ class _ChatScreenState extends State<ChatScreen> {
                       scrollDirection: Axis.vertical,
                       itemCount: chats.length,
                       itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            AppNavigator.goToPage(
-                              context: context,
-                              screen: MessagingScreen(chat: chats[index]),
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Container(
-                              color: AppColors.lightGrey,
-                              width: double.infinity,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    top: 20.h,
-                                    bottom: 20.h,
-                                    left: 5.w,
-                                    right: 5.w),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: 10.h,
-                                        ),
-                                        Expanded(
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                width: 45.w,
-                                                height: 45.h,
-                                                decoration: ShapeDecoration(
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                      chats[index]
-                                                          .chatParticipants![0]
-                                                          .profileImage!,
+                        if (chats[index].type == 'private') {
+                          return GestureDetector(
+                            onTap: () {
+                              AppNavigator.goToPage(
+                                context: context,
+                                screen: MessagingScreen(chat: chats[index]),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Container(
+                                color: AppColors.lightGrey,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 20.h,
+                                      bottom: 20.h,
+                                      left: 5.w,
+                                      right: 5.w),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: 10.h,
+                                          ),
+                                          Expanded(
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  width: 45.w,
+                                                  height: 45.h,
+                                                  decoration: ShapeDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                        chats[index]
+                                                            .chatParticipants![
+                                                                0]
+                                                            .profileImage!,
+                                                      ),
+                                                      fit: BoxFit.fill,
                                                     ),
-                                                    fit: BoxFit.fill,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              Positioned(
-                                                left: 35.w,
-                                                top: 33.h,
-                                                child: Container(
-                                                  width: 12.w,
-                                                  height: 12.h,
+                                                Positioned(
+                                                  left: 35.w,
+                                                  top: 33.h,
+                                                  child: Container(
+                                                    width: 12.w,
+                                                    height: 12.h,
+                                                    decoration: ShapeDecoration(
+                                                      color: Color(0xFF12B669),
+                                                      shape: OvalBorder(),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  chats[index]
+                                                      .chatParticipants![0]
+                                                      .fullName!,
+                                                  style: AppTextStyle
+                                                      .listTileTitle,
+                                                ),
+                                                SizedBox(
+                                                  height: 5.h,
+                                                ),
+                                                SizedBox(
+                                                  width: 250.w,
+                                                  child: Text(
+                                                    'It is a long established fact that a read and will be distracted lisece.',
+                                                    maxLines: 2,
+                                                    style: AppTextStyle
+                                                        .listTileSubHeading,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  '22.51',
+                                                  style: AppTextStyle
+                                                      .likeByTextStyle,
+                                                ),
+                                                SizedBox(
+                                                  height: 10.h,
+                                                ),
+                                                Container(
+                                                  width: 20.w,
+                                                  height: 20.h,
                                                   decoration: ShapeDecoration(
-                                                    color: Color(0xFF12B669),
+                                                    color: Color(0xFF26A4FF),
                                                     shape: OvalBorder(),
                                                   ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                chats[index]
-                                                    .chatParticipants![0]
-                                                    .fullName!,
-                                                style:
-                                                    AppTextStyle.listTileTitle,
-                                              ),
-                                              SizedBox(
-                                                height: 5.h,
-                                              ),
-                                              SizedBox(
-                                                width: 250.w,
-                                                child: Text(
-                                                  'It is a long established fact that a read and will be distracted lisece.',
-                                                  maxLines: 2,
-                                                  style: AppTextStyle
-                                                      .listTileSubHeading,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                '22.51',
-                                                style: AppTextStyle
-                                                    .likeByTextStyle,
-                                              ),
-                                              SizedBox(
-                                                height: 10.h,
-                                              ),
-                                              Container(
-                                                width: 20.w,
-                                                height: 20.h,
-                                                decoration: ShapeDecoration(
-                                                  color: Color(0xFF26A4FF),
-                                                  shape: OvalBorder(),
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    '3',
-                                                    textAlign: TextAlign.center,
-                                                    style: AppTextStyle
-                                                        .subcategorySelectedTextStyle,
+                                                  child: Center(
+                                                    child: Text(
+                                                      '3',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: AppTextStyle
+                                                          .subcategorySelectedTextStyle,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
+                          );
+                        }
+                        return null;
                       }),
                 );
               },

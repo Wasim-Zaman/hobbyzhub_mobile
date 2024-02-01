@@ -76,8 +76,6 @@ class _MessagingScreenState extends State<MessagingScreen> {
   }
 
   void onConnectCallback(StompFrame connectFrame) async {
-    // _senderIdController.text = 'ws5678';
-    // _recipientIdController.text = 'ws1234';
     myUserId = await UserSecureStorage.fetchUserId();
     print('Connected as $myUserId');
     stompClient.subscribe(
@@ -307,88 +305,47 @@ class _MessagingScreenState extends State<MessagingScreen> {
         builder: (context, state) {
           // var date =
           //     AppDate.parseTimeStringToDateTime(widget.chat.dateTimeCreated!);
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              // Text('Chat started on ${date.day}'),
-              ListView.builder(
-                  itemCount: messages.length,
-                  reverse: false,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        MessageBubble(
-                          message: messages[index],
-                          myUserId: myUserId.toString(),
-                        ),
-                      ],
-                    );
-                  }),
-              // Expanded(child: Container()),
-              20.height,
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width / 1.4,
-                    height: 56.h,
-                    padding: const EdgeInsets.only(
-                      left: 22,
-                    ),
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      shadows: [
-                        BoxShadow(
-                          color: Color(0x21000000),
-                          blurRadius: 30,
-                          offset: Offset(5, 4),
-                          spreadRadius: 0,
-                        )
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _messageController,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Write your message',
-                              prefixIcon: Icon(Icons.attach_file),
-                            ),
-                            style: AppTextStyle.subcategoryUnSelectedTextStyle,
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // Text('Chat started on ${date.day}'),
+                ListView.builder(
+                    itemCount: messages.length,
+                    reverse: false,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          MessageBubble(
+                            message: messages[index],
+                            myUserId: myUserId.toString(),
+                            imageUrl: messages[index].fromUserId == myUserId
+                                ? participant.profileImage!
+                                : widget
+                                    .chat.chatParticipants![0].profileImage!,
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(12.w),
-                          child: IconButton(
-                            icon: Icon(Icons.send),
-                            color: AppColors.primary,
-                            onPressed: () {
-                              sendMessage();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                      width: 55.w,
+                        ],
+                      );
+                    }),
+                // Expanded(child: Container()),
+                20.height,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.4,
                       height: 56.h,
+                      padding: const EdgeInsets.only(
+                        left: 22,
+                      ),
                       decoration: ShapeDecoration(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
+                          borderRadius: BorderRadius.circular(30),
                         ),
                         shadows: [
                           BoxShadow(
@@ -399,15 +356,64 @@ class _MessagingScreenState extends State<MessagingScreen> {
                           )
                         ],
                       ),
-                      child: Center(
-                        child: Icon(
-                          Icons.camera_alt_outlined,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _messageController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Write your message',
+                                prefixIcon: Icon(Icons.attach_file),
+                              ),
+                              style:
+                                  AppTextStyle.subcategoryUnSelectedTextStyle,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(12.w),
+                            child: IconButton(
+                              icon: Icon(Icons.send),
+                              color: AppColors.primary,
+                              onPressed: () {
+                                sendMessage();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Container(
+                        width: 55.w,
+                        height: 56.h,
+                        decoration: ShapeDecoration(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          shadows: [
+                            BoxShadow(
+                              color: Color(0x21000000),
+                              blurRadius: 30,
+                              offset: Offset(5, 4),
+                              spreadRadius: 0,
+                            )
+                          ],
                         ),
-                      )),
-                ],
-              ),
-              Container(height: 20),
-            ],
+                        child: Center(
+                          child: Icon(
+                            Icons.camera_alt_outlined,
+                          ),
+                        )),
+                  ],
+                ),
+                Container(height: 20),
+              ],
+            ),
           );
         },
       ),
@@ -416,11 +422,16 @@ class _MessagingScreenState extends State<MessagingScreen> {
 }
 
 class MessageBubble extends StatelessWidget {
+  final String imageUrl;
   final MessageModel message; // Replace with your actual Message class
   final String myUserId;
 
-  const MessageBubble(
-      {super.key, required this.message, required this.myUserId});
+  const MessageBubble({
+    super.key,
+    required this.message,
+    required this.myUserId,
+    required this.imageUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -430,28 +441,58 @@ class MessageBubble extends StatelessWidget {
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          margin: EdgeInsets.only(
-            top: 10,
-            bottom: 10,
-            left: isMe ? 0 : 10,
-            right: isMe ? 10 : 0,
-          ),
-          decoration: BoxDecoration(
-            color: isMe ? AppColors.primary : Colors.grey[300],
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15),
-              topRight: Radius.circular(15),
-              bottomLeft: isMe ? Radius.circular(15) : Radius.circular(0),
-              bottomRight: isMe ? Radius.circular(0) : Radius.circular(15),
+          width: 50.w,
+          height: 50.h,
+          decoration: ShapeDecoration(
+            image: DecorationImage(
+              image: NetworkImage(imageUrl),
+              fit: BoxFit.fill,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r),
             ),
           ),
-          child: Text(
-            message.message.toString(), // Replace with your actual text field
-            style: TextStyle(
-              color: isMe ? Colors.white : Colors.black,
+        ).visible(!isMe),
+        Column(
+          crossAxisAlignment:
+              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              margin: EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: isMe ? 0 : 10,
+                right: isMe ? 10 : 0,
+              ),
+              decoration: BoxDecoration(
+                color: isMe ? AppColors.primary : Colors.grey[300],
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
+                  bottomLeft: isMe ? Radius.circular(15) : Radius.circular(0),
+                  bottomRight: isMe ? Radius.circular(0) : Radius.circular(15),
+                ),
+              ),
+              child: Text(
+                message.message
+                    .toString(), // Replace with your actual text field
+                style: TextStyle(
+                  color: isMe ? Colors.white : Colors.black,
+                ),
+              ),
             ),
-          ),
+            Container(
+              margin: EdgeInsets.only(
+                bottom: 10,
+                left: isMe ? 0 : 10,
+                right: isMe ? 10 : 0,
+              ),
+              child: Text(
+                "${AppDate.parseTimeStringToDateTime(message.dateTimeSent!).hour}:${AppDate.parseTimeStringToDateTime(message.dateTimeSent!).minute}",
+              ),
+            ),
+          ],
         ),
       ],
     );

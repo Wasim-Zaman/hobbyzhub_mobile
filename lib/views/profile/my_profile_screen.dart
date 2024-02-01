@@ -60,7 +60,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       expandedHeight: context.height() * 0.6,
                       floating: true,
                       pinned: true,
-                      leading: SizedBox(),
+                      leading: const SizedBox(),
                       flexibleSpace: FlexibleSpaceBar(
                         background: Container(
                           padding: const EdgeInsets.all(16),
@@ -123,7 +123,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   ],
                                 );
                               } else {
-                                return SizedBox();
+                                return const SizedBox();
                               }
                             },
                           ),
@@ -156,7 +156,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
               );
             } else {
-              return SizedBox();
+              return const SizedBox();
             }
           },
         ),

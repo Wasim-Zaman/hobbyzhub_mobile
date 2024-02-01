@@ -33,6 +33,11 @@ class ChatCreatePrivateSuccessState extends ChatState {
   ChatCreatePrivateSuccessState({required this.chat});
 }
 
+class ChatCreatePrivateErrorState extends ChatState {
+  final String message;
+  ChatCreatePrivateErrorState({required this.message});
+}
+
 class ChatGetSuccessState extends ChatState {
   final List<ChatModel> chats;
 

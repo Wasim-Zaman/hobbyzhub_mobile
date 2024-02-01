@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
 import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
@@ -110,8 +111,11 @@ class _MainTabScreenState extends State<MainTabScreen> {
         onTap: (value) async {
           if (value == 4) {
             final userId = await UserSecureStorage.fetchUserId();
-
             context.read<ProfileCubit>().getProfileInfo(userId);
+          } else if (value == 3) {
+            context.read<ChatBloc>().add(
+                  ChatGetPeoplesEvent(page: 0, size: 20),
+                );
           }
           selectedIndex(value);
         },

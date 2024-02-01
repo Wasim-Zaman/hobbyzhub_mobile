@@ -11,6 +11,7 @@ import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/chat/chat_model.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/views/messaging/messaging_screen.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 
@@ -24,7 +25,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   // Blocs
   UserBloc userBloc = UserBloc();
-  ChatBloc chatBloc = ChatBloc();
+  late ChatBloc chatBloc;
 
   // Lists
   List<User> searchedUsers = [];
@@ -45,6 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
+    initBlocs();
     searchedUserController.addListener(() {
       // when we scroll all users then increase the page size by 1 and call searchMoreUser function
       if (searchedUserController.position.pixels ==
@@ -54,6 +56,10 @@ class _ChatScreenState extends State<ChatScreen> {
       }
     });
     super.initState();
+  }
+
+  initBlocs() {
+    chatBloc = context.read<ChatBloc>();
   }
 
   searchUserInit() {
@@ -71,6 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
+    print("Disposed");
     userBloc.close();
     chatBloc.close();
     searchedUserController.dispose();
@@ -187,24 +194,20 @@ class _ChatScreenState extends State<ChatScreen> {
               height: 20.h,
             ),
             BlocConsumer<ChatBloc, ChatState>(
-              bloc: chatBloc
-                ..add(
-                  ChatGetPeoplesEvent(
-                    page: chatPage,
-                    size: chatPageSize,
-                  ),
-                ),
               listener: (context, state) {
                 if (state is ChatGetSuccessState) {
                   chats = state.chats;
-                }
-                if (state is ChatCreatePrivateSuccessState) {
+                } else if (state is ChatCreatePrivateSuccessState) {
+                  Navigator.pop(context);
                   AppNavigator.goToPage(
                     context: context,
                     screen: MessagingScreen(
                       chat: state.chat,
                     ),
                   );
+                } else if (state is ChatCreatePrivateErrorState) {
+                  Navigator.pop(context);
+                  AppToast.danger(state.message);
                 }
               },
               builder: (context, state) {
@@ -452,65 +455,66 @@ class _ChatScreenState extends State<ChatScreen> {
                           itemCount: searchedUsers.length,
                           itemBuilder: (context, index) {
                             return ListTile(
-                                onTap: () {},
-                                leading: SizedBox(
-                                  width: 45.w,
-                                  height: 45.h,
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        width: 45.w,
-                                        height: 45.h,
-                                        decoration: ShapeDecoration(
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                              searchedUsers[index]
-                                                  .profileImage
-                                                  .toString(),
-                                            ),
-                                            fit: BoxFit.fill,
+                              onTap: () {},
+                              leading: SizedBox(
+                                width: 45.w,
+                                height: 45.h,
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      width: 45.w,
+                                      height: 45.h,
+                                      decoration: ShapeDecoration(
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                            searchedUsers[index]
+                                                .profileImage
+                                                .toString(),
                                           ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
+                                          fit: BoxFit.fill,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                         ),
                                       ),
-                                      // Positioned(
-                                      //   left: 35,
-                                      //   top: 36,
-                                      //   child: Container(
-                                      //     width: 12,
-                                      //     height: 12,
-                                      //     decoration: ShapeDecoration(
-                                      //       color: Color(0xFF12B669),
-                                      //       shape: OvalBorder(),
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                    ],
-                                  ),
+                                    ),
+                                    // Positioned(
+                                    //   left: 35,
+                                    //   top: 36,
+                                    //   child: Container(
+                                    //     width: 12,
+                                    //     height: 12,
+                                    //     decoration: ShapeDecoration(
+                                    //       color: Color(0xFF12B669),
+                                    //       shape: OvalBorder(),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                  ],
                                 ),
-                                title: Text(
-                                  searchedUsers[index].fullName.toString(),
-                                  style: AppTextStyle.listTileTitle,
-                                ),
-                                // subtitle: Text(
-                                //   'Last Active 3 hours',
-                                //   style: AppTextStyle.listTileSubHeading,
-                                // ),
-                                trailing: TextButton(
-                                  onPressed: () {
-                                    chatBloc.add(
-                                      ChatCreateNewPrivateCatEvent(
-                                        otherUserId: searchedUsers[index]
-                                            .userId
-                                            .toString(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text('Start Chat'),
-                                ));
+                              ),
+                              title: Text(
+                                searchedUsers[index].fullName.toString(),
+                                style: AppTextStyle.listTileTitle,
+                              ),
+                              // subtitle: Text(
+                              //   'Last Active 3 hours',
+                              //   style: AppTextStyle.listTileSubHeading,
+                              // ),
+                              trailing: TextButton(
+                                onPressed: () {
+                                  chatBloc.add(
+                                    ChatCreateNewPrivateCatEvent(
+                                      otherUserId: searchedUsers[index]
+                                          .userId
+                                          .toString(),
+                                    ),
+                                  );
+                                },
+                                child: Text('Start Chat'),
+                              ),
+                            );
                           });
                     },
                   ),

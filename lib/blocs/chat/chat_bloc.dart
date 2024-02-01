@@ -28,13 +28,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           if (response.data != null) {
             emit(ChatCreatePrivateSuccessState(chat: response.data!));
           } else {
-            emit(ChatErrorState(message: 'No chat found'));
+            emit(ChatCreatePrivateErrorState(message: 'No chat found'));
           }
         } else {
-          emit(ChatErrorState(message: 'No internet connection'));
+          emit(ChatCreatePrivateErrorState(message: 'No internet connection'));
         }
       } catch (err) {
-        emit(ChatErrorState(message: err.toString()));
+        emit(ChatCreatePrivateErrorState(message: err.toString()));
       }
     });
     on<ChatGetPeoplesEvent>((event, emit) async {

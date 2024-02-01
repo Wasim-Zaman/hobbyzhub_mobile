@@ -24,7 +24,6 @@ abstract class ChatController {
 
     final response = await ApiManager.postRequest(body, url, headers: headers);
     final responseBody = jsonDecode(response.body);
-    print(responseBody);
     if (responseBody['success'] == true && responseBody['status'] == 200) {
       return ApiResponse.fromJson(
         responseBody,

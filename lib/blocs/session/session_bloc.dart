@@ -13,7 +13,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
         emit(SessionSuccess(response: {
           'isVerified': true,
           'token': await UserSecureStorage.fetchToken(),
-          'newUser': false,
+          'newUser': true,
           'categoryStatus': true
         }));
       } catch (err) {

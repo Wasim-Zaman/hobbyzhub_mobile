@@ -9,7 +9,6 @@ abstract class AppUrl {
 
 abstract class AuthUrl {
   // Auth Service
-  static const authService = "/auth-service";
   static final authBase = AppUrl.baseUrl;
 
   static final register = "$authBase/api/v1/auth/register";
@@ -18,7 +17,7 @@ abstract class AuthUrl {
   static final changePassword = "$authBase/api/v1/auth/reset-password";
 
   // Account Service
-  static const accountService = "/accounts-service";
+
   static final accountBase = AppUrl.baseUrl;
 
   static final sendSignupVerificationEmail =
@@ -41,24 +40,22 @@ abstract class ChatUrl {
 }
 
 abstract class MediaUrl {
-  static const mediaService = "/media-service";
-  static String baseUrl = AppUrl.productionUrl + mediaService;
+  static String baseUrl = AppUrl.productionUrl;
   static final uploadProfilePicture = "$baseUrl/media/profile";
 }
 
 abstract class PostUrl {
   static const baseUrl = "http://149.28.232.132:8765";
-  static const createPost = "$baseUrl/post-service/api/v1/posts/upload";
-  static const getPost = "$baseUrl/post-service/api/v1/posts/all";
-  static const specficPost = "$baseUrl/post-service/api/v1/posts/post/";
-  static const deletepost = "$baseUrl/post-service/api/v1/posts/delete/";
-  static const createComment =
-      "$baseUrl/post-service/api/v1/comments/comment/create";
-  static const createLike = "$baseUrl/post-service/api/likes/create";
+  static const createPost = "$baseUrl/api/v1/posts/upload";
+  static const getPost = "$baseUrl/api/v1/posts/all";
+  static const specficPost = "$baseUrl/api/v1/posts/post/";
+  static const deletepost = "$baseUrl/api/v1/posts/delete/";
+  static const createComment = "$baseUrl/api/v1/comments/comment/create";
+  static const createLike = "$baseUrl/api/likes/create";
 }
 
 abstract class CategoryUrl {
-  static final baseUrl = "${AppUrl.baseUrl}/category-service";
+  static final baseUrl = "${AppUrl.baseUrl}";
 
   // Main Categories URL
   static final getMainCategories = "$baseUrl/api/v1/categories/hobby/get-list";
@@ -78,7 +75,7 @@ abstract class SettingUrl {
 }
 
 abstract class FollowersUrl {
-  static final baseUrl = '${AppUrl.baseUrl}/follower-service';
+  static final baseUrl = '${AppUrl.baseUrl}';
 
   static final getMyFollowers = '$baseUrl/api/v1/follower/get';
   static final getOtherFollowers = '$baseUrl/api/v1/follower/get-third';
@@ -92,8 +89,6 @@ abstract class FollowersUrl {
 }
 
 abstract class UserProfileUrl {
-  static final userProfileUrl =
-      "${AppUrl.baseUrl}/accounts-service/api/v1/accounts/get-details";
-  static final userPostsUrl =
-      "${AppUrl.baseUrl}/post-service/api/v1/posts/user-posts";
+  static final userProfileUrl = "${AppUrl.baseUrl}/api/v1/accounts/get-details";
+  static final userPostsUrl = "${AppUrl.baseUrl}/api/v1/posts/user-posts";
 }

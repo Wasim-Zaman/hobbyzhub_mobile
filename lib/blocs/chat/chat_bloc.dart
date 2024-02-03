@@ -40,6 +40,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ChatGetPeoplesEvent>((event, emit) async {
       try {
         emit(ChatLoadingState());
+        var networkStatus = await isNetworkAvailable();
+        if (!networkStatus) {
+          emit(ChatErrorState(message: "No internet connection"));
+          return;
+        }
         final response = await ChatController.getAllChats(
           page: event.page,
           size: event.size,

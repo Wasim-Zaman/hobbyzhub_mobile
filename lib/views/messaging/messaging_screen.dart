@@ -129,6 +129,74 @@ class _MessagingScreenState extends State<MessagingScreen> {
     }
   }
 
+  void shareContentSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Text(
+                    'Share Content',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: 40.0), // Adjust as needed
+                ],
+              ),
+              SizedBox(height: 16.0),
+              ListTile(
+                leading: Icon(Icons.email),
+                title: Text('Email'),
+                onTap: () {
+                  // Handle Email tap
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.message),
+                title: Text('Message'),
+                onTap: () {
+                  // Handle Message tap
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.share),
+                title: Text('Share'),
+                onTap: () {
+                  // Handle Share tap
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.print),
+                title: Text('Print'),
+                onTap: () {
+                  // Handle Print tap
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     stompClient.deactivate();

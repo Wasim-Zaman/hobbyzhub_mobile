@@ -48,6 +48,9 @@ class _UserAllCountWidgetState extends State<UserAllCountWidget> {
     return FutureBuilder(
       future: FAndFController.getCount(),
       builder: (context, snapshot) {
+        String posts = '0';
+        String followings = '0';
+        String followers = '0';
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -70,11 +73,13 @@ class _UserAllCountWidgetState extends State<UserAllCountWidget> {
               ),
             ],
           );
+        } else if (!snapshot.hasData || snapshot.hasError) {
+        } else {
+          final snap = snapshot.data;
+          posts = snap!['postCount'].toString();
+          followings = snap['followingsCount'].toString();
+          followers = snap['followersCount'].toString();
         }
-        final snap = snapshot.data;
-        final posts = snap!['postCount'].toString();
-        final followings = snap['followingsCount'].toString();
-        final followers = snap['followersCount'].toString();
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <TextValueWidget>[

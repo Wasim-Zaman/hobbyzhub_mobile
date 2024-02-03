@@ -149,4 +149,22 @@ abstract class AuthController {
     final response = await ApiManager.putRequest(body, url);
     return ApiManager.returnModel(response);
   }
+
+  static Future<Map> refreshToken() async {
+    final url = AuthUrl.refreshToken;
+    final token = await UserSecureStorage.fetchToken();
+    final response = await ApiManager.postRequestWithoutBody(
+      url,
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      },
+    );
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['success'] && responseBody['status'] == 200) {
+      return responseBody['data'];
+    } else {
+      throw Exception(responseBody['message']);
+    }
+  }
 }

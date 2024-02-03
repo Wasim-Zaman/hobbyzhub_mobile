@@ -378,9 +378,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                             child: IconButton(
                               icon: Icon(Icons.send),
                               color: AppColors.primary,
-                              onPressed: () {
-                                sendMessage();
-                              },
+                              onPressed: sendMessage,
                             ),
                           ),
                         ],

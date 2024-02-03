@@ -4,6 +4,9 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/utils/app_toast.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/auth/login_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/faq_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/help_center_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/notification_settings_screen.dart';
@@ -61,7 +64,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  void logout() {}
+  void logout() {
+    // washout all the local storage
+    AppDialogs.loadingDialog(context);
+    UserSecureStorage.deleteAll().then((value) {
+      AppDialogs.closeDialog(context);
+      AppNavigator.goToPageWithReplacement(
+        context: context,
+        screen: const LoginScreen(),
+      );
+    }).catchError((err) {
+      AppToast.normal("An error has occurred while logging out");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

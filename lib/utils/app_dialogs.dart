@@ -47,7 +47,7 @@ class AppDialogs {
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 context.pop();
               },
               child: Text(

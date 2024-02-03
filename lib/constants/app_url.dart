@@ -15,6 +15,7 @@ abstract class AuthUrl {
   static final login = "$authBase/api/v1/auth/login";
   static final activateAccount = "$authBase/api/v1/auth/activate-account";
   static final changePassword = "$authBase/api/v1/auth/reset-password";
+  static final refreshToken = "$authBase/api/v1/accounts/refresh-token";
 
   // Account Service
 

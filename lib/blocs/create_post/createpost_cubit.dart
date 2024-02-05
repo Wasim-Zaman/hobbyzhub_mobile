@@ -20,11 +20,13 @@ class CreatepostCubit extends Cubit<CreatepostState> {
       if (response.statusCode == 201) {
         emit(CreatepostSuccessfully());
       } else {
+        print(response.statusCode);
         emit(CreatepostFailed());
       }
     } on SocketException {
       emit(CreatepostInternetError());
     } catch (e) {
+      print(e);
       emit(CreatepostFailed());
     }
   }

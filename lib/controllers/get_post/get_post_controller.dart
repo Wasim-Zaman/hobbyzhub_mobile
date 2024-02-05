@@ -6,7 +6,7 @@ import 'package:hobbyzhub/utils/secure_storage.dart';
 
 class GetPostController {
   getPosts() async {
-    const url = PostUrl.getPost;
+    var url = PostUrl.getPost;
     try {
       final token = await UserSecureStorage.fetchToken();
 

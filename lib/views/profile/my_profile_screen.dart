@@ -89,7 +89,49 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                     // Posts, following and followers in one row
                                     const UserAllCountWidget(),
                                     20.height,
-                                    const ProfileWidgets(),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          flex: 3,
+                                          child: PrimaryButtonWidget(
+                                            caption: "Edit Profile",
+                                            onPressed: () {
+                                              AppNavigator.goToPage(
+                                                context: context,
+                                                screen: EditProfileScreen(
+                                                  editProfile:
+                                                      state.userProfile.first,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              AppNavigator.goToPage(
+                                                context: context,
+                                                screen: const SettingsScreen(),
+                                              );
+                                            },
+                                            child: Container(
+                                              height: 56,
+                                              decoration: const BoxDecoration(
+                                                color: AppColors.primary,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: const Icon(
+                                                Ionicons.settings_outline,
+                                                color: AppColors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                     20.height,
                                     SizedBox(
                                       height: 60,
@@ -161,52 +203,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           },
         ),
       ),
-    );
-  }
-}
-
-class ProfileWidgets extends StatelessWidget {
-  const ProfileWidgets({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          flex: 3,
-          child: PrimaryButtonWidget(
-            caption: "Edit Profile",
-            onPressed: () {
-              AppNavigator.goToPage(
-                context: context,
-                screen: const EditProfileScreen(),
-              );
-            },
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: GestureDetector(
-            onTap: () {
-              AppNavigator.goToPage(
-                context: context,
-                screen: const SettingsScreen(),
-              );
-            },
-            child: Container(
-              height: 56,
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Ionicons.settings_outline,
-                color: AppColors.white,
-              ),
-            ),
-          ),
-        )
-      ],
     );
   }
 }

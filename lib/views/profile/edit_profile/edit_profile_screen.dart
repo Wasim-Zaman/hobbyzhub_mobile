@@ -1,19 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hobbyzhub/blocs/image_picker/image_picker_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/update_profile/update_profile_cubit.dart';
-import 'package:hobbyzhub/constants/app_text_style.dart';
+import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
+import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/user/user_profile_model.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/auth/complete_profile_screen2.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
-import 'package:hobbyzhub/views/widgets/dropdowns/dropdown_widget.dart';
 import 'package:hobbyzhub/views/widgets/images/network_image_widget.dart';
-import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/dob_widget.dart';
-import 'package:hobbyzhub/views/widgets/text_fields/password_field_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -42,6 +44,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final dobFocusNode = FocusNode();
 
   String? dob;
+  File? _imgFile;
+  late ProfileCubit profileCubit;
 
   @override
   void initState() {
@@ -51,6 +55,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     dobController.text = widget.editProfile.data.birthdate;
 
     super.initState();
+  }
+
+  updateData() async {
+    final userId = await UserSecureStorage.fetchUserId();
+
+    profileCubit = context.read<ProfileCubit>();
+    profileCubit.getProfileInfo(userId);
   }
 
   @override
@@ -65,6 +76,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         } else if (state is UpdateProfileSuccessfully) {
           AppDialogs.closeDialog(context);
           // save token to local storage
+          Navigator.of(context).pop();
+          updateData();
+
           toast('Profile updated successfully');
         } else if (state is UpdateProfileFailed) {
           AppDialogs.closeDialog(context);
@@ -81,12 +95,85 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    widget.editProfile.data.profileImage.isNotEmpty
+                    widget.editProfile.data.profileImage.isNotEmpty &&
+                            _imgFile == null
                         ? NetworkImageWidget(
                             imageUrl: widget.editProfile.data.profileImage,
                             isEditable: true,
+                            onEditClicked: () async {
+                              final ImagePicker picker = ImagePicker();
+                              final XFile? img = await picker.pickImage(
+                                source: ImageSource
+                                    .camera, // alternatively, use ImageSource.gallery
+                                maxWidth: 400,
+                              );
+                              if (img == null) return;
+                              setState(() {
+                                _imgFile = File(
+                                    img.path); // convert it to a Dart:io file
+                              });
+                            },
                           )
-                        : const ImagePickWidget(),
+                        : widget.editProfile.data.profileImage.isEmpty &&
+                                _imgFile == null
+                            ? const ImagePickWidget()
+                            : Center(
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      height: 120.h,
+                                      width: 120.w,
+                                      padding: const EdgeInsets.all(5),
+                                      margin: const EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          width: 4,
+                                          color: AppColors.borderGrey,
+                                        ),
+                                        image: DecorationImage(
+                                          // will change it later from asset image to cached network image
+                                          image: FileImage(_imgFile!),
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: -5,
+                                      right: 0,
+                                      child: IconButton(
+                                        onPressed: () async {
+                                          final ImagePicker picker =
+                                              ImagePicker();
+                                          final XFile? img =
+                                              await picker.pickImage(
+                                            source: ImageSource
+                                                .camera, // alternatively, use ImageSource.gallery
+                                            maxWidth: 400,
+                                          );
+                                          if (img == null) return;
+                                          setState(() {
+                                            _imgFile = File(img
+                                                .path); // convert it to a Dart:io file
+                                          });
+                                        },
+                                        icon: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: AppColors.white),
+                                          child: const CircleAvatar(
+                                            radius: 15,
+                                            backgroundColor: AppColors.grey,
+                                            child: Icon(Icons.edit_outlined,
+                                                size: 15),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                     20.height,
                     TextFieldWidget(
                       labelText: "Name",
@@ -118,10 +205,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       caption: "Update",
                       onPressed: () {
                         context.read<UpdateProfileCubit>().updateProfile(
-                            context.read<ImagePickerBloc>().image,
+                            _imgFile,
                             nameController.text.trim(),
                             bioController.text.trim(),
-                            dobController.text.trim());
+                            dobController.text.trim(),
+                            widget.editProfile.data.gender);
                       },
                     ),
                   ],

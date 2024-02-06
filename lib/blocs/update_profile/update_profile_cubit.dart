@@ -12,16 +12,15 @@ class UpdateProfileCubit extends Cubit<UpdateProfileState> {
 
   UpdateProfileController updateProfileController = UpdateProfileController();
 
-  updateProfile(image, userName, bio, dob) async {
+  updateProfile(image, userName, bio, dob, gender) async {
     emit(UpdateProfileLoading());
     try {
       var response = await updateProfileController.completeProfile(
-          image, userName, bio, dob);
+          image, userName, bio, dob, gender);
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         emit(UpdateProfileSuccessfully());
       } else {
-        print(response.statusCode);
         emit(UpdateProfileFailed());
       }
     } on SocketException {

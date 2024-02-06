@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:hobbyzhub/constants/api_manager.dart';
@@ -11,6 +12,8 @@ class PostController {
   createPost(List<File> files, caption, hashtags) async {
     final userId = await UserSecureStorage.fetchUserId();
     final url = Uri.parse("${PostUrl.createPost}/$userId");
+
+    log(url.toString());
 
     final request = http.MultipartRequest('POST', url);
 
@@ -52,7 +55,7 @@ class PostController {
       ),
     );
     Map<String, String> headers = {
-      "Authorization": token.toString(),
+      "Authorization": "Bearer $token",
     };
     request.headers.addAll(headers);
 
@@ -67,7 +70,7 @@ class PostController {
       final url = "${PostUrl.createComment}?postId=$postId";
 
       final headers = <String, String>{
-        "Authorization": token.toString(),
+        "Authorization": "Bearer $token",
         "Content-Type": "application/json"
       };
 
@@ -87,7 +90,7 @@ class PostController {
       final url = "${PostUrl.createLike}?postId=$postId";
 
       final headers = <String, String>{
-        "Authorization": token.toString(),
+        "Authorization": "Bearer $token",
         "Content-Type": "application/json"
       };
 

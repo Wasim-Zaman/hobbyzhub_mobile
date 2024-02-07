@@ -9,14 +9,15 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/chat/chat_model.dart';
+import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_date.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/views/messaging/messaging_screen.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
-import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -196,16 +197,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     );
                   }),
             ),
-            SizedBox(
-              height: 10.h,
-            ),
+            10.height,
             Text(
               'All Messages',
               style: AppTextStyle.exploreSubHead,
             ),
-            SizedBox(
-              height: 20.h,
-            ),
+            20.height,
             BlocConsumer<ChatBloc, ChatState>(
               listener: (context, state) {
                 if (state is ChatGetSuccessState) {
@@ -225,8 +222,15 @@ class _ChatScreenState extends State<ChatScreen> {
               },
               builder: (context, state) {
                 if (state is ChatLoadingState) {
-                  return Center(
-                    child: LoadingWidget(),
+                  // show shimmer effect while loading
+                  return Expanded(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          return PrivateChatTileShimmer();
+                        }),
                   );
                 } else if (state is ChatErrorState) {
                   return Center(
@@ -240,141 +244,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       itemCount: chats.length,
                       itemBuilder: (context, index) {
                         if (chats[index].type == 'private') {
-                          return GestureDetector(
-                            onTap: () {
-                              AppNavigator.goToPage(
-                                context: context,
-                                screen: MessagingScreen(chat: chats[index]),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Container(
-                                color: AppColors.lightGrey,
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 20.h,
-                                      bottom: 20.h,
-                                      left: 5.w,
-                                      right: 5.w),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 10.h,
-                                          ),
-                                          Expanded(
-                                            child: Stack(
-                                              children: [
-                                                ImageWidget(
-                                                  imageUrl: chats[index]
-                                                          .chatParticipants![0]
-                                                          .profileImage ??
-                                                      "",
-                                                  width: 45.w,
-                                                  height: 45.h,
-                                                  errorWidget: Image.asset(
-                                                    ImageAssets.profileImage,
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                  left: 35.w,
-                                                  top: 33.h,
-                                                  child: Container(
-                                                    width: 12.w,
-                                                    height: 12.h,
-                                                    decoration: ShapeDecoration(
-                                                      color: Color(0xFF12B669),
-                                                      shape: OvalBorder(),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 4,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  chats[index]
-                                                      .chatParticipants![0]
-                                                      .fullName!,
-                                                  style: AppTextStyle
-                                                      .listTileTitle,
-                                                ),
-                                                SizedBox(
-                                                  height: 5.h,
-                                                ),
-                                                SizedBox(
-                                                  width: 250.w,
-                                                  child: Text(
-                                                    'It is a long established fact that a read and will be distracted lisece.',
-                                                    maxLines: 2,
-                                                    style: AppTextStyle
-                                                        .listTileSubHeading,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  AppDate.parseTimeStringToDateTime(
-                                                          chats[index]
-                                                              .dateTimeCreated!)
-                                                      .timeAgo,
-                                                  style: AppTextStyle
-                                                      .likeByTextStyle,
-                                                ),
-                                                SizedBox(
-                                                  height: 10.h,
-                                                ),
-                                                Container(
-                                                  width: 20.w,
-                                                  height: 20.h,
-                                                  decoration: ShapeDecoration(
-                                                    color: AppColors.primary,
-                                                    shape: OvalBorder(),
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      '',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: AppTextStyle
-                                                          .subcategorySelectedTextStyle,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
+                          return PrivateChatTile(chat: chats[index]);
                         }
                         return null;
                       }),
@@ -536,5 +406,247 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           );
         });
+  }
+}
+
+class PrivateChatTile extends StatefulWidget {
+  final ChatModel chat;
+  const PrivateChatTile({Key? key, required this.chat}) : super(key: key);
+
+  @override
+  State<PrivateChatTile> createState() => _PrivateChatTileState();
+}
+
+class _PrivateChatTileState extends State<PrivateChatTile> {
+  MessageModel? lastMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ChatBloc>().add(
+          ChatGetLocalMessagesEvent(chatId: widget.chat.chatId.toString()),
+        );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<ChatBloc, ChatState>(
+      listener: (context, state) {
+        if (state is ChatGetLocalMessagesSuccessState) {
+          lastMessage = state.messages.last;
+        }
+      },
+      builder: (context, state) {
+        return GestureDetector(
+          onTap: () {
+            AppNavigator.goToPage(
+              context: context,
+              screen: MessagingScreen(chat: widget.chat),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Container(
+              color: AppColors.lightGrey,
+              width: double.infinity,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    top: 20.h, bottom: 20.h, left: 5.w, right: 5.w),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 10.h,
+                        ),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              ImageWidget(
+                                imageUrl: widget.chat.chatParticipants![0]
+                                        .profileImage ??
+                                    "",
+                                width: 45.w,
+                                height: 45.h,
+                                errorWidget: Image.asset(
+                                  ImageAssets.profileImage,
+                                ),
+                              ),
+                              Positioned(
+                                left: 35.w,
+                                top: 33.h,
+                                child: Container(
+                                  width: 12.w,
+                                  height: 12.h,
+                                  decoration: ShapeDecoration(
+                                    color: Color(0xFF12B669),
+                                    shape: OvalBorder(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.chat.chatParticipants![0].fullName!,
+                                style: AppTextStyle.listTileTitle,
+                              ),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              SizedBox(
+                                width: 250.w,
+                                child: Text(
+                                  lastMessage != null
+                                      ? lastMessage!.messageString!
+                                      : '',
+                                  maxLines: 2,
+                                  style: AppTextStyle.listTileSubHeading,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                AppDate.parseTimeStringToDateTime(
+                                        widget.chat.dateTimeCreated!)
+                                    .timeAgo,
+                                style: AppTextStyle.likeByTextStyle,
+                              ),
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              Container(
+                                width: 20.w,
+                                height: 20.h,
+                                decoration: ShapeDecoration(
+                                  color: AppColors.primary,
+                                  shape: OvalBorder(),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '',
+                                    textAlign: TextAlign.center,
+                                    style: AppTextStyle
+                                        .subcategorySelectedTextStyle,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class PrivateChatTileShimmer extends StatelessWidget {
+  const PrivateChatTileShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Container(
+          color: Colors.white,
+          width: double.infinity,
+          child: Padding(
+            padding:
+                EdgeInsets.only(top: 20.h, bottom: 20.h, left: 5.w, right: 5.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 10.h,
+                    ),
+                    Expanded(
+                      child: Container(
+                        width: 45.w,
+                        height: 45.h,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 10.h,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Container(
+                            width: 250.w,
+                            height: 10.h,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 10.h,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Container(
+                            width: 20.w,
+                            height: 20.h,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

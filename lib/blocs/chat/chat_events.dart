@@ -30,7 +30,14 @@ class ChatGetLocalMessagesEvent extends ChatEvent {
   ChatGetLocalMessagesEvent({required this.chatId});
 }
 
-class ChatGetFromServerMessageEvent extends ChatEvent {
+class ChatSetLocalMessageEvent extends ChatEvent {
+  final MessageModel message;
   final String chatId;
-  ChatGetFromServerMessageEvent({required this.chatId});
+  ChatSetLocalMessageEvent({required this.message, required this.chatId});
+}
+
+class ChatGetMessagesEvent extends ChatEvent {
+  final String chatId;
+  final int page, size;
+  ChatGetMessagesEvent(this.page, this.size, {required this.chatId});
 }

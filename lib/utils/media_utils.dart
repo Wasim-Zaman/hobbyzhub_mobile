@@ -27,4 +27,12 @@ class MediaUtils {
       return null;
     }
   }
+
+  // pick multiple images and videos
+  static Future<List<File>?> pickMedia() async {
+    final ImagePicker picker = ImagePicker();
+    final List<XFile>? media = await picker.pickMultiImage();
+    if (media == null) return null;
+    return media.map((XFile file) => File(file.path)).toList();
+  }
 }

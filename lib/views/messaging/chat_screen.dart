@@ -10,10 +10,13 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/chat/chat_model.dart';
 import 'package:hobbyzhub/models/user/user.dart';
+import 'package:hobbyzhub/utils/app_date.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/views/messaging/messaging_screen.dart';
+import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -274,25 +277,15 @@ class _ChatScreenState extends State<ChatScreen> {
                                           Expanded(
                                             child: Stack(
                                               children: [
-                                                Container(
+                                                ImageWidget(
+                                                  imageUrl: chats[index]
+                                                          .chatParticipants![0]
+                                                          .profileImage ??
+                                                      "",
                                                   width: 45.w,
                                                   height: 45.h,
-                                                  decoration: ShapeDecoration(
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(
-                                                        chats[index]
-                                                            .chatParticipants![
-                                                                0]
-                                                            .profileImage!,
-                                                      ),
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
+                                                  errorWidget: Image.asset(
+                                                    ImageAssets.profileImage,
                                                   ),
                                                 ),
                                                 Positioned(
@@ -344,7 +337,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  '22.51',
+                                                  AppDate.parseTimeStringToDateTime(
+                                                          chats[index]
+                                                              .dateTimeCreated!)
+                                                      .timeAgo,
                                                   style: AppTextStyle
                                                       .likeByTextStyle,
                                                 ),
@@ -355,12 +351,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                                   width: 20.w,
                                                   height: 20.h,
                                                   decoration: ShapeDecoration(
-                                                    color: Color(0xFF26A4FF),
+                                                    color: AppColors.primary,
                                                     shape: OvalBorder(),
                                                   ),
                                                   child: Center(
                                                     child: Text(
-                                                      '3',
+                                                      '',
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: AppTextStyle

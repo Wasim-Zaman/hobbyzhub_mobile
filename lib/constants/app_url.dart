@@ -38,6 +38,7 @@ abstract class ChatUrl {
   static final searchUsersByName = "$chatBase/api/v1/accounts/search";
   static final createPrivateChat = "$chatBase/api/v1/chats/private/create-new";
   static final getChats = "$chatBase/api/v1/chats/private/get-chats";
+  static final getServerMessages = "$chatBase/api/v1/chats/messages/retrieve";
 }
 
 abstract class MediaUrl {

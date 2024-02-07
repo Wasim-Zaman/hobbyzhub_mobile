@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:hobbyzhub/constants/bloc_provider.dart';
 import 'package:hobbyzhub/global/themes/app_theme.dart';
+import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/views/splash_screen/splash_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:timeago/timeago.dart' as timeago;
 
 void main() async {
@@ -13,6 +18,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initialize();
   timeago.setLocaleMessages('fr', timeago.EnMessages());
+
+  Directory directory = await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(directory.path);
+
+  Hive.registerAdapter(MessageModelAdapter());
+  Hive.registerAdapter(MetadataAdapter());
+
   runApp(const MyApp());
 }
 
@@ -41,7 +53,7 @@ class _MyAppState extends State<MyApp> {
               title: 'HobbyzHub',
               theme: AppTheme.light,
               navigatorKey: navigatorKey,
-              home: const SplashScreen(),
+              home: SplashScreen(),
             ),
           );
         },

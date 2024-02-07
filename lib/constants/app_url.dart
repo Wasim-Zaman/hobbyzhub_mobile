@@ -47,13 +47,13 @@ abstract class MediaUrl {
 }
 
 abstract class PostUrl {
-  static const baseUrl = "http://149.28.232.132:8765";
-  static const createPost = "$baseUrl/api/v1/posts/upload";
-  static const getPost = "$baseUrl/api/v1/posts/all";
-  static const specficPost = "$baseUrl/api/v1/posts/post/";
-  static const deletepost = "$baseUrl/api/v1/posts/delete/";
-  static const createComment = "$baseUrl/api/v1/comments/comment/create";
-  static const createLike = "$baseUrl/api/likes/create";
+  static String baseUrl = AppUrl.baseUrl;
+  static final createPost = "$baseUrl/api/v1/posts/upload";
+  static final getPost = "$baseUrl/api/v1/posts/all";
+  static final specficPost = "$baseUrl/api/v1/posts/post/";
+  static final deletepost = "$baseUrl/api/v1/posts/delete/";
+  static final createComment = "$baseUrl/api/v1/comments/comment/create";
+  static final createLike = "$baseUrl/api/likes/create";
 }
 
 abstract class CategoryUrl {
@@ -72,12 +72,12 @@ abstract class CategoryUrl {
 }
 
 abstract class SettingUrl {
-  static const helpCenterUrl =
-      "http://149.28.232.132:8765/helprequest-service/api/help/get-help";
+  static String baseUrl = AppUrl.baseUrl;
+  static final helpCenterUrl = "$baseUrl/helprequest-service/api/help/get-help";
 }
 
 abstract class FollowersUrl {
-  static final baseUrl = '${AppUrl.baseUrl}';
+  static String baseUrl = AppUrl.baseUrl;
 
   static final getMyFollowers = '$baseUrl/api/v1/follower/get';
   static final getOtherFollowers = '$baseUrl/api/v1/follower/get-third';

@@ -30,7 +30,7 @@ class UserController {
       final token = await UserSecureStorage.fetchToken();
 
       final headers = <String, String>{
-        "Authorization": token.toString(),
+        "Authorization": "Bearer $token",
         "Content-Type": "application/json"
       };
       final response =

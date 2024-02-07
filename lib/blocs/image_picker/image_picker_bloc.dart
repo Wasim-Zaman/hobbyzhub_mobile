@@ -7,10 +7,11 @@ import 'package:image_picker/image_picker.dart';
 part 'image_picker_events_states.dart';
 
 class ImagePickerBloc extends Bloc<ImagePickerEvent, ImagePickerState> {
+  var image;
   ImagePickerBloc() : super(ImagePickerInitialState()) {
     on<ImagePickerPickImageEvent>((event, emit) async {
       try {
-        final image = await MediaUtils.pickImage(event.imageSource);
+        image = await MediaUtils.pickImage(event.imageSource);
         // if user cancel the pick
         if (image == null) return;
 

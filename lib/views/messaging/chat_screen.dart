@@ -16,8 +16,9 @@ import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/views/messaging/messaging_screen.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
+import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
+import 'package:hobbyzhub/views/widgets/shimmer/private_chat_tile_shimmer.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:shimmer/shimmer.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -108,19 +109,19 @@ class _ChatScreenState extends State<ChatScreen> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // GestureDetector(
+              //   onTap: () {},
+              //   child: Padding(
+              //       padding: EdgeInsets.all(8.w),
+              //       child: Image.asset(
+              //         ImageAssets.searchImage,
+              //         height: 25.h,
+              //       )),
+              // ),
               GestureDetector(
                 onTap: () {
                   _searchBottomSheet(context);
                 },
-                child: Padding(
-                    padding: EdgeInsets.all(8.w),
-                    child: Image.asset(
-                      ImageAssets.searchImage,
-                      height: 25.h,
-                    )),
-              ),
-              GestureDetector(
-                onTap: () {},
                 child: Padding(
                     padding: EdgeInsets.all(8.w),
                     child: Image.asset(
@@ -322,7 +323,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     builder: (context, state) {
                       if (state is UserSearchByNameLoading) {
                         return Center(
-                          child: CircularProgressIndicator(),
+                          child: LoadingWidget(),
                         );
                       } else if (state is UserSearchByNameFailure) {
                         return Center(
@@ -559,94 +560,6 @@ class _PrivateChatTileState extends State<PrivateChatTile> {
           ),
         );
       },
-    );
-  }
-}
-
-class PrivateChatTileShimmer extends StatelessWidget {
-  const PrivateChatTileShimmer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Container(
-          color: Colors.white,
-          width: double.infinity,
-          child: Padding(
-            padding:
-                EdgeInsets.only(top: 20.h, bottom: 20.h, left: 5.w, right: 5.w),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 10.h,
-                    ),
-                    Expanded(
-                      child: Container(
-                        width: 45.w,
-                        height: 45.h,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: 10.h,
-                            color: Colors.white,
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          Container(
-                            width: 250.w,
-                            height: 10.h,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: 10.h,
-                            color: Colors.white,
-                          ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          Container(
-                            width: 20.w,
-                            height: 20.h,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

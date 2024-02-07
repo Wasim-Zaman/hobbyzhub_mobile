@@ -11,6 +11,7 @@ import 'package:hobbyzhub/blocs/like_post/likes_cubit.dart';
 import 'package:hobbyzhub/blocs/specific_post/specific_post_cubit.dart';
 import 'package:hobbyzhub/blocs/third_user_post/third_user_post_cubit.dart';
 import 'package:hobbyzhub/blocs/timer_cubit/timer_cubit_cubit.dart';
+import 'package:hobbyzhub/blocs/update_profile/update_profile_cubit.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/blocs/user_posts/user_post_cubit.dart';
 import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
@@ -36,5 +37,6 @@ class BlocProviders {
     BlocProvider<UserPostCubit>(create: (context) => UserPostCubit()),
     BlocProvider<UserBloc>(create: (context) => UserBloc()),
     BlocProvider<ChatBloc>(create: (context) => ChatBloc()),
+    BlocProvider<UpdateProfileCubit>(create: (context) => UpdateProfileCubit()),
   ];
 }

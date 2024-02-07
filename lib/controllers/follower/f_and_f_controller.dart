@@ -133,7 +133,7 @@ class FAndFController {
     final token = await UserSecureStorage.fetchToken();
     var body = {"myUserId": userId, "otherUserId": otherUserId};
     var headers = {
-      "Authorization": "$token",
+      "Authorization": "Bearer $token",
       "Content-Type": "application/json",
     };
     var response = await ApiManager.postRequest(body, url, headers: headers);
@@ -152,7 +152,7 @@ class FAndFController {
     final token = await UserSecureStorage.fetchToken();
     var body = {"myUserId": userId, "otherUserId": otherUserId};
     var headers = {
-      "Authorization": "$token",
+      "Authorization": "Bearer $token",
       "Content-Type": "application/json",
     };
     var response = await ApiManager.postRequest(body, url, headers: headers);

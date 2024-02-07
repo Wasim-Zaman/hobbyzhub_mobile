@@ -88,8 +88,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         bool networkStatus = await isNetworkAvailable();
         if (networkStatus == true) {
-          print(event.model.userId);
-          print(event.model.token);
           final response =
               await AuthController.completeProfile(model: event.model);
           emit(AuthCompleteProfileState(response: response));
@@ -163,6 +161,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthImagePickerState(image: null));
         }
       });
+    });
+
+    // Session Handling
+    on<AuthRefreshTokenEvent>((event, emit) async {
+      emit(AuthRefreshTokenLoading());
+      try {
+        var networkStatus = await isNetworkAvailable();
+        if (networkStatus) {
+          final response = await AuthController.refreshToken();
+          emit(AuthRefreshTokenSuccess(response: response));
+        } else {
+          emit(AuthRefreshTokenError(message: "No Internet Connection"));
+        }
+      } catch (error) {
+        emit(AuthRefreshTokenError(message: error.toString()));
+      }
     });
   }
 }

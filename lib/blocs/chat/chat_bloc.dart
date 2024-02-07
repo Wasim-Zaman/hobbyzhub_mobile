@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:hobbyzhub/controllers/chat/chat_controller.dart';
 import 'package:hobbyzhub/models/chat/chat_model.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
@@ -14,10 +15,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       messages.add(event.message);
       emit(ChatMessageSentState(messages: messages));
     });
+
     on<ChatReceiveMessageEvent>((event, emit) {
       messages.add(event.message);
       emit(ChatMessageReceivedState(messages: messages));
     });
+
     on<ChatCreateNewPrivateCatEvent>((event, emit) async {
       try {
         emit(ChatCreatePrivateChatLoadingState());
@@ -37,9 +40,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         emit(ChatCreatePrivateErrorState(message: err.toString()));
       }
     });
+
     on<ChatGetPeoplesEvent>((event, emit) async {
       try {
         emit(ChatLoadingState());
+        var networkStatus = await isNetworkAvailable();
+        if (!networkStatus) {
+          emit(ChatErrorState(message: "No internet connection"));
+          return;
+        }
         final response = await ChatController.getAllChats(
           page: event.page,
           size: event.size,
@@ -53,6 +62,48 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       } catch (err) {
         emit(ChatErrorState(message: err.toString()));
       }
+    });
+
+    on<ChatGetMessagesEvent>((event, emit) async {
+      emit(ChatGetMessagesFromServerLoadingState());
+      try {
+        final response = await ChatController.getServerMessages(
+          event.chatId,
+          page: event.page,
+          size: event.size,
+        );
+        var network = await isNetworkAvailable();
+        if (network) {
+          if (response.data.isNotEmpty) {
+            emit(ChatGetMessagesSuccessState(messages: response.data));
+          } else {
+            emit(ChatMessagesEmptyState());
+          }
+        } else {
+          emit(
+            ChatGetMessagesFailureState(errorMessage: "No internet connection"),
+          );
+        }
+      } catch (error) {
+        emit(ChatGetMessagesFailureState(errorMessage: error.toString()));
+      }
+    });
+
+    on<ChatGetLocalMessagesEvent>((event, emit) async {
+      // emit(ChatGetLocalMessagesLoadingState());
+      var chatBox = await Hive.openBox<MessageModel>(event.chatId);
+      emit(ChatGetLocalMessagesSuccessState(messages: chatBox.values.toList()));
+      chatBox.close();
+    });
+
+    on<ChatSetLocalMessageEvent>((event, emit) async {
+      var chatBox = await Hive.openBox<MessageModel>(event.chatId);
+      chatBox.add(event.message);
+      // If there are more than 100 messages, remove the oldest one
+      if (chatBox.length > 100) {
+        chatBox.deleteAt(0);
+      }
+      chatBox.close();
     });
   }
 }

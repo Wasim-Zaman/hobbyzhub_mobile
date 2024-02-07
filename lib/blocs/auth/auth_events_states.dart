@@ -61,6 +61,8 @@ class AuthEventChangePasswordAfterOtpVerification extends AuthEvent {
       {required this.email, required this.password});
 }
 
+class AuthRefreshTokenEvent extends AuthEvent {}
+
 // States
 abstract class AuthState {}
 
@@ -117,4 +119,17 @@ class AuthStateFailure extends AuthState {
   final String message;
 
   AuthStateFailure({required this.message});
+}
+
+class AuthRefreshTokenLoading extends AuthState {}
+
+class AuthRefreshTokenSuccess extends AuthState {
+  final Map response;
+  AuthRefreshTokenSuccess({required this.response});
+}
+
+class AuthRefreshTokenError extends AuthState {
+  final String message;
+
+  AuthRefreshTokenError({required this.message});
 }

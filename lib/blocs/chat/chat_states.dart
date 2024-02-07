@@ -38,6 +38,27 @@ class ChatCreatePrivateErrorState extends ChatState {
   ChatCreatePrivateErrorState({required this.message});
 }
 
+class ChatGetMessagesFromServerLoadingState extends ChatState {}
+
+class ChatGetLocalMessagesLoadingState extends ChatState {}
+
+class ChatGetMessagesSuccessState extends ChatState {
+  final List<MessageModel> messages;
+  ChatGetMessagesSuccessState({required this.messages});
+}
+
+class ChatGetLocalMessagesSuccessState extends ChatState {
+  final List<MessageModel> messages;
+  ChatGetLocalMessagesSuccessState({required this.messages});
+}
+
+class ChatMessagesEmptyState extends ChatState {}
+
+class ChatGetMessagesFailureState extends ChatState {
+  final String errorMessage;
+  ChatGetMessagesFailureState({required this.errorMessage});
+}
+
 class ChatGetSuccessState extends ChatState {
   final List<ChatModel> chats;
 

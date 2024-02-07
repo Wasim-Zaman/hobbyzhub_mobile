@@ -434,7 +434,9 @@ class _PrivateChatTileState extends State<PrivateChatTile> {
     return BlocConsumer<ChatBloc, ChatState>(
       listener: (context, state) {
         if (state is ChatGetLocalMessagesSuccessState) {
-          lastMessage = state.messages.last;
+          if (lastMessage == null && state.messages.isNotEmpty) {
+            lastMessage = state.messages.last;
+          }
         }
       },
       builder: (context, state) {

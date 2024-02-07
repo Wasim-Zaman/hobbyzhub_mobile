@@ -25,6 +25,9 @@ void main() async {
   Hive.registerAdapter(MessageModelAdapter());
   Hive.registerAdapter(MetadataAdapter());
 
+  // delete the box if it exists
+  await Hive.deleteBoxFromDisk('cce9bff97f204135');
+
   runApp(const MyApp());
 }
 

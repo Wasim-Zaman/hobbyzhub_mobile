@@ -103,6 +103,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
     //     .read<ChatBloc>()
     //     .add(ChatGetMessagesEvent(0, 100, chatId: widget.chat.chatId!));
     print('Connected as $myUserId');
+    print('chat id: ${widget.chat.chatId}');
     stompClient.subscribe(
       destination: '/queue/user-$myUserId',
       callback: (frame) {
@@ -311,15 +312,16 @@ class _MessagingScreenState extends State<MessagingScreen> {
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state is ChatMessageSentState) {
-            messages.addAll(state.messages);
+            messages.insert(0, state.message);
           } else if (state is ChatMessageReceivedState) {
-            messages.addAll(state.messages);
+            messages.insert(0, state.message);
           } else if (state is ChatGetMessagesSuccessState) {
             // append from reverse side
             messages.insertAll(0, state.messages);
           } else if (state is ChatGetLocalMessagesSuccessState) {
             messages = state.messages;
-            // set the scroll controller to the last message
+            // reverse the message list
+            messages = messages.reversed.toList();
           }
         },
         builder: (context, state) {
@@ -333,7 +335,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                   child: ListView.builder(
                       controller: chatScrollController,
                       itemCount: messages.length,
-                      reverse: false,
+                      reverse: true,
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
                         return Column(

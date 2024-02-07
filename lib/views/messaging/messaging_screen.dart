@@ -38,8 +38,22 @@ class _MessagingScreenState extends State<MessagingScreen> {
   List<MessageModel> messages = [];
   List<File>? mediaFiles = [];
 
+  // Controllers
+  var chatScrollController = ScrollController();
+
   @override
   void initState() {
+    // go to the last message using scroll controller
+    chatScrollController.addListener(() {
+      if (chatScrollController.position.pixels ==
+          chatScrollController.position.minScrollExtent) {
+        if (messages.length > 100) {
+          context
+              .read<ChatBloc>()
+              .add(ChatGetMessagesEvent(0, 100, chatId: widget.chat.chatId!));
+        }
+      }
+    });
     initializeSocket();
     super.initState();
   }
@@ -89,23 +103,21 @@ class _MessagingScreenState extends State<MessagingScreen> {
     //     .read<ChatBloc>()
     //     .add(ChatGetMessagesEvent(0, 100, chatId: widget.chat.chatId!));
     print('Connected as $myUserId');
+    print('chat id: ${widget.chat.chatId}');
     stompClient.subscribe(
       destination: '/queue/user-$myUserId',
       callback: (frame) {
         if (frame.binaryBody != null) {
           try {
             var decodedData = utf8.decode(frame.binaryBody!);
-            log("Received message: $decodedData");
-
-            // assing the message to the list of messages
             var message = MessageModel.fromJson(jsonDecode(decodedData));
-            context
-                .read<ChatBloc>()
-                .add(ChatReceiveMessageEvent(message: message));
-            context.read<ChatBloc>().add(ChatSetLocalMessageEvent(
-                  message: message,
-                  chatId: widget.chat.chatId!,
-                ));
+
+            context.read<ChatBloc>()
+              ..add(ChatReceiveMessageEvent(message: message))
+              ..add(ChatSetLocalMessageEvent(
+                message: message,
+                chatId: widget.chat.chatId!,
+              ));
           } on FormatException catch (e) {
             log("Error decoding message: $e");
           }
@@ -300,46 +312,49 @@ class _MessagingScreenState extends State<MessagingScreen> {
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state is ChatMessageSentState) {
-            messages = state.messages;
+            messages.insert(0, state.message);
           } else if (state is ChatMessageReceivedState) {
-            messages = state.messages;
+            messages.insert(0, state.message);
           } else if (state is ChatGetMessagesSuccessState) {
-            messages.addAll(state.messages);
+            // append from reverse side
+            messages.insertAll(0, state.messages);
           } else if (state is ChatGetLocalMessagesSuccessState) {
             messages = state.messages;
+            // reverse the message list
+            messages = messages.reversed.toList();
           }
         },
         builder: (context, state) {
-          // var date =
-          //     AppDate.parseTimeStringToDateTime(widget.chat.dateTimeCreated!);
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 // Text('Chat started on ${date.day}'),
-                ListView.builder(
-                    itemCount: messages.length,
-                    reverse: false,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          MessageBubble(
-                            message: messages[index],
-                            myUserId: myUserId.toString(),
-                            imageUrl:
-                                messages[index].metadata?.toDestinationId ==
-                                        myUserId
-                                    ? participant.profileImage!
-                                    : widget.chat.chatParticipants![0]
-                                        .profileImage!,
-                          ),
-                        ],
-                      );
-                    }),
-                // Expanded(child: Container()),
-                20.height,
+                Expanded(
+                  child: ListView.builder(
+                      controller: chatScrollController,
+                      itemCount: messages.length,
+                      reverse: true,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            MessageBubble(
+                              message: messages[index],
+                              myUserId: myUserId.toString(),
+                              imageUrl:
+                                  messages[index].metadata?.toDestinationId ==
+                                          myUserId
+                                      ? participant.profileImage!
+                                      : widget.chat.chatParticipants![0]
+                                          .profileImage
+                                          .toString(),
+                            ),
+                          ],
+                        );
+                      }),
+                ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -376,10 +391,10 @@ class _MessagingScreenState extends State<MessagingScreen> {
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: 'Write your message',
-                                prefixIcon: IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.attach_file),
-                                ),
+                                // prefixIcon: IconButton(
+                                //   onPressed: () {},
+                                //   icon: Icon(Icons.attach_file),
+                                // ),
                               ),
                               style:
                                   AppTextStyle.subcategoryUnSelectedTextStyle,
@@ -416,7 +431,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                         ),
                         child: Center(
                           child: Icon(Icons.camera_alt_outlined),
-                        )),
+                        )).visible(false),
                   ],
                 ),
                 Container(height: 20),
@@ -448,18 +463,11 @@ class MessageBubble extends StatelessWidget {
     return Row(
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
-        Container(
-          width: 50.w,
+        ImageWidget(
+          imageUrl: imageUrl,
           height: 50.h,
-          decoration: ShapeDecoration(
-            image: DecorationImage(
-              image: NetworkImage(imageUrl),
-              fit: BoxFit.fill,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-          ),
+          width: 50.w,
+          errorWidget: Image.asset(ImageAssets.profileImage),
         ).visible(!isMe),
         Column(
           crossAxisAlignment:

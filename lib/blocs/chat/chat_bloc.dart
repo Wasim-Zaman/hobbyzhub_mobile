@@ -12,13 +12,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc() : super(ChatInitialState()) {
     final List<MessageModel> messages = [];
     on<ChatSendMessageEvent>((event, emit) {
-      messages.add(event.message);
-      emit(ChatMessageSentState(messages: messages));
+      messages.insert(0, event.message);
+      emit(ChatMessageSentState(message: event.message));
     });
 
     on<ChatReceiveMessageEvent>((event, emit) {
-      messages.add(event.message);
-      emit(ChatMessageReceivedState(messages: messages));
+      messages.insert(0, event.message);
+      emit(ChatMessageReceivedState(message: event.message));
     });
 
     on<ChatCreateNewPrivateCatEvent>((event, emit) async {

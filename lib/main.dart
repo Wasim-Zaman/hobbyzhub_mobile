@@ -25,6 +25,9 @@ void main() async {
   Hive.registerAdapter(MessageModelAdapter());
   Hive.registerAdapter(MetadataAdapter());
 
+  // delete the box if it exists
+  await Hive.deleteBoxFromDisk('cce9bff97f204135');
+
   runApp(const MyApp());
 }
 
@@ -53,7 +56,7 @@ class _MyAppState extends State<MyApp> {
               title: 'HobbyzHub',
               theme: AppTheme.light,
               navigatorKey: navigatorKey,
-              home: SplashScreen(),
+              home: const SplashScreen(),
             ),
           );
         },

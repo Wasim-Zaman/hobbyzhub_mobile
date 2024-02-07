@@ -13,13 +13,13 @@ class ChatConnectedState extends ChatState {}
 class ChatDisconnectedState extends ChatState {}
 
 class ChatMessageReceivedState extends ChatState {
-  final List<MessageModel> messages;
-  ChatMessageReceivedState({required this.messages});
+  final MessageModel message;
+  ChatMessageReceivedState({required this.message});
 }
 
 class ChatMessageSentState extends ChatState {
-  final List<MessageModel> messages;
-  ChatMessageSentState({required this.messages});
+  final MessageModel message;
+  ChatMessageSentState({required this.message});
 }
 
 class ChatErrorState extends ChatState {

@@ -89,16 +89,15 @@ class _MessagingScreenState extends State<MessagingScreen> {
     //     .read<ChatBloc>()
     //     .add(ChatGetMessagesEvent(0, 100, chatId: widget.chat.chatId!));
     print('Connected as $myUserId');
+    print("chat id: ${widget.chat.chatId}");
     stompClient.subscribe(
       destination: '/queue/user-$myUserId',
       callback: (frame) {
         if (frame.binaryBody != null) {
           try {
             var decodedData = utf8.decode(frame.binaryBody!);
-            log("Received message: $decodedData");
-
-            // assing the message to the list of messages
             var message = MessageModel.fromJson(jsonDecode(decodedData));
+            // assing the message to the list of messages
             context
                 .read<ChatBloc>()
                 .add(ChatReceiveMessageEvent(message: message));

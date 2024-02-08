@@ -40,13 +40,14 @@ class _MessagingScreenState extends State<MessagingScreen> {
 
   // Controllers
   var chatScrollController = ScrollController();
+  final TextEditingController _messageController = TextEditingController();
 
   @override
   void initState() {
     // go to the last message using scroll controller
     chatScrollController.addListener(() {
       if (chatScrollController.position.pixels ==
-          chatScrollController.position.minScrollExtent) {
+          chatScrollController.position.maxScrollExtent) {
         if (messages.length > 100) {
           context
               .read<ChatBloc>()
@@ -58,7 +59,6 @@ class _MessagingScreenState extends State<MessagingScreen> {
     super.initState();
   }
 
-  final TextEditingController _messageController = TextEditingController();
   void handleClick(int value) {
     switch (value) {
       case 0:
@@ -73,7 +73,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
       config: StompConfig.sockJS(
         url: dotenv.env['SOCKET_URL']!,
         beforeConnect: () async {
-          // myUserId = await UserSecureStorage.fetchUserId();
+          myUserId = await UserSecureStorage.fetchUserId();
           log("Connecting...");
         },
         onConnect: onConnectCallback,
@@ -95,13 +95,9 @@ class _MessagingScreenState extends State<MessagingScreen> {
   }
 
   void onConnectCallback(StompFrame connectFrame) async {
-    myUserId = await UserSecureStorage.fetchUserId();
     context
         .read<ChatBloc>()
         .add(ChatGetLocalMessagesEvent(chatId: widget.chat.chatId!));
-    // context
-    //     .read<ChatBloc>()
-    //     .add(ChatGetMessagesEvent(0, 100, chatId: widget.chat.chatId!));
     print('Connected as $myUserId');
     print('chat id: ${widget.chat.chatId}');
     stompClient.subscribe(
@@ -129,6 +125,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
   void sendMessage() {
     if (_messageController.text.isNotEmpty) {
       try {
+        var chatId = widget.chat.chatId.toString();
         var message = MessageModel(
           messageString: _messageController.text,
           chatId: widget.chat.chatId,
@@ -145,11 +142,9 @@ class _MessagingScreenState extends State<MessagingScreen> {
           headers: {},
         );
         // save the message to the list of messages
-        context.read<ChatBloc>().add(ChatSendMessageEvent(message: message));
-        context.read<ChatBloc>().add(ChatSetLocalMessageEvent(
-              message: message,
-              chatId: widget.chat.chatId!,
-            ));
+        context.read<ChatBloc>()
+          ..add(ChatSendMessageEvent(message: message))
+          ..add(ChatSetLocalMessageEvent(message: message, chatId: chatId));
         _messageController.clear();
       } catch (e) {
         print(e);
@@ -160,6 +155,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
   @override
   void dispose() {
     stompClient.deactivate();
+    _messageController.dispose();
 
     super.dispose();
   }
@@ -459,58 +455,83 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isMe = message.metadata?.fromUserId == myUserId;
+    var dateTime = AppDate.parseTimeStringToDateTime(
+        message.metadata!.dateTimeSent.toString());
 
-    return Row(
-      mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        ImageWidget(
-          imageUrl: imageUrl,
-          height: 50.h,
-          width: 50.w,
-          errorWidget: Image.asset(ImageAssets.profileImage),
-        ).visible(!isMe),
-        Column(
-          crossAxisAlignment:
-              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              margin: EdgeInsets.only(
-                top: 10,
-                bottom: 10,
-                left: isMe ? 0 : 10,
-                right: isMe ? 10 : 0,
-              ),
-              decoration: BoxDecoration(
-                color: isMe ? AppColors.primary : Colors.grey[300],
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
-                  bottomLeft: isMe ? Radius.circular(15) : Radius.circular(0),
-                  bottomRight: isMe ? Radius.circular(0) : Radius.circular(15),
-                ),
-              ),
-              child: Text(
-                message.messageString
-                    .toString(), // Replace with your actual text field
-                style: TextStyle(
-                  color: isMe ? Colors.white : Colors.black,
-                ),
-              ),
+    return Container(
+      margin: EdgeInsets.only(
+        left: isMe ? 50 : 0,
+        right: isMe ? 0 : 50,
+      ),
+      child: Row(
+        mainAxisAlignment:
+            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.grey.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            Container(
-              margin: EdgeInsets.only(
-                bottom: 10,
-                left: isMe ? 0 : 10,
-                right: isMe ? 10 : 0,
-              ),
-              child: Text(
-                "${AppDate.parseTimeStringToDateTime(message.metadata!.dateTimeSent.toString()).hour}:${AppDate.parseTimeStringToDateTime(message.metadata!.dateTimeSent.toString()).minute}",
-              ),
+            child: ImageWidget(
+              imageUrl: imageUrl,
+              height: 50.h,
+              width: 50.w,
+              errorWidget: Image.asset(ImageAssets.profileImage),
+            ).visible(!isMe),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment:
+                  isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  margin: EdgeInsets.only(
+                    top: 10,
+                    bottom: 10,
+                    left: isMe ? 0 : 10,
+                    right: isMe ? 10 : 0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isMe
+                        ? AppColors.primary
+                        : AppColors.primary.withOpacity(0.2),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(32),
+                      topRight: Radius.circular(32),
+                      bottomLeft:
+                          isMe ? Radius.circular(32) : Radius.circular(0),
+                      bottomRight:
+                          isMe ? Radius.circular(0) : Radius.circular(15),
+                    ),
+                  ),
+                  child: Text(
+                    message.messageString
+                        .toString(), // Replace with your actual text field
+                    style: TextStyle(
+                      color: isMe ? Colors.white : Colors.black,
+                      fontSize: 16,
+                    ),
+                    softWrap: true,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                    bottom: 10,
+                    left: isMe ? 0 : 10,
+                    right: isMe ? 10 : 0,
+                  ),
+                  child: Text(
+                    // i want to display hour, minute and am or pm along with 12 hours formate
+                    // '${dateTime.hour}:${dateTime.minute} ${dateTime.hour > 12 ? 'PM' : 'AM'}',
+                    '${dateTime.hour}:${dateTime.minute}',
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -94,3 +94,10 @@ abstract class UserProfileUrl {
   static final userProfileUrl = "${AppUrl.baseUrl}/api/v1/accounts/get-details";
   static final userPostsUrl = "${AppUrl.baseUrl}/api/v1/posts/user-posts";
 }
+
+abstract class GroupUrl {
+  static final mediaBase = AppUrl.baseUrl;
+
+  static final createMedia = "$mediaBase/api/v1/chats/media/upload";
+  static final createGroup = "$mediaBase/api/v1/chats/groups/create";
+}

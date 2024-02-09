@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 
 class ImageWidget extends StatelessWidget {
   final String imageUrl;
   final Widget? placeholder, imageBuilder, errorWidget;
   final double? height, width;
+  final BoxFit? fit;
   const ImageWidget({
     Key? key,
     required this.imageUrl,
@@ -14,16 +14,18 @@ class ImageWidget extends StatelessWidget {
     this.width,
     this.imageBuilder,
     this.errorWidget,
+    this.fit,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: imageUrl,
+      fit: fit,
       placeholder: (context, url) => placeholder ?? Container(),
       width: width,
       height: height,
-      imageBuilder: (context, imageProvider) =>
-          imageBuilder ?? const Center(child: LoadingWidget()),
+      // imageBuilder: (context, imageProvider) =>
+      //     imageBuilder ?? const Center(child: LoadingWidget()),
       errorWidget: (context, url, error) => errorWidget ?? const Placeholder(),
     );
   }

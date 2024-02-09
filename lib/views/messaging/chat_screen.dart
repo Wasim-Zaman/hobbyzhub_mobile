@@ -93,7 +93,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    userBloc.close();
     chatBloc.close();
     searchedUserController.dispose();
     super.dispose();

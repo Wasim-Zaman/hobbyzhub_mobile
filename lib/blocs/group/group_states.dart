@@ -21,4 +21,7 @@ class GroupCreateMediaState extends GroupState {
   GroupCreateMediaState({required this.mediaUrl});
 }
 
-class GroupCreateGroupState extends GroupState {}
+class GroupCreateGroupState extends GroupState {
+  final GroupModel group;
+  GroupCreateGroupState({required this.group});
+}

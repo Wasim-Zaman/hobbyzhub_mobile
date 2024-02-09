@@ -12,6 +12,7 @@ import 'package:hobbyzhub/utils/media_utils.dart';
 import 'package:hobbyzhub/views/group/add_group_members.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -93,7 +94,8 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(28.r),
                           child: mediaUrl != ''
-                              ? Image.network(mediaUrl, fit: BoxFit.cover)
+                              ? ImageWidget(
+                                  imageUrl: mediaUrl, fit: BoxFit.cover)
                               : Image.asset(
                                   ImageAssets.createGroupImage,
                                   color: Colors.black,

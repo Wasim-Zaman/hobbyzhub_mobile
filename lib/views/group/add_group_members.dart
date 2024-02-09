@@ -7,6 +7,7 @@ import 'package:hobbyzhub/blocs/group/group_bloc.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
+import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_date.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
@@ -238,7 +239,7 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
             AppDialogs.loadingDialog(context);
           } else if (state is GroupCreateGroupState) {
             AppDialogs.closeDialog(context);
-            groupCreationSheet(context);
+            groupCreationSheet(context, group: state.group);
           } else if (state is GroupErrorState) {
             AppDialogs.closeDialog(context);
           }
@@ -435,10 +436,10 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
       "groupIcon": widget.mediaUrl,
       "dateTimeCreated": AppDate.generateTimeString(),
       "chatParticipants": <String>[
-        userId.toString(),
         ...members.map((e) => e.userId.toString()).toList(),
       ],
       "chatAdmins": <String>[
+        userId.toString(),
         ...admins.map((e) => e.userId.toString()).toList(),
       ]
     };
@@ -446,7 +447,7 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
   }
 }
 
-void groupCreationSheet(context) {
+void groupCreationSheet(context, {required GroupModel group}) {
   showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
@@ -456,11 +457,9 @@ void groupCreationSheet(context) {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Image.asset(
-                ImageAssets.groupCreationImage,
-              ),
+              ImageWidget(imageUrl: group.groupIcon.toString()),
               Text(
-                'Hikers Community',
+                group.groupName.toString(),
                 style: TextStyle(
                   color: Color(0xFF394851),
                   fontSize: 24,
@@ -484,7 +483,11 @@ void groupCreationSheet(context) {
                   caption: "Continue",
                   onPressed: () {
                     AppNavigator.goToPage(
-                        context: context, screen: GroupMessagingScreen());
+                      context: context,
+                      screen: GroupMessagingScreen(
+                        group: group,
+                      ),
+                    );
                   })
             ],
           ),

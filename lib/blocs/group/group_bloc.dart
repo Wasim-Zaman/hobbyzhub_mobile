@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/controllers/group/group_controller.dart';
+import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 part 'group_events.dart';
@@ -34,7 +35,7 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
           final response = await GroupController().createNewGroup(
             body: event.body,
           );
-          emit(GroupCreateGroupState());
+          emit(GroupCreateGroupState(group: response.data));
         } else {
           emit(GroupErrorState(message: 'No internet connection'));
         }

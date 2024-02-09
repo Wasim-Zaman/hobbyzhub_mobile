@@ -5,11 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class GroupMessagingScreen extends StatefulWidget {
-  const GroupMessagingScreen({super.key});
+  final GroupModel group;
+  const GroupMessagingScreen({super.key, required this.group});
 
   @override
   State<GroupMessagingScreen> createState() => _GroupMessagingScreenState();

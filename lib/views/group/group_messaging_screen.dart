@@ -73,7 +73,7 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
                 children: [
                   SizedBox(
                     child: Text(
-                      'Friends Community',
+                      widget.group.groupName.toString(),
                       style: AppTextStyle.listTileTitle,
                     ),
                   ),
@@ -81,7 +81,7 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
                     height: 5.h,
                   ),
                   Text(
-                    '210 members',
+                    '${widget.group.chatParticipants!.length} members',
                     textAlign: TextAlign.center,
                     style: AppTextStyle.subcategoryUnSelectedTextStyle,
                   )

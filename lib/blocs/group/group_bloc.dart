@@ -43,5 +43,36 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
         emit(GroupErrorState(message: error.toString()));
       }
     });
+
+    on<GroupGetChatsEvent>((event, emit) async {
+      emit(GroupLoadingState());
+      try {
+        // API logic
+        var networkStatus = await isNetworkAvailable();
+        if (networkStatus) {
+          final response = await GroupController().getGroupChats();
+          emit(GroupGetChatsState(chats: response.data));
+        } else {
+          emit(GroupErrorState(message: 'No internet connection'));
+        }
+      } catch (error) {
+        emit(GroupErrorState(message: error.toString()));
+      }
+    });
+
+    on<GroupGetMoreChatsEvent>((event, emit) async {
+      try {
+        // API logic
+        var networkStatus = await isNetworkAvailable();
+        if (networkStatus) {
+          final response = await GroupController().getGroupChats();
+          emit(GroupGetChatsState(chats: response.data));
+        } else {
+          emit(GroupErrorState(message: 'No internet connection'));
+        }
+      } catch (error) {
+        emit(GroupErrorState(message: error.toString()));
+      }
+    });
   }
 }

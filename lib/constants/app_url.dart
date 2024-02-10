@@ -96,8 +96,9 @@ abstract class UserProfileUrl {
 }
 
 abstract class GroupUrl {
-  static final mediaBase = AppUrl.baseUrl;
+  static final groupBase = AppUrl.baseUrl;
 
-  static final createMedia = "$mediaBase/api/v1/chats/media/upload";
-  static final createGroup = "$mediaBase/api/v1/chats/groups/create";
+  static final createMedia = "$groupBase/api/v1/chats/media/upload";
+  static final createGroup = "$groupBase/api/v1/chats/groups/create";
+  static final getChats = "$groupBase/api/v1/chats/groups/get-group";
 }

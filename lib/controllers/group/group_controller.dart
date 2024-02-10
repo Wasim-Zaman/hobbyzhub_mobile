@@ -33,6 +33,25 @@ class GroupController {
       "Authorization": "Bearer $token",
       "Content-Type": "application/json",
     };
+    final response = await ApiManager.postRequest(body, url, headers: headers);
+    var resBody = jsonDecode(response.body);
+    if (resBody['success'] && resBody['status'] == 200) {
+      return ApiResponse.fromJson(resBody, (p0) => null);
+    } else {
+      throw Exception(resBody['message']);
+    }
+  }
+
+  Future<ApiResponse> getGroupChats({int page = 0, int size = 50}) async {
+    final url = GroupUrl.getChats;
+    final token = await UserSecureStorage.fetchToken();
+    final userId = await UserSecureStorage.fetchUserId();
+
+    var body = {"memberId": userId, "page": page, "size": size};
+    var headers = <String, String>{
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+    };
 
     final response = await ApiManager.postRequest(body, url, headers: headers);
     var resBody = jsonDecode(response.body);

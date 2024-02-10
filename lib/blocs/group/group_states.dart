@@ -25,3 +25,8 @@ class GroupCreateGroupState extends GroupState {
   final GroupModel group;
   GroupCreateGroupState({required this.group});
 }
+
+class GroupGetChatsState extends GroupState {
+  final List<GroupModel> chats;
+  GroupGetChatsState({required this.chats});
+}

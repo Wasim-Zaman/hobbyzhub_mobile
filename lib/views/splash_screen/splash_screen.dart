@@ -7,6 +7,7 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/auth/complete_profile_screen1.dart';
 import 'package:hobbyzhub/views/bottom_nav_bar/main_tabs_screen.dart';
+import 'package:hobbyzhub/views/onboarding/onboarding_screen.dart';
 import 'package:hobbyzhub/views/welcome/welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -37,6 +38,12 @@ class _SplashScreenState extends State<SplashScreen> {
     return BlocConsumer<AuthBloc, AuthState>(
       bloc: bloc,
       listener: (context, state) {
+        if (state is AuthNewUserState) {
+          AppNavigator.goToPageWithReplacement(
+            context: context,
+            screen: const OnboardingScreen(),
+          );
+        }
         if (state is AuthRefreshTokenSuccess) {
           if (state.response['verified'] == true) {
             if (state.response['newUser']) {

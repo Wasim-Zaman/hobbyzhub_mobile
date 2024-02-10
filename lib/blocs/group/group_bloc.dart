@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/controllers/group/group_controller.dart';
 import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:stomp_dart_client/stomp.dart';
 
 part 'group_events.dart';
 part 'group_states.dart';

@@ -14,6 +14,7 @@ import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_date.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/messaging/messaging_screen.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
@@ -49,10 +50,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // Others
   String slug = '';
+  String? userId;
 
   @override
   void initState() {
     initBlocs();
+    UserSecureStorage.fetchUserId().then((value) {
+      userId = value;
+    });
     searchedUserController.addListener(() {
       // when we scroll all users then increase the page size by 1 and call searchMoreUser function
       if (searchedUserController.position.pixels ==
@@ -108,25 +113,17 @@ class _ChatScreenState extends State<ChatScreen> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // GestureDetector(
-              //   onTap: () {},
-              //   child: Padding(
-              //       padding: EdgeInsets.all(8.w),
-              //       child: Image.asset(
-              //         ImageAssets.searchImage,
-              //         height: 25.h,
-              //       )),
-              // ),
               GestureDetector(
                 onTap: () {
                   _searchBottomSheet(context);
                 },
                 child: Padding(
-                    padding: EdgeInsets.all(8.w),
-                    child: Image.asset(
-                      ImageAssets.addNewMessageImage,
-                      height: 25.h,
-                    )),
+                  padding: EdgeInsets.all(8.w),
+                  child: Image.asset(
+                    ImageAssets.addNewMessageImage,
+                    height: 25.h,
+                  ),
+                ),
               ),
             ],
           ),
@@ -137,66 +134,66 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 20.h,
-            ),
-            Text(
-              'Frequently Chatted',
-              style: AppTextStyle.exploreSubHead,
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-            SizedBox(
-              height: 70.h,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          width: 50.w,
-                          //  height: 51.h,
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: 49.w,
-                                height: 60.h,
-                                decoration: ShapeDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                        "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.r)),
-                                ),
-                              ),
-                              Positioned(
-                                left: 40.w,
-                                top: 50.h,
-                                child: Container(
-                                  width: 12.w,
-                                  height: 12.h,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF12B669),
-                                    shape: OvalBorder(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                      ],
-                    );
-                  }),
-            ),
+            // SizedBox(
+            //   height: 20.h,
+            // ),
+            // Text(
+            //   'Frequently Chatted',
+            //   style: AppTextStyle.exploreSubHead,
+            // ),
+            // SizedBox(
+            //   height: 20.h,
+            // ),
+            // SizedBox(
+            //   height: 70.h,
+            //   child: ListView.builder(
+            //       shrinkWrap: true,
+            //       scrollDirection: Axis.horizontal,
+            //       itemCount: 10,
+            //       itemBuilder: (context, index) {
+            //         return Row(
+            //           mainAxisSize: MainAxisSize.min,
+            //           mainAxisAlignment: MainAxisAlignment.start,
+            //           crossAxisAlignment: CrossAxisAlignment.end,
+            //           children: [
+            //             SizedBox(
+            //               width: 50.w,
+            //               //  height: 51.h,
+            //               child: Stack(
+            //                 children: [
+            //                   Container(
+            //                     width: 49.w,
+            //                     height: 60.h,
+            //                     decoration: ShapeDecoration(
+            //                       image: DecorationImage(
+            //                         image: NetworkImage(
+            //                             "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),
+            //                         fit: BoxFit.cover,
+            //                       ),
+            //                       shape: RoundedRectangleBorder(
+            //                           borderRadius: BorderRadius.circular(5.r)),
+            //                     ),
+            //                   ),
+            //                   Positioned(
+            //                     left: 40.w,
+            //                     top: 50.h,
+            //                     child: Container(
+            //                       width: 12.w,
+            //                       height: 12.h,
+            //                       decoration: ShapeDecoration(
+            //                         color: Color(0xFF12B669),
+            //                         shape: OvalBorder(),
+            //                       ),
+            //                     ),
+            //                   ),
+            //                 ],
+            //               ),
+            //             ),
+            //             const SizedBox(width: 10),
+            //           ],
+            //         );
+            //       }),
+            // ),
             10.height,
             Text(
               'All Messages',
@@ -397,7 +394,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 },
                                 child: Text('Start Chat'),
                               ),
-                            );
+                            ).visible(searchedUsers[index].userId != userId);
                           });
                     },
                   ),
@@ -471,8 +468,8 @@ class _PrivateChatTileState extends State<PrivateChatTile> {
                           child: Stack(
                             children: [
                               ImageWidget(
-                                imageUrl: widget.chat.chatParticipants![0]
-                                        .profileImage ??
+                                imageUrl: widget
+                                        .chat.chatParticipantB?.profileImage ??
                                     "",
                                 width: 45.w,
                                 height: 45.h,
@@ -501,7 +498,7 @@ class _PrivateChatTileState extends State<PrivateChatTile> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.chat.chatParticipants![0].fullName!,
+                                widget.chat.chatParticipantB?.fullName ?? "",
                                 style: AppTextStyle.listTileTitle,
                               ),
                               SizedBox(

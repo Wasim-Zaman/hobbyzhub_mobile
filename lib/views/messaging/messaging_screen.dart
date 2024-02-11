@@ -15,6 +15,7 @@ import 'package:hobbyzhub/models/chat/chat_model.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/utils/app_date.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/widgets/chat/message_bubble.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -132,7 +133,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
           media: null,
           metadata: Metadata(
             dateTimeSent: AppDate.generateTimeString(),
-            toDestinationId: widget.chat.chatParticipants![0].userId,
+            toDestinationId: widget.chat.chatParticipantB?.userId,
             fromUserId: myUserId,
           ),
         );
@@ -162,7 +163,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var participant = widget.chat.chatParticipants![0];
+    var participant = widget.chat.chatParticipantB;
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -199,7 +200,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(40.r),
                 child: ImageWidget(
-                  imageUrl: participant.profileImage ?? "",
+                  imageUrl: participant?.profileImage ?? "",
                   width: 45.w,
                   height: 45.h,
                   errorWidget: Image.asset(ImageAssets.profileImage),
@@ -215,7 +216,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                 children: [
                   SizedBox(
                     child: Text(
-                      widget.chat.chatParticipants![0].fullName!,
+                      participant?.fullName ?? "",
                       style: AppTextStyle.listTileTitle,
                     ),
                   ),
@@ -339,13 +340,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                             MessageBubble(
                               message: messages[index],
                               myUserId: myUserId.toString(),
-                              imageUrl:
-                                  messages[index].metadata?.toDestinationId ==
-                                          myUserId
-                                      ? participant.profileImage!
-                                      : widget.chat.chatParticipants![0]
-                                          .profileImage
-                                          .toString(),
+                              imageUrl: participant!.profileImage.toString(),
                             ),
                           ],
                         );
@@ -435,102 +430,6 @@ class _MessagingScreenState extends State<MessagingScreen> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class MessageBubble extends StatelessWidget {
-  final String imageUrl;
-  final MessageModel message; // Replace with your actual Message class
-  final String myUserId;
-
-  const MessageBubble({
-    super.key,
-    required this.message,
-    required this.myUserId,
-    required this.imageUrl,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    bool isMe = message.metadata?.fromUserId == myUserId;
-    var dateTime = AppDate.parseTimeStringToDateTime(
-        message.metadata!.dateTimeSent.toString());
-
-    return Container(
-      margin: EdgeInsets.only(
-        left: isMe ? 50 : 0,
-        right: isMe ? 0 : 50,
-      ),
-      child: Row(
-        mainAxisAlignment:
-            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.grey.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: ImageWidget(
-              imageUrl: imageUrl,
-              height: 50.h,
-              width: 50.w,
-              errorWidget: Image.asset(ImageAssets.profileImage),
-            ).visible(!isMe),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment:
-                  isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                  margin: EdgeInsets.only(
-                    top: 10,
-                    bottom: 10,
-                    left: isMe ? 0 : 10,
-                    right: isMe ? 10 : 0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isMe
-                        ? AppColors.primary
-                        : AppColors.primary.withOpacity(0.2),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(32),
-                      topRight: Radius.circular(32),
-                      bottomLeft:
-                          isMe ? Radius.circular(32) : Radius.circular(0),
-                      bottomRight:
-                          isMe ? Radius.circular(0) : Radius.circular(15),
-                    ),
-                  ),
-                  child: Text(
-                    message.messageString
-                        .toString(), // Replace with your actual text field
-                    style: TextStyle(
-                      color: isMe ? Colors.white : Colors.black,
-                      fontSize: 16,
-                    ),
-                    softWrap: true,
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                    bottom: 10,
-                    left: isMe ? 0 : 10,
-                    right: isMe ? 10 : 0,
-                  ),
-                  child: Text(
-                    // i want to display hour, minute and am or pm along with 12 hours formate
-                    // '${dateTime.hour}:${dateTime.minute} ${dateTime.hour > 12 ? 'PM' : 'AM'}',
-                    '${dateTime.hour}:${dateTime.minute}',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

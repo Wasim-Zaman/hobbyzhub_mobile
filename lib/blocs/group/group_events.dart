@@ -23,5 +23,17 @@ class GroupGetMoreChatsEvent extends GroupEvent {
 
 class GroupGetMessagesEvent extends GroupEvent {
   final String groupId;
-  GroupGetMessagesEvent({required this.groupId});
+  final int page, size;
+  GroupGetMessagesEvent(this.page, this.size, {required this.groupId});
+}
+
+class GroupReceiveMessagesEvent extends GroupEvent {
+  final String groupId;
+  final MessageModel message;
+  GroupReceiveMessagesEvent({required this.groupId, required this.message});
+}
+
+class GroupGetLocalMessagesEvent extends GroupEvent {
+  final String groupId;
+  GroupGetLocalMessagesEvent({required this.groupId});
 }

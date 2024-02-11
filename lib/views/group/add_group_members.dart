@@ -303,9 +303,17 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
                                             width: 1.50, color: Colors.white),
                                       ),
                                     ),
-                                    child: Icon(
-                                      Icons.close,
-                                      size: 14.sp,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        // remove that instance
+                                        setState(() {
+                                          admins.remove(e);
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.close,
+                                        size: 14.sp,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -385,9 +393,16 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
                                             width: 1.50, color: Colors.white),
                                       ),
                                     ),
-                                    child: Icon(
-                                      Icons.close,
-                                      size: 14.sp,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          members.remove(e);
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.close,
+                                        size: 14.sp,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -436,6 +451,7 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
       "groupIcon": widget.mediaUrl,
       "dateTimeCreated": AppDate.generateTimeString(),
       "chatParticipants": <String>[
+        userId.toString(),
         ...members.map((e) => e.userId.toString()).toList(),
       ],
       "chatAdmins": <String>[
@@ -457,7 +473,8 @@ void groupCreationSheet(context, {required GroupModel group}) {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              ImageWidget(imageUrl: group.groupIcon.toString()),
+              // ImageWidget(imageUrl: group.groupIcon.toString()),
+              Image.asset(ImageAssets.groupCreationImage),
               Text(
                 group.groupName.toString(),
                 style: TextStyle(

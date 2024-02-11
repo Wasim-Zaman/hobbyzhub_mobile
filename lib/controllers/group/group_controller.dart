@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:hobbyzhub/constants/api_manager.dart';
 import 'package:hobbyzhub/constants/app_url.dart';
 import 'package:hobbyzhub/models/api_response.dart';
+import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,13 +37,16 @@ class GroupController {
     final response = await ApiManager.postRequest(body, url, headers: headers);
     var resBody = jsonDecode(response.body);
     if (resBody['success'] && resBody['status'] == 200) {
-      return ApiResponse.fromJson(resBody, (p0) => null);
+      return ApiResponse.fromJson(
+        resBody,
+        (p0) => GroupModel.fromJson(resBody['data']),
+      );
     } else {
       throw Exception(resBody['message']);
     }
   }
 
-  Future<ApiResponse> getGroupChats({int page = 0, int size = 50}) async {
+  Future<ApiResponse> getGroupChats({int page = 0, int size = 5}) async {
     final url = GroupUrl.getChats;
     final token = await UserSecureStorage.fetchToken();
     final userId = await UserSecureStorage.fetchUserId();
@@ -55,10 +59,13 @@ class GroupController {
 
     final response = await ApiManager.postRequest(body, url, headers: headers);
     var resBody = jsonDecode(response.body);
-    print(resBody);
 
     if (resBody['success'] && resBody['status'] == 200) {
-      return ApiResponse.fromJson(resBody, (p0) => null);
+      List<GroupModel> groups = [];
+      resBody['data'].forEach((group) {
+        groups.add(GroupModel.fromJson(group));
+      });
+      return ApiResponse.fromJson(resBody, (p0) => groups);
     } else {
       throw Exception(resBody['message']);
     }

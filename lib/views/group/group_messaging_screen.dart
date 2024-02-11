@@ -1,13 +1,26 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/group/group_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/group/group_model.dart';
+import 'package:hobbyzhub/models/message/message_model.dart';
+import 'package:hobbyzhub/models/user/user.dart';
+import 'package:hobbyzhub/utils/app_date.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/widgets/chat/message_bubble.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 class GroupMessagingScreen extends StatefulWidget {
   final GroupModel group;
@@ -18,6 +31,21 @@ class GroupMessagingScreen extends StatefulWidget {
 }
 
 class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
+  String? myUserId;
+  User? myUser;
+  late StompClient stompClient;
+
+  var messageController = TextEditingController();
+
+  var messages = <MessageModel>[];
+
+  @override
+  void initState() {
+    initializeSocket();
+
+    super.initState();
+  }
+
   void handleClick(int value) {
     switch (value) {
       case 0:
@@ -25,6 +53,101 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
       case 1:
         break;
     }
+  }
+
+  initializeSocket() {
+    stompClient = StompClient(
+      config: StompConfig.sockJS(
+        url: dotenv.env['SOCKET_URL']!,
+        beforeConnect: () async {
+          myUserId = await UserSecureStorage.fetchUserId();
+          log("Connecting...");
+          UserSecureStorage.fetchUserId().then((value) {
+            myUserId = value;
+            for (var element in widget.group.chatParticipants!) {
+              if (element.userId == myUserId) {
+                myUser = element;
+              }
+            }
+          });
+        },
+        onConnect: onConnectCallback,
+        onStompError: (p0) {
+          log("Stomp error ${p0.body}");
+        },
+        onWebSocketError: (p0) {
+          log("Websocket error $p0");
+        },
+        onUnhandledFrame: (p0) {
+          log("Unhandled frame $p0");
+        },
+        onUnhandledMessage: (p0) {
+          log("Unhandled message $p0");
+        },
+      ),
+    );
+    stompClient.activate();
+  }
+
+  void onConnectCallback(StompFrame connectFrame) async {
+    context
+        .read<GroupBloc>()
+        .add(GroupGetLocalMessagesEvent(groupId: widget.group.chatId!));
+    print("Connecting using ${widget.group.chatId}");
+    stompClient.subscribe(
+      destination: '/topic/group-${widget.group.chatId}',
+      callback: (frame) {
+        if (frame.binaryBody != null) {
+          try {
+            var decodedData = utf8.decode(frame.binaryBody!);
+            var message = MessageModel.fromJson(jsonDecode(decodedData));
+            context.read<GroupBloc>().add(GroupReceiveMessagesEvent(
+                  groupId: widget.group.chatId!,
+                  message: message,
+                ));
+          } on FormatException catch (e) {
+            log("Error decoding message: $e");
+          }
+        }
+      },
+    );
+  }
+
+  void sendMessage() {
+    if (messageController.text.isNotEmpty) {
+      try {
+        var groupId = widget.group.chatId;
+        var message = MessageModel(
+          messageString: messageController.text,
+          chatId: groupId,
+          media: null,
+          metadata: Metadata(
+            dateTimeSent: AppDate.generateTimeString(),
+            toDestinationId: groupId,
+            fromUserId: myUserId,
+          ),
+        );
+        stompClient.send(
+          destination: '/app/group',
+          body: jsonEncode(message.toJson()),
+          headers: {},
+        );
+        // save the message to the list of messages
+        // context.read<ChatBloc>()
+        //   ..add(ChatSendMessageEvent(message: message))
+        //   ..add(ChatSetLocalMessageEvent(message: message, chatId: chatId));
+
+        messageController.clear();
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    stompClient.deactivate();
+    super.dispose();
   }
 
   @override
@@ -159,203 +282,137 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        color: Colors.white,
-        child: Padding(
-          padding:
-              EdgeInsets.only(bottom: 12.w, left: 12.w, right: 12.w, top: 10.h),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width / 1.4,
-                height: 56.h,
-                padding: const EdgeInsets.only(
-                  left: 22,
+      body: BlocConsumer<GroupBloc, GroupState>(
+        listener: (context, state) {
+          // if (state is ChatMessageSentState) {
+          //   messages.insert(0, state.message);
+          // } else if (state is ChatMessageReceivedState) {
+          //   messages.insert(0, state.message);
+          // } else if (state is ChatGetMessagesSuccessState) {
+          //   // append from reverse side
+          //   messages.insertAll(0, state.messages);
+          // } else if (state is ChatGetLocalMessagesSuccessState) {
+          //   messages = state.messages;
+          //   // reverse the message list
+          //   messages = messages.reversed.toList();
+          // }
+
+          if (state is GroupGetLocalMessagesState) {
+            messages = state.messages.reversed.toList();
+          } else if (state is GroupReceiveMessageState) {
+            messages.insert(0, state.message);
+          }
+        },
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // Text('Chat started on ${date.day}'),
+                Expanded(
+                  child: ListView.builder(
+                      // controller: chatScrollController,
+                      itemCount: messages.length,
+                      reverse: true,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            GroupMessageBubble(
+                              message: messages[index],
+                              myUserId: myUserId.toString(),
+                              group: widget.group,
+                            ),
+                          ],
+                        );
+                      }),
                 ),
-                decoration: ShapeDecoration(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  shadows: [
-                    BoxShadow(
-                      color: Color(0x21000000),
-                      blurRadius: 30,
-                      offset: Offset(5, 4),
-                      spreadRadius: 0,
-                    )
-                  ],
-                ),
-                child: Row(
+                Row(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        Icon(Icons.attach_file),
-                        SizedBox(width: 10.w),
-                        Text(
-                          'Write your message',
-                          style: AppTextStyle.subcategoryUnSelectedTextStyle,
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.4,
+                      height: 56.h,
+                      padding: const EdgeInsets.only(
+                        left: 22,
+                      ),
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                      ],
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(12.w),
-                      child: Icon(
-                        Icons.send,
-                        color: AppColors.primary,
+                        shadows: [
+                          BoxShadow(
+                            color: Color(0x21000000),
+                            blurRadius: 30,
+                            offset: Offset(5, 4),
+                            spreadRadius: 0,
+                          )
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: messageController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Write your message',
+                                // prefixIcon: IconButton(
+                                //   onPressed: () {},
+                                //   icon: Icon(Icons.attach_file),
+                                // ),
+                              ),
+                              style:
+                                  AppTextStyle.subcategoryUnSelectedTextStyle,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(12.w),
+                            child: IconButton(
+                              icon: Icon(Icons.send),
+                              color: AppColors.primary,
+                              onPressed: sendMessage,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    const SizedBox(width: 10),
+                    Container(
+                        width: 55.w,
+                        height: 56.h,
+                        decoration: ShapeDecoration(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          shadows: [
+                            BoxShadow(
+                              color: Color(0x21000000),
+                              blurRadius: 30,
+                              offset: Offset(5, 4),
+                              spreadRadius: 0,
+                            )
+                          ],
+                        ),
+                        child: Center(
+                          child: Icon(Icons.camera_alt_outlined),
+                        )).visible(false),
                   ],
                 ),
-              ),
-              const SizedBox(width: 10),
-              Container(
-                  width: 55.w,
-                  height: 56.h,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x21000000),
-                        blurRadius: 30,
-                        offset: Offset(5, 4),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.camera_alt_outlined,
-                    ),
-                  )),
-            ],
-          ),
-        ),
-      ),
-      body: ListView.builder(
-          itemCount: 20,
-          shrinkWrap: true,
-          itemBuilder: (context, inde) {
-            return Column(
-              children: [
-                SizedBox(
-                  height: 10.h,
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.w),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: 268.w,
-                          height: 72.h,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 42.w, vertical: 27.h),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Color(0xFF26A4FF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(41.80),
-                                topRight: Radius.circular(41.80),
-                                bottomLeft: Radius.circular(41.80),
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 184.w,
-                                child: Text(
-                                  'Hello man how are you doing?',
-                                  textAlign: TextAlign.right,
-                                  style:
-                                      AppTextStyle.subcategorySelectedTextStyle,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Text(
-                          '12:10',
-                          textAlign: TextAlign.right,
-                          style: AppTextStyle.subcategoryUnSelectedTextStyle,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.w),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 268.w,
-                          height: 72.h,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 42.w, vertical: 27.h),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Color(0x1926A4FF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(41.80),
-                                topRight: Radius.circular(41.80),
-                                bottomRight: Radius.circular(41.80),
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 184,
-                                child: Text(
-                                  'I’m fine bro how are you?',
-                                  style: AppTextStyle
-                                      .subcategoryUnSelectedTextStyle,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Text(
-                          '12:10',
-                          textAlign: TextAlign.right,
-                          style: AppTextStyle.subcategoryUnSelectedTextStyle,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                Container(height: 20),
               ],
-            );
-          }),
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -30,3 +30,13 @@ class GroupGetChatsState extends GroupState {
   final List<GroupModel> chats;
   GroupGetChatsState({required this.chats});
 }
+
+class GroupReceiveMessageState extends GroupState {
+  final MessageModel message;
+  GroupReceiveMessageState({required this.message});
+}
+
+class GroupGetLocalMessagesState extends GroupState {
+  final List<MessageModel> messages;
+  GroupGetLocalMessagesState({required this.messages});
+}

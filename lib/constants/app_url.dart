@@ -100,5 +100,5 @@ abstract class GroupUrl {
 
   static final createMedia = "$groupBase/api/v1/chats/media/upload";
   static final createGroup = "$groupBase/api/v1/chats/groups/create";
-  static final getChats = "$groupBase/api/v1/chats/groups/get-group";
+  static final getChats = "$groupBase/api/v1/chats/groups/get-for-user";
 }

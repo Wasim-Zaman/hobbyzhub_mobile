@@ -1,12 +1,17 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/group/group_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/views/group/create_group_screen.dart';
+import 'package:hobbyzhub/views/group/group_messaging_screen.dart';
+import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 
 class GroupScreen extends StatefulWidget {
   const GroupScreen({super.key});
@@ -16,6 +21,8 @@ class GroupScreen extends StatefulWidget {
 }
 
 class _GroupScreenState extends State<GroupScreen> {
+  List<GroupModel> groups = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,142 +62,161 @@ class _GroupScreenState extends State<GroupScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(12.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 10.h,
-            ),
-            Expanded(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        // AppNavigator.goToPage(
-                        //   context: context,
-                        //   screen: MessagingScreen(),
-                        // );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          color: AppColors.lightGrey,
-                          width: double.infinity,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                top: 20.h, bottom: 20.h, left: 5.w, right: 5.w),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 10.w,
-                                    ),
-                                    Expanded(
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            width: 45.w,
-                                            height: 45.h,
-                                            decoration: ShapeDecoration(
-                                              image: DecorationImage(
-                                                image: NetworkImage(
-                                                    "https://via.placeholder.com/44x45"),
-                                                fit: BoxFit.fill,
-                                              ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.r),
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            left: 35.w,
-                                            top: 33.h,
-                                            child: Container(
-                                              width: 12.w,
-                                              height: 12.h,
+      body: BlocConsumer<GroupBloc, GroupState>(
+        listener: (context, state) {
+          if (state is GroupGetChatsState) {
+            groups = state.chats;
+          } else if (state is GroupErrorState) {}
+        },
+        builder: (context, state) {
+          if (state is GroupLoadingState) {
+            return Center(
+              child: LoadingWidget(),
+            );
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: groups.length,
+                    padding:
+                        EdgeInsets.only(top: 10.h, left: 10.h, right: 10.h),
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          AppNavigator.goToPage(
+                            context: context,
+                            screen: GroupMessagingScreen(group: groups[index]),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            color: AppColors.lightGrey,
+                            width: double.infinity,
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  top: 20.h,
+                                  bottom: 20.h,
+                                  left: 5.w,
+                                  right: 5.w),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 10.w,
+                                      ),
+                                      Expanded(
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              width: 45.w,
+                                              height: 45.h,
                                               decoration: ShapeDecoration(
-                                                color: Color(0xFF12B669),
-                                                shape: OvalBorder(),
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                    groups[index].groupIcon ??
+                                                        "https://via.placeholder.com/44x45",
+                                                  ),
+                                                  fit: BoxFit.fill,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.r),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Jane Smith',
-                                            style: AppTextStyle.listTileTitle,
-                                          ),
-                                          SizedBox(
-                                            height: 5.h,
-                                          ),
-                                          SizedBox(
-                                            width: 230.w,
-                                            child: Text(
-                                              'It is a long established fact that a read and will be distracted lisece.',
-                                              maxLines: 2,
-                                              style: AppTextStyle
-                                                  .listTileSubHeading,
+                                            Positioned(
+                                              left: 35.w,
+                                              top: 33.h,
+                                              child: Container(
+                                                width: 12.w,
+                                                height: 12.h,
+                                                decoration: ShapeDecoration(
+                                                  color: Color(0xFF12B669),
+                                                  shape: OvalBorder(),
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            width: 20.w,
-                                            height: 20.h,
-                                            decoration: ShapeDecoration(
-                                              color: Color(0xFF26A4FF),
-                                              shape: OvalBorder(),
+                                      Expanded(
+                                        flex: 4,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              groups[index].groupName ?? '',
+                                              style: AppTextStyle.listTileTitle,
                                             ),
-                                            child: Center(
+                                            SizedBox(
+                                              height: 5.h,
+                                            ),
+                                            SizedBox(
+                                              width: 230.w,
                                               child: Text(
-                                                '3',
-                                                textAlign: TextAlign.center,
+                                                groups[index]
+                                                        .groupDescription ??
+                                                    '',
+                                                maxLines: 2,
                                                 style: AppTextStyle
-                                                    .subcategorySelectedTextStyle,
+                                                    .listTileSubHeading,
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                ),
-                              ],
+                                      // Expanded(
+                                      //   child: Column(
+                                      //     crossAxisAlignment:
+                                      //         CrossAxisAlignment.center,
+                                      //     children: [
+                                      //       Container(
+                                      //         width: 20.w,
+                                      //         height: 20.h,
+                                      //         decoration: ShapeDecoration(
+                                      //           color: Color(0xFF26A4FF),
+                                      //           shape: OvalBorder(),
+                                      //         ),
+                                      //         child: Center(
+                                      //           child: Text(
+                                      //             '',
+                                      //             textAlign: TextAlign.center,
+                                      //             style: AppTextStyle
+                                      //                 .subcategorySelectedTextStyle,
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
-            )
-          ],
-        ),
+                      );
+                    }),
+              )
+            ],
+          );
+        },
       ),
     );
   }

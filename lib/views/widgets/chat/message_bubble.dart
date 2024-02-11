@@ -193,6 +193,7 @@ class GroupMessageBubble extends StatelessWidget {
                         ),
                         softWrap: true,
                       ).visible(!isMe),
+                      10.height.visible(!isMe),
                       Text(
                         message.messageString
                             .toString(), // Replace with your actual text field

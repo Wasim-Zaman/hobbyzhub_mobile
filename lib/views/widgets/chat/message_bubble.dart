@@ -177,14 +177,32 @@ class GroupMessageBubble extends StatelessWidget {
                           : const Radius.circular(15),
                     ),
                   ),
-                  child: Text(
-                    message.messageString
-                        .toString(), // Replace with your actual text field
-                    style: TextStyle(
-                      color: isMe ? Colors.white : Colors.black,
-                      fontSize: 16,
-                    ),
-                    softWrap: true,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        group.chatParticipants!.firstWhere((element) {
+                              return element.userId ==
+                                  message.metadata!.fromUserId;
+                            }).fullName ??
+                            '',
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        softWrap: true,
+                      ).visible(!isMe),
+                      Text(
+                        message.messageString
+                            .toString(), // Replace with your actual text field
+                        style: TextStyle(
+                          color: isMe ? Colors.white : Colors.black,
+                          fontSize: 14,
+                        ),
+                        softWrap: true,
+                      ),
+                    ],
                   ),
                 ),
                 Container(

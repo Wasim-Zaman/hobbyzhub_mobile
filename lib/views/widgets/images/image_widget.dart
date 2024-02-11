@@ -26,7 +26,17 @@ class ImageWidget extends StatelessWidget {
       height: height,
       // imageBuilder: (context, imageProvider) =>
       //     imageBuilder ?? const Center(child: LoadingWidget()),
-      errorWidget: (context, url, error) => errorWidget ?? const Placeholder(),
+      errorWidget: (context, url, error) =>
+          errorWidget ??
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Center(
+              child: Icon(Icons.image_outlined, size: 30),
+            ),
+          ),
     );
   }
 }

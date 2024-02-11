@@ -326,7 +326,7 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
                     // Text('Chat started on ${date.day}'),
                     Expanded(
                       child: ListView.builder(
-                          // controller: chatScrollController,
+                          controller: chatScrollController,
                           itemCount: messages.length,
                           reverse: true,
                           shrinkWrap: true,

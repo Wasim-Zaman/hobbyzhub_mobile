@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
@@ -420,144 +421,138 @@ class _PrivateChatTileState extends State<PrivateChatTile> {
   @override
   void initState() {
     super.initState();
-    context.read<ChatBloc>().add(
-          ChatGetLocalMessagesEvent(chatId: widget.chat.chatId.toString()),
-        );
+    Hive.openBox<MessageModel>(widget.chat.chatId!).then((value) {
+      if (value.values.isNotEmpty) {
+        setState(() {
+          lastMessage = value.values.last;
+        });
+      }
+      value.close();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ChatBloc, ChatState>(
-      listener: (context, state) {
-        if (state is ChatGetLocalMessagesSuccessState) {
-          if (lastMessage == null && state.messages.isNotEmpty) {
-            lastMessage = state.messages.last;
-          }
-        }
-      },
-      builder: (context, state) {
-        return GestureDetector(
-          onTap: () {
-            AppNavigator.goToPage(
-              context: context,
-              screen: MessagingScreen(chat: widget.chat),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Container(
-              color: AppColors.lightGrey,
-              width: double.infinity,
-              child: Padding(
-                padding: EdgeInsets.only(
-                    top: 20.h, bottom: 20.h, left: 5.w, right: 5.w),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 10.h,
-                        ),
-                        Expanded(
-                          child: Stack(
-                            children: [
-                              ImageWidget(
-                                imageUrl: widget
-                                        .chat.chatParticipantB?.profileImage ??
-                                    "",
-                                width: 45.w,
-                                height: 45.h,
-                                errorWidget: Image.asset(
-                                  ImageAssets.profileImage,
-                                ),
-                              ),
-                              Positioned(
-                                left: 35.w,
-                                top: 33.h,
-                                child: Container(
-                                  width: 12.w,
-                                  height: 12.h,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF12B669),
-                                    shape: OvalBorder(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.chat.chatParticipantB?.fullName ?? "",
-                                style: AppTextStyle.listTileTitle,
-                              ),
-                              SizedBox(
-                                height: 5.h,
-                              ),
-                              SizedBox(
-                                width: 250.w,
-                                child: Text(
-                                  lastMessage != null
-                                      ? lastMessage!.messageString!
-                                      : '',
-                                  maxLines: 2,
-                                  style: AppTextStyle.listTileSubHeading,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                AppDate.parseTimeStringToDateTime(
-                                        widget.chat.dateTimeCreated!)
-                                    .timeAgo,
-                                style: AppTextStyle.likeByTextStyle,
-                              ),
-                              SizedBox(
-                                height: 10.h,
-                              ),
-                              Container(
-                                width: 20.w,
-                                height: 20.h,
-                                decoration: ShapeDecoration(
-                                  color: AppColors.primary,
-                                  shape: OvalBorder(),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '',
-                                    textAlign: TextAlign.center,
-                                    style: AppTextStyle
-                                        .subcategorySelectedTextStyle,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+    return GestureDetector(
+      onTap: () {
+        AppNavigator.goToPage(
+          context: context,
+          screen: MessagingScreen(chat: widget.chat),
         );
       },
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Container(
+          color: AppColors.lightGrey,
+          width: double.infinity,
+          child: Padding(
+            padding:
+                EdgeInsets.only(top: 20.h, bottom: 20.h, left: 5.w, right: 5.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 10.h,
+                    ),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          ImageWidget(
+                            imageUrl:
+                                widget.chat.chatParticipantB?.profileImage ??
+                                    "",
+                            width: 45.w,
+                            height: 45.h,
+                            errorWidget: Image.asset(
+                              ImageAssets.profileImage,
+                            ),
+                          ),
+                          Positioned(
+                            left: 35.w,
+                            top: 33.h,
+                            child: Container(
+                              width: 12.w,
+                              height: 12.h,
+                              decoration: ShapeDecoration(
+                                color: Color(0xFF12B669),
+                                shape: OvalBorder(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.chat.chatParticipantB?.fullName ?? "",
+                            style: AppTextStyle.listTileTitle,
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          SizedBox(
+                            width: 250.w,
+                            child: Text(
+                              lastMessage != null
+                                  ? lastMessage!.messageString!
+                                  : '',
+                              maxLines: 2,
+                              style: AppTextStyle.listTileSubHeading,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            AppDate.parseTimeStringToDateTime(
+                                    widget.chat.dateTimeCreated!)
+                                .timeAgo,
+                            style: AppTextStyle.likeByTextStyle,
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Container(
+                            width: 20.w,
+                            height: 20.h,
+                            decoration: ShapeDecoration(
+                              color: AppColors.primary,
+                              shape: OvalBorder(),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '',
+                                textAlign: TextAlign.center,
+                                style:
+                                    AppTextStyle.subcategorySelectedTextStyle,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

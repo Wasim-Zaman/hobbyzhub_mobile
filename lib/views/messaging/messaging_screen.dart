@@ -43,6 +43,10 @@ class _MessagingScreenState extends State<MessagingScreen> {
   var chatScrollController = ScrollController();
   final TextEditingController _messageController = TextEditingController();
 
+  // pagination
+  int page = 1;
+  int size = 100;
+
   @override
   void initState() {
     // go to the last message using scroll controller
@@ -50,9 +54,9 @@ class _MessagingScreenState extends State<MessagingScreen> {
       if (chatScrollController.position.pixels ==
           chatScrollController.position.maxScrollExtent) {
         if (messages.length > 100) {
-          context
-              .read<ChatBloc>()
-              .add(ChatGetMessagesEvent(0, 100, chatId: widget.chat.chatId!));
+          page++;
+          context.read<ChatBloc>().add(
+              ChatGetMessagesEvent(page, size, chatId: widget.chat.chatId!));
         }
       }
     });

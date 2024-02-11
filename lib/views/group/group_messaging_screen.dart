@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
 import 'package:hobbyzhub/blocs/group/group_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
@@ -35,12 +36,30 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
   User? myUser;
   late StompClient stompClient;
 
+  // Controllers
   var messageController = TextEditingController();
+  var chatScrollController = ScrollController();
 
+  // Lists
   var messages = <MessageModel>[];
+
+  // Pagination
+  int page = 1;
+  int size = 100;
 
   @override
   void initState() {
+    // go to the last message using scroll controller
+    chatScrollController.addListener(() {
+      if (chatScrollController.position.pixels ==
+          chatScrollController.position.maxScrollExtent) {
+        if (messages.length > 100) {
+          page++;
+          context.read<ChatBloc>().add(
+              ChatGetMessagesEvent(page, size, chatId: widget.group.chatId!));
+        }
+      }
+    });
     initializeSocket();
 
     super.initState();
@@ -284,19 +303,6 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
       ),
       body: BlocConsumer<GroupBloc, GroupState>(
         listener: (context, state) {
-          // if (state is ChatMessageSentState) {
-          //   messages.insert(0, state.message);
-          // } else if (state is ChatMessageReceivedState) {
-          //   messages.insert(0, state.message);
-          // } else if (state is ChatGetMessagesSuccessState) {
-          //   // append from reverse side
-          //   messages.insertAll(0, state.messages);
-          // } else if (state is ChatGetLocalMessagesSuccessState) {
-          //   messages = state.messages;
-          //   // reverse the message list
-          //   messages = messages.reversed.toList();
-          // }
-
           if (state is GroupGetLocalMessagesState) {
             messages = state.messages.reversed.toList();
           } else if (state is GroupReceiveMessageState) {
@@ -304,112 +310,122 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
           }
         },
         builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                // Text('Chat started on ${date.day}'),
-                Expanded(
-                  child: ListView.builder(
-                      // controller: chatScrollController,
-                      itemCount: messages.length,
-                      reverse: true,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            GroupMessageBubble(
-                              message: messages[index],
-                              myUserId: myUserId.toString(),
-                              group: widget.group,
-                            ),
-                          ],
-                        );
-                      }),
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+          return BlocConsumer<ChatBloc, ChatState>(
+            listener: (context, state) {
+              if (state is ChatGetMessagesSuccessState) {
+                // append from reverse side
+                messages.insertAll(0, state.messages);
+              }
+            },
+            builder: (context, state) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 1.4,
-                      height: 56.h,
-                      padding: const EdgeInsets.only(
-                        left: 22,
-                      ),
-                      decoration: ShapeDecoration(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        shadows: [
-                          BoxShadow(
-                            color: Color(0x21000000),
-                            blurRadius: 30,
-                            offset: Offset(5, 4),
-                            spreadRadius: 0,
-                          )
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: messageController,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Write your message',
-                                // prefixIcon: IconButton(
-                                //   onPressed: () {},
-                                //   icon: Icon(Icons.attach_file),
-                                // ),
-                              ),
-                              style:
-                                  AppTextStyle.subcategoryUnSelectedTextStyle,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(12.w),
-                            child: IconButton(
-                              icon: Icon(Icons.send),
-                              color: AppColors.primary,
-                              onPressed: sendMessage,
-                            ),
-                          ),
-                        ],
-                      ),
+                    // Text('Chat started on ${date.day}'),
+                    Expanded(
+                      child: ListView.builder(
+                          // controller: chatScrollController,
+                          itemCount: messages.length,
+                          reverse: true,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                GroupMessageBubble(
+                                  message: messages[index],
+                                  myUserId: myUserId.toString(),
+                                  group: widget.group,
+                                ),
+                              ],
+                            );
+                          }),
                     ),
-                    const SizedBox(width: 10),
-                    Container(
-                        width: 55.w,
-                        height: 56.h,
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width / 1.4,
+                          height: 56.h,
+                          padding: const EdgeInsets.only(
+                            left: 22,
                           ),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x21000000),
-                              blurRadius: 30,
-                              offset: Offset(5, 4),
-                              spreadRadius: 0,
-                            )
-                          ],
+                          decoration: ShapeDecoration(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            shadows: [
+                              BoxShadow(
+                                color: Color(0x21000000),
+                                blurRadius: 30,
+                                offset: Offset(5, 4),
+                                spreadRadius: 0,
+                              )
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: messageController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: 'Write your message',
+                                    // prefixIcon: IconButton(
+                                    //   onPressed: () {},
+                                    //   icon: Icon(Icons.attach_file),
+                                    // ),
+                                  ),
+                                  style: AppTextStyle
+                                      .subcategoryUnSelectedTextStyle,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(12.w),
+                                child: IconButton(
+                                  icon: Icon(Icons.send),
+                                  color: AppColors.primary,
+                                  onPressed: sendMessage,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        child: Center(
-                          child: Icon(Icons.camera_alt_outlined),
-                        )).visible(false),
+                        const SizedBox(width: 10),
+                        Container(
+                            width: 55.w,
+                            height: 56.h,
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              shadows: [
+                                BoxShadow(
+                                  color: Color(0x21000000),
+                                  blurRadius: 30,
+                                  offset: Offset(5, 4),
+                                  spreadRadius: 0,
+                                )
+                              ],
+                            ),
+                            child: Center(
+                              child: Icon(Icons.camera_alt_outlined),
+                            )).visible(false),
+                      ],
+                    ),
+                    Container(height: 20),
                   ],
                 ),
-                Container(height: 20),
-              ],
-            ),
+              );
+            },
           );
         },
       ),

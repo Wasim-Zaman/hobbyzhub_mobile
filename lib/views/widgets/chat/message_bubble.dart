@@ -40,12 +40,15 @@ class MessageBubble extends StatelessWidget {
               color: AppColors.grey.withOpacity(0.5),
               borderRadius: BorderRadius.circular(10.0),
             ),
-            child: ImageWidget(
-              imageUrl: imageUrl,
-              height: 50.h,
-              width: 50.w,
-              errorWidget: Image.asset(ImageAssets.profileImage),
-            ).visible(!isMe),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: ImageWidget(
+                imageUrl: imageUrl,
+                height: 50.h,
+                width: 50.w,
+                errorWidget: Image.asset(ImageAssets.profileImage),
+              ).visible(!isMe),
+            ),
           ),
           Expanded(
             child: Column(
@@ -139,13 +142,17 @@ class GroupMessageBubble extends StatelessWidget {
               color: AppColors.grey.withOpacity(0.5),
               borderRadius: BorderRadius.circular(10.0),
             ),
-            child: ImageWidget(
-              imageUrl: group.chatParticipants!.firstWhere((element) {
-                return element.userId == message.metadata!.fromUserId;
-              }).profileImage!,
-              height: 50.h,
-              width: 50.w,
-              errorWidget: Image.asset(ImageAssets.profileImage),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: ImageWidget(
+                imageUrl: group.chatParticipants!.firstWhere((element) {
+                  return element.userId == message.metadata!.fromUserId;
+                }).profileImage!,
+                fit: BoxFit.cover,
+                height: 50.h,
+                width: 50.w,
+                errorWidget: Image.asset(ImageAssets.profileImage),
+              ),
             ),
           ).visible(!isMe),
           Expanded(

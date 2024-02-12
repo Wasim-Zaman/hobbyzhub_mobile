@@ -848,14 +848,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
-  searchable_listview:
-    dependency: "direct main"
-    description:
-      name: searchable_listview
-      sha256: fad781a412d1fec251c7a66e4aca49e49ab8b7104bda733b476d4b5c81891bea
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.10.1"
   shared_preferences:
     dependency: transitive
     description:

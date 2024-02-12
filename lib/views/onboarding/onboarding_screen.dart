@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/onboarding/dine_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 
@@ -20,6 +21,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   void initState() {
+    UserSecureStorage.setNewUser('false');
     _controller = PageController();
 
     super.initState();

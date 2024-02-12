@@ -40,6 +40,7 @@ abstract class ChatUrl {
   static final searchUsersByName = "$chatBase/api/v1/accounts/search";
   static final createPrivateChat = "$chatBase/api/v1/chats/private/create-new";
   static final getChats = "$chatBase/api/v1/chats/private/get-chats";
+  static final getServerMessages = "$chatBase/api/v1/chats/messages/retrieve";
 }
 
 abstract class MediaUrl {
@@ -94,4 +95,12 @@ abstract class FollowersUrl {
 abstract class UserProfileUrl {
   static final userProfileUrl = "${AppUrl.baseUrl}/api/v1/accounts/get-details";
   static final userPostsUrl = "${AppUrl.baseUrl}/api/v1/posts/user-posts";
+}
+
+abstract class GroupUrl {
+  static final groupBase = AppUrl.baseUrl;
+
+  static final createMedia = "$groupBase/api/v1/chats/media/upload";
+  static final createGroup = "$groupBase/api/v1/chats/groups/create";
+  static final getChats = "$groupBase/api/v1/chats/groups/get-for-user";
 }

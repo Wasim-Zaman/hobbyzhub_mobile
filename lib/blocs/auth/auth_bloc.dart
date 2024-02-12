@@ -5,6 +5,7 @@ import 'package:hobbyzhub/controllers/auth/auth_controller.dart';
 import 'package:hobbyzhub/models/api_response.dart';
 import 'package:hobbyzhub/models/auth/complete_profile_model.dart';
 import 'package:hobbyzhub/utils/media_utils.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -169,8 +170,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         var networkStatus = await isNetworkAvailable();
         if (networkStatus) {
-          final response = await AuthController.refreshToken();
-          emit(AuthRefreshTokenSuccess(response: response));
+          var isNewUser = await UserSecureStorage.fetchNewUser();
+          if (isNewUser != null) {
+            final response = await AuthController.refreshToken();
+            emit(AuthRefreshTokenSuccess(response: response));
+          } else {
+            emit(AuthNewUserState());
+          }
         } else {
           emit(AuthRefreshTokenError(message: "No Internet Connection"));
         }

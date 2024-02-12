@@ -3,17 +3,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/chat/chat_model.dart';
+import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/models/user/user.dart';
+import 'package:hobbyzhub/utils/app_date.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_toast.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/messaging/messaging_screen.dart';
+import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
+import 'package:hobbyzhub/views/widgets/shimmer/private_chat_tile_shimmer.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -44,10 +51,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // Others
   String slug = '';
+  String? userId;
 
   @override
   void initState() {
     initBlocs();
+    UserSecureStorage.fetchUserId().then((value) {
+      userId = value;
+    });
     searchedUserController.addListener(() {
       // when we scroll all users then increase the page size by 1 and call searchMoreUser function
       if (searchedUserController.position.pixels ==
@@ -88,7 +99,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    userBloc.close();
     chatBloc.close();
     searchedUserController.dispose();
     super.dispose();
@@ -109,20 +119,12 @@ class _ChatScreenState extends State<ChatScreen> {
                   _searchBottomSheet(context);
                 },
                 child: Padding(
-                    padding: EdgeInsets.all(8.w),
-                    child: Image.asset(
-                      ImageAssets.searchImage,
-                      height: 25.h,
-                    )),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: Padding(
-                    padding: EdgeInsets.all(8.w),
-                    child: Image.asset(
-                      ImageAssets.addNewMessageImage,
-                      height: 25.h,
-                    )),
+                  padding: EdgeInsets.all(8.w),
+                  child: Image.asset(
+                    ImageAssets.addNewMessageImage,
+                    height: 25.h,
+                  ),
+                ),
               ),
             ],
           ),
@@ -133,76 +135,72 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 20.h,
-            ),
-            Text(
-              'Frequently Chatted',
-              style: AppTextStyle.exploreSubHead,
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-            SizedBox(
-              height: 70.h,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          width: 50.w,
-                          //  height: 51.h,
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: 49.w,
-                                height: 60.h,
-                                decoration: ShapeDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                        "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.r)),
-                                ),
-                              ),
-                              Positioned(
-                                left: 40.w,
-                                top: 50.h,
-                                child: Container(
-                                  width: 12.w,
-                                  height: 12.h,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF12B669),
-                                    shape: OvalBorder(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                      ],
-                    );
-                  }),
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
+            // SizedBox(
+            //   height: 20.h,
+            // ),
+            // Text(
+            //   'Frequently Chatted',
+            //   style: AppTextStyle.exploreSubHead,
+            // ),
+            // SizedBox(
+            //   height: 20.h,
+            // ),
+            // SizedBox(
+            //   height: 70.h,
+            //   child: ListView.builder(
+            //       shrinkWrap: true,
+            //       scrollDirection: Axis.horizontal,
+            //       itemCount: 10,
+            //       itemBuilder: (context, index) {
+            //         return Row(
+            //           mainAxisSize: MainAxisSize.min,
+            //           mainAxisAlignment: MainAxisAlignment.start,
+            //           crossAxisAlignment: CrossAxisAlignment.end,
+            //           children: [
+            //             SizedBox(
+            //               width: 50.w,
+            //               //  height: 51.h,
+            //               child: Stack(
+            //                 children: [
+            //                   Container(
+            //                     width: 49.w,
+            //                     height: 60.h,
+            //                     decoration: ShapeDecoration(
+            //                       image: DecorationImage(
+            //                         image: NetworkImage(
+            //                             "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),
+            //                         fit: BoxFit.cover,
+            //                       ),
+            //                       shape: RoundedRectangleBorder(
+            //                           borderRadius: BorderRadius.circular(5.r)),
+            //                     ),
+            //                   ),
+            //                   Positioned(
+            //                     left: 40.w,
+            //                     top: 50.h,
+            //                     child: Container(
+            //                       width: 12.w,
+            //                       height: 12.h,
+            //                       decoration: ShapeDecoration(
+            //                         color: Color(0xFF12B669),
+            //                         shape: OvalBorder(),
+            //                       ),
+            //                     ),
+            //                   ),
+            //                 ],
+            //               ),
+            //             ),
+            //             const SizedBox(width: 10),
+            //           ],
+            //         );
+            //       }),
+            // ),
+            10.height,
             Text(
               'All Messages',
               style: AppTextStyle.exploreSubHead,
             ),
-            SizedBox(
-              height: 20.h,
-            ),
+            20.height,
             BlocConsumer<ChatBloc, ChatState>(
               listener: (context, state) {
                 if (state is ChatGetSuccessState) {
@@ -222,8 +220,15 @@ class _ChatScreenState extends State<ChatScreen> {
               },
               builder: (context, state) {
                 if (state is ChatLoadingState) {
-                  return Center(
-                    child: LoadingWidget(),
+                  // show shimmer effect while loading
+                  return Expanded(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          return PrivateChatTileShimmer();
+                        }),
                   );
                 } else if (state is ChatErrorState) {
                   return Center(
@@ -237,148 +242,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       itemCount: chats.length,
                       itemBuilder: (context, index) {
                         if (chats[index].type == 'private') {
-                          return GestureDetector(
-                            onTap: () {
-                              AppNavigator.goToPage(
-                                context: context,
-                                screen: MessagingScreen(chat: chats[index]),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Container(
-                                color: AppColors.lightGrey,
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 20.h,
-                                      bottom: 20.h,
-                                      left: 5.w,
-                                      right: 5.w),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 10.h,
-                                          ),
-                                          Expanded(
-                                            child: Stack(
-                                              children: [
-                                                Container(
-                                                  width: 45.w,
-                                                  height: 45.h,
-                                                  decoration: ShapeDecoration(
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(
-                                                        chats[index]
-                                                            .chatParticipants![
-                                                                0]
-                                                            .profileImage!,
-                                                      ),
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                  left: 35.w,
-                                                  top: 33.h,
-                                                  child: Container(
-                                                    width: 12.w,
-                                                    height: 12.h,
-                                                    decoration: ShapeDecoration(
-                                                      color: Color(0xFF12B669),
-                                                      shape: OvalBorder(),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 4,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  chats[index]
-                                                      .chatParticipants![0]
-                                                      .fullName!,
-                                                  style: AppTextStyle
-                                                      .listTileTitle,
-                                                ),
-                                                SizedBox(
-                                                  height: 5.h,
-                                                ),
-                                                SizedBox(
-                                                  width: 250.w,
-                                                  child: Text(
-                                                    'It is a long established fact that a read and will be distracted lisece.',
-                                                    maxLines: 2,
-                                                    style: AppTextStyle
-                                                        .listTileSubHeading,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  '22.51',
-                                                  style: AppTextStyle
-                                                      .likeByTextStyle,
-                                                ),
-                                                SizedBox(
-                                                  height: 10.h,
-                                                ),
-                                                Container(
-                                                  width: 20.w,
-                                                  height: 20.h,
-                                                  decoration: ShapeDecoration(
-                                                    color: Color(0xFF26A4FF),
-                                                    shape: OvalBorder(),
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      '3',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: AppTextStyle
-                                                          .subcategorySelectedTextStyle,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
+                          return PrivateChatTile(chat: chats[index]);
                         }
                         return null;
                       }),
@@ -456,7 +320,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     builder: (context, state) {
                       if (state is UserSearchByNameLoading) {
                         return Center(
-                          child: CircularProgressIndicator(),
+                          child: LoadingWidget(),
                         );
                       } else if (state is UserSearchByNameFailure) {
                         return Center(
@@ -531,7 +395,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 },
                                 child: Text('Start Chat'),
                               ),
-                            );
+                            ).visible(searchedUsers[index].userId != userId);
                           });
                     },
                   ),
@@ -540,5 +404,155 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           );
         });
+  }
+}
+
+class PrivateChatTile extends StatefulWidget {
+  final ChatModel chat;
+  const PrivateChatTile({Key? key, required this.chat}) : super(key: key);
+
+  @override
+  State<PrivateChatTile> createState() => _PrivateChatTileState();
+}
+
+class _PrivateChatTileState extends State<PrivateChatTile> {
+  MessageModel? lastMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    Hive.openBox<MessageModel>(widget.chat.chatId!).then((value) {
+      if (value.values.isNotEmpty) {
+        setState(() {
+          lastMessage = value.values.last;
+        });
+      }
+      value.close();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        AppNavigator.goToPage(
+          context: context,
+          screen: MessagingScreen(chat: widget.chat),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Container(
+          color: AppColors.lightGrey,
+          width: double.infinity,
+          child: Padding(
+            padding:
+                EdgeInsets.only(top: 20.h, bottom: 20.h, left: 5.w, right: 5.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 10.h,
+                    ),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          ImageWidget(
+                            imageUrl:
+                                widget.chat.chatParticipantB?.profileImage ??
+                                    "",
+                            width: 45.w,
+                            height: 45.h,
+                            errorWidget: Image.asset(
+                              ImageAssets.profileImage,
+                            ),
+                          ),
+                          Positioned(
+                            left: 35.w,
+                            top: 33.h,
+                            child: Container(
+                              width: 12.w,
+                              height: 12.h,
+                              decoration: ShapeDecoration(
+                                color: Color(0xFF12B669),
+                                shape: OvalBorder(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.chat.chatParticipantB?.fullName ?? "",
+                            style: AppTextStyle.listTileTitle,
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          SizedBox(
+                            width: 250.w,
+                            child: Text(
+                              lastMessage != null
+                                  ? lastMessage!.messageString!
+                                  : '',
+                              maxLines: 2,
+                              style: AppTextStyle.listTileSubHeading,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            AppDate.parseTimeStringToDateTime(
+                                    widget.chat.dateTimeCreated!)
+                                .timeAgo,
+                            style: AppTextStyle.likeByTextStyle,
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Container(
+                            width: 20.w,
+                            height: 20.h,
+                            decoration: ShapeDecoration(
+                              color: AppColors.primary,
+                              shape: OvalBorder(),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '',
+                                textAlign: TextAlign.center,
+                                style:
+                                    AppTextStyle.subcategorySelectedTextStyle,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,6 +1,7 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, depend_on_referenced_packages
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, depend_on_referenced_packages, use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,8 @@ import 'package:hobbyzhub/models/chat/chat_model.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/utils/app_date.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/widgets/chat/message_bubble.dart';
+import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:stomp_dart_client/stomp.dart';
@@ -31,15 +34,36 @@ class MessagingScreen extends StatefulWidget {
 class _MessagingScreenState extends State<MessagingScreen> {
   late StompClient stompClient;
   late String? myUserId;
+
+  // Lists
   List<MessageModel> messages = [];
+  List<File>? mediaFiles = [];
+
+  // Controllers
+  var chatScrollController = ScrollController();
+  final TextEditingController _messageController = TextEditingController();
+
+  // pagination
+  int page = 1;
+  int size = 100;
 
   @override
   void initState() {
+    // go to the last message using scroll controller
+    chatScrollController.addListener(() {
+      if (chatScrollController.position.pixels ==
+          chatScrollController.position.maxScrollExtent) {
+        if (messages.length > 100) {
+          page++;
+          context.read<ChatBloc>().add(
+              ChatGetMessagesEvent(page, size, chatId: widget.chat.chatId!));
+        }
+      }
+    });
     initializeSocket();
     super.initState();
   }
 
-  final TextEditingController _messageController = TextEditingController();
   void handleClick(int value) {
     switch (value) {
       case 0:
@@ -54,7 +78,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
       config: StompConfig.sockJS(
         url: dotenv.env['SOCKET_URL']!,
         beforeConnect: () async {
-          // myUserId = await UserSecureStorage.fetchUserId();
+          myUserId = await UserSecureStorage.fetchUserId();
           log("Connecting...");
         },
         onConnect: onConnectCallback,
@@ -76,24 +100,25 @@ class _MessagingScreenState extends State<MessagingScreen> {
   }
 
   void onConnectCallback(StompFrame connectFrame) async {
-    myUserId = await UserSecureStorage.fetchUserId();
+    context
+        .read<ChatBloc>()
+        .add(ChatGetLocalMessagesEvent(chatId: widget.chat.chatId!));
     print('Connected as $myUserId');
+    print('chat id: ${widget.chat.chatId}');
     stompClient.subscribe(
       destination: '/queue/user-$myUserId',
       callback: (frame) {
         if (frame.binaryBody != null) {
           try {
             var decodedData = utf8.decode(frame.binaryBody!);
-            log("Received message: $decodedData");
+            var message = MessageModel.fromJson(jsonDecode(decodedData));
 
-            // assing the message to the list of messages
-            context.read<ChatBloc>().add(
-                  ChatReceiveMessageEvent(
-                    message: MessageModel.fromJson(
-                      jsonDecode(decodedData),
-                    ),
-                  ),
-                );
+            context.read<ChatBloc>()
+              ..add(ChatReceiveMessageEvent(message: message))
+              ..add(ChatSetLocalMessageEvent(
+                message: message,
+                chatId: widget.chat.chatId!,
+              ));
           } on FormatException catch (e) {
             log("Error decoding message: $e");
           }
@@ -105,15 +130,16 @@ class _MessagingScreenState extends State<MessagingScreen> {
   void sendMessage() {
     if (_messageController.text.isNotEmpty) {
       try {
-        // use utc formate for the date
-        // var date = DateTime.now().toUtc().toString();
-        MessageModel message = MessageModel(
-          message: _messageController.text,
+        var chatId = widget.chat.chatId.toString();
+        var message = MessageModel(
+          messageString: _messageController.text,
           chatId: widget.chat.chatId,
-          fromUserId: myUserId.toString(),
-          toUserId: widget.chat.chatParticipants?[0].userId,
-          dateTimeSent: AppDate.generateTimeString(),
-          type: "text",
+          media: null,
+          metadata: Metadata(
+            dateTimeSent: AppDate.generateTimeString(),
+            toDestinationId: widget.chat.chatParticipantB?.userId,
+            fromUserId: myUserId,
+          ),
         );
         stompClient.send(
           destination: '/app/private',
@@ -121,7 +147,9 @@ class _MessagingScreenState extends State<MessagingScreen> {
           headers: {},
         );
         // save the message to the list of messages
-        context.read<ChatBloc>().add(ChatSendMessageEvent(message: message));
+        context.read<ChatBloc>()
+          ..add(ChatSendMessageEvent(message: message))
+          ..add(ChatSetLocalMessageEvent(message: message, chatId: chatId));
         _messageController.clear();
       } catch (e) {
         print(e);
@@ -129,89 +157,17 @@ class _MessagingScreenState extends State<MessagingScreen> {
     }
   }
 
-  void shareContentSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Text(
-                    'Share Content',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(width: 40.0), // Adjust as needed
-                ],
-              ),
-              SizedBox(height: 16.0),
-              ListTile(
-                leading: Icon(Icons.email),
-                title: Text('Email'),
-                onTap: () {
-                  // Handle Email tap
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.message),
-                title: Text('Message'),
-                onTap: () {
-                  // Handle Message tap
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.share),
-                title: Text('Share'),
-                onTap: () {
-                  // Handle Share tap
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.print),
-                title: Text('Print'),
-                onTap: () {
-                  // Handle Print tap
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   void dispose() {
     stompClient.deactivate();
-
-    // before we actually close the chat, i want to cache top 100 messages
-    // so that when the user opens the chat again, they can see the last 100 messages
-    // this is to avoid making a call to the server to fetch the messages
-    // use hive database to do so for last 100 messages
+    _messageController.dispose();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var participant = widget.chat.chatParticipants![0];
+    var participant = widget.chat.chatParticipantB;
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -245,18 +201,13 @@ class _MessagingScreenState extends State<MessagingScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 50.w,
-                height: 50.h,
-                decoration: ShapeDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      participant.profileImage!,
-                    ),
-                    fit: BoxFit.fill,
-                  ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40.r)),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(40.r),
+                child: ImageWidget(
+                  imageUrl: participant?.profileImage ?? "",
+                  width: 45.w,
+                  height: 45.h,
+                  errorWidget: Image.asset(ImageAssets.profileImage),
                 ),
               ),
               SizedBox(
@@ -269,7 +220,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                 children: [
                   SizedBox(
                     child: Text(
-                      widget.chat.chatParticipants![0].fullName!,
+                      participant?.fullName ?? "",
                       style: AppTextStyle.listTileTitle,
                     ),
                   ),
@@ -287,10 +238,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
           ),
         ),
         actions: [
-          Image.asset(
-            ImageAssets.searchImage,
-            height: 25.h,
-          ),
+          Image.asset(ImageAssets.searchImage, height: 25.h),
           SizedBox(
             width: 10.w,
           ),
@@ -365,40 +313,43 @@ class _MessagingScreenState extends State<MessagingScreen> {
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state is ChatMessageSentState) {
-            messages = state.messages;
+            messages.insert(0, state.message);
           } else if (state is ChatMessageReceivedState) {
+            messages.insert(0, state.message);
+          } else if (state is ChatGetMessagesSuccessState) {
+            // append from reverse side
+            messages.insertAll(0, state.messages);
+          } else if (state is ChatGetLocalMessagesSuccessState) {
             messages = state.messages;
+            // reverse the message list
+            messages = messages.reversed.toList();
           }
         },
         builder: (context, state) {
-          // var date =
-          //     AppDate.parseTimeStringToDateTime(widget.chat.dateTimeCreated!);
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 // Text('Chat started on ${date.day}'),
-                ListView.builder(
-                    itemCount: messages.length,
-                    reverse: false,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          MessageBubble(
-                            message: messages[index],
-                            myUserId: myUserId.toString(),
-                            imageUrl: messages[index].fromUserId == myUserId
-                                ? participant.profileImage!
-                                : widget
-                                    .chat.chatParticipants![0].profileImage!,
-                          ),
-                        ],
-                      );
-                    }),
-                // Expanded(child: Container()),
-                20.height,
+                Expanded(
+                  child: ListView.builder(
+                      controller: chatScrollController,
+                      itemCount: messages.length,
+                      reverse: true,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            MessageBubble(
+                              message: messages[index],
+                              myUserId: myUserId.toString(),
+                              imageUrl: participant!.profileImage.toString(),
+                            ),
+                          ],
+                        );
+                      }),
+                ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -435,7 +386,10 @@ class _MessagingScreenState extends State<MessagingScreen> {
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: 'Write your message',
-                                prefixIcon: Icon(Icons.attach_file),
+                                // prefixIcon: IconButton(
+                                //   onPressed: () {},
+                                //   icon: Icon(Icons.attach_file),
+                                // ),
                               ),
                               style:
                                   AppTextStyle.subcategoryUnSelectedTextStyle,
@@ -471,10 +425,8 @@ class _MessagingScreenState extends State<MessagingScreen> {
                           ],
                         ),
                         child: Center(
-                          child: Icon(
-                            Icons.camera_alt_outlined,
-                          ),
-                        )),
+                          child: Icon(Icons.camera_alt_outlined),
+                        )).visible(false),
                   ],
                 ),
                 Container(height: 20),
@@ -483,84 +435,6 @@ class _MessagingScreenState extends State<MessagingScreen> {
           );
         },
       ),
-    );
-  }
-}
-
-class MessageBubble extends StatelessWidget {
-  final String imageUrl;
-  final MessageModel message; // Replace with your actual Message class
-  final String myUserId;
-
-  const MessageBubble({
-    super.key,
-    required this.message,
-    required this.myUserId,
-    required this.imageUrl,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    bool isMe = message.fromUserId == myUserId;
-
-    return Row(
-      mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        Container(
-          width: 50.w,
-          height: 50.h,
-          decoration: ShapeDecoration(
-            image: DecorationImage(
-              image: NetworkImage(imageUrl),
-              fit: BoxFit.fill,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-          ),
-        ).visible(!isMe),
-        Column(
-          crossAxisAlignment:
-              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              margin: EdgeInsets.only(
-                top: 10,
-                bottom: 10,
-                left: isMe ? 0 : 10,
-                right: isMe ? 10 : 0,
-              ),
-              decoration: BoxDecoration(
-                color: isMe ? AppColors.primary : Colors.grey[300],
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
-                  bottomLeft: isMe ? Radius.circular(15) : Radius.circular(0),
-                  bottomRight: isMe ? Radius.circular(0) : Radius.circular(15),
-                ),
-              ),
-              child: Text(
-                message.message
-                    .toString(), // Replace with your actual text field
-                style: TextStyle(
-                  color: isMe ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                bottom: 10,
-                left: isMe ? 0 : 10,
-                right: isMe ? 10 : 0,
-              ),
-              child: Text(
-                "${AppDate.parseTimeStringToDateTime(message.dateTimeSent!).hour}:${AppDate.parseTimeStringToDateTime(message.dateTimeSent!).minute}",
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

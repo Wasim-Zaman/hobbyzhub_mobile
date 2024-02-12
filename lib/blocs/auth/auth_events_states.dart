@@ -133,3 +133,5 @@ class AuthRefreshTokenError extends AuthState {
 
   AuthRefreshTokenError({required this.message});
 }
+
+class AuthNewUserState extends AuthState {}

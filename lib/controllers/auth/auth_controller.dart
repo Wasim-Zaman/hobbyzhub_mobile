@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:hobbyzhub/constants/api_manager.dart';
 import 'package:hobbyzhub/constants/app_url.dart';
@@ -165,6 +166,47 @@ abstract class AuthController {
       return responseBody['data'];
     } else {
       throw Exception(responseBody['message']);
+    }
+  }
+
+  static registerFcmToken(String fcmtoken, String userId) async {
+    final url = AuthUrl.fcmToken;
+    final token = await UserSecureStorage.fetchToken();
+    log(fcmtoken);
+    try {
+      final response = await ApiManager.postRequest(
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        {
+          "userId": userId,
+          "firebaseToken": fcmtoken,
+        },
+        url,
+      );
+
+      var responseBody = jsonDecode(response.body);
+      return responseBody;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  static Future<Response> unRegisterFcmToken(String userId) async {
+    final url = AuthUrl.logout;
+
+    try {
+      final response = await ApiManager.postRequest(
+        {
+          "userId": userId,
+        },
+        url,
+      );
+
+      return response;
+    } catch (_) {
+      rethrow;
     }
   }
 }

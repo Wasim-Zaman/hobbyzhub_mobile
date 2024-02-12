@@ -16,6 +16,8 @@ abstract class AuthUrl {
   static final activateAccount = "$authBase/api/v1/auth/activate-account";
   static final changePassword = "$authBase/api/v1/auth/reset-password";
   static final refreshToken = "$authBase/api/v1/accounts/refresh-token";
+  static final fcmToken = "$authBase/api/v1/accounts/firebase-token";
+  static final logout = "$authBase/api/v1/auth/logout";
 
   // Account Service
 

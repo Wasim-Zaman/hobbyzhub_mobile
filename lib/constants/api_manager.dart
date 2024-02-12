@@ -32,6 +32,7 @@ class ApiManager {
       {dynamic headers, bool? authorizationHeaders}) async {
     // Perform a POST request with the specified body and return the response.
     var token = await UserSecureStorage.fetchToken();
+
     var json = jsonEncode(body);
     late Map<String, String> _headers;
     if (authorizationHeaders != null && authorizationHeaders) {

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/auth/auth_bloc.dart';
+import 'package:hobbyzhub/blocs/fcm_token/fcm_token_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/global/fonts/app_fonts.dart';
@@ -101,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   screen: const CompleteProfileScreen1(),
                 );
               } else {
+                context.read<FcmTokenCubit>().registerFcmToekn();
                 AppNavigator.goToPageWithReplacement(
                   context: context,
                   screen: const MainTabScreen(index: 0),

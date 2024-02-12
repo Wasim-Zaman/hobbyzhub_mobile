@@ -85,11 +85,7 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                             ),
                             20.height,
                             // Posts, following and followers in one row
-                            UserAllCountWidget(
-                              isThirdPerson: true,
-                              userId: widget.userId,
-                            ),
-                            20.height,
+
                             FollowFollowingButton(
                               otherUserId: widget.userId,
                             ),
@@ -263,10 +259,18 @@ class _FollowFollowingButtonState extends State<FollowFollowingButton> {
         }
       },
       builder: (context, state) {
-        if (state is FAndFLoadingState) {
-          return const FollowFollowingButtonShimmer();
-        }
-        return followFollowingButton();
+        return Column(
+          children: [
+            UserAllCountWidget(
+              isThirdPerson: true,
+              userId: widget.otherUserId,
+            ),
+            20.height,
+            (state is FAndFLoadingState)
+                ? const FollowFollowingButtonShimmer()
+                : followFollowingButton(),
+          ],
+        );
       },
     );
   }

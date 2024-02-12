@@ -138,7 +138,6 @@ class FAndFController {
     };
     var response = await ApiManager.postRequest(body, url, headers: headers);
     var responseBody = jsonDecode(response.body);
-    print(responseBody);
     if (responseBody['success'] == true) {
       return ApiResponse.fromJson(responseBody, (data) => null);
     } else {
@@ -157,7 +156,6 @@ class FAndFController {
     };
     var response = await ApiManager.postRequest(body, url, headers: headers);
     var responseBody = jsonDecode(response.body);
-    print(responseBody);
     if (responseBody['success'] == true) {
       return responseBody['data'];
     } else {

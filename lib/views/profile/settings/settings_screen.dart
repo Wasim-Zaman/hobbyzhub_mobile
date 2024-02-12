@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hobbyzhub/blocs/delete_fcm_token/delete_fcm_token_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
-import 'package:hobbyzhub/utils/app_toast.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/auth/login_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/faq_screen.dart';
@@ -65,106 +66,109 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void logout() {
-    // washout all the local storage
-    AppDialogs.loadingDialog(context);
-    UserSecureStorage.deleteAll().then((value) {
-      AppDialogs.closeDialog(context);
-      AppNavigator.goToPageWithReplacement(
-        context: context,
-        screen: const LoginScreen(),
-      );
-    }).catchError((err) {
-      AppToast.normal("An error has occurred while logging out");
-    });
+    context.read<DeleteFcmTokenCubit>().unRegisterFcmToken();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.grey,
-      appBar: const BackAppbarWidget(
-        title: "Settings",
-        color: AppColors.transparent,
-      ),
-      body: SafeArea(
-        child: Container(
-          height: context.height(),
-          margin: const EdgeInsets.only(top: 50),
-          decoration: const BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.elliptical(1000, 200),
-              topRight: Radius.elliptical(1000, 200),
-            ),
+    return BlocBuilder<DeleteFcmTokenCubit, DeleteFcmTokenState>(
+      builder: (context, state) {
+        if (state is DeleteFcmTokenSuccess) {
+          UserSecureStorage.deleteAll().then((value) {
+            AppDialogs.closeDialog(context);
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+                (Route<dynamic> route) => false);
+          });
+        }
+        return Scaffold(
+          backgroundColor: AppColors.grey,
+          appBar: const BackAppbarWidget(
+            title: "Settings",
+            color: AppColors.transparent,
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const ProfileImageWidget(
-                    imageUrl: ImageAssets.userProfileImage,
-                    isEditable: true,
+          body: SafeArea(
+            child: Container(
+              height: context.height(),
+              margin: const EdgeInsets.only(top: 50),
+              decoration: const BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.elliptical(1000, 200),
+                  topRight: Radius.elliptical(1000, 200),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const ProfileImageWidget(
+                        imageUrl: ImageAssets.userProfileImage,
+                        isEditable: true,
+                      ),
+                      20.height,
+                      Text(
+                        "Sara Stamp",
+                        style: AppTextStyle.normal.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      20.height,
+                      const BioTextWidget(
+                        bio:
+                            "I just love the idea of not being what people expect me to be!",
+                      ),
+                      20.height,
+                      ListTileWidget(
+                        title: "Notification",
+                        subtitle: "Messages, groups and others",
+                        icon: Ionicons.notifications_outline,
+                        onTap: () => navigate(1),
+                      ),
+                      // privacy and policy list tile widget
+                      ListTileWidget(
+                        title: "Privacy Policy",
+                        subtitle: "Hobbyzhub’s privacy policies",
+                        icon: Ionicons.shield_checkmark_outline,
+                        onTap: () => navigate(2),
+                      ),
+                      // help center list tile widget
+                      ListTileWidget(
+                        title: "Help Center",
+                        subtitle: "Help center, contact us",
+                        icon: Ionicons.help_circle_outline,
+                        onTap: () => navigate(3),
+                      ),
+                      // FAQs list tile widget
+                      ListTileWidget(
+                        title: "FAQs",
+                        subtitle: "Frequently asked questions",
+                        icon: Icons.abc_outlined,
+                        onTap: () => navigate(4),
+                      ),
+                      ListTileWidget(
+                        title: "About us",
+                        subtitle: "About hobbyzhub",
+                        icon: Ionicons.information_circle_outline,
+                        onTap: () => navigate(5),
+                      ),
+                      // log out widget
+                      ListTileWidget(
+                          title: "Log out",
+                          subtitle: "",
+                          icon: Ionicons.log_out_outline,
+                          onTap: () {
+                            navigate(6);
+                          }),
+                    ],
                   ),
-                  20.height,
-                  Text(
-                    "Sara Stamp",
-                    style: AppTextStyle.normal.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  20.height,
-                  const BioTextWidget(
-                    bio:
-                        "I just love the idea of not being what people expect me to be!",
-                  ),
-                  20.height,
-                  ListTileWidget(
-                    title: "Notification",
-                    subtitle: "Messages, groups and others",
-                    icon: Ionicons.notifications_outline,
-                    onTap: () => navigate(1),
-                  ),
-                  // privacy and policy list tile widget
-                  ListTileWidget(
-                    title: "Privacy Policy",
-                    subtitle: "Hobbyzhub’s privacy policies",
-                    icon: Ionicons.shield_checkmark_outline,
-                    onTap: () => navigate(2),
-                  ),
-                  // help center list tile widget
-                  ListTileWidget(
-                    title: "Help Center",
-                    subtitle: "Help center, contact us",
-                    icon: Ionicons.help_circle_outline,
-                    onTap: () => navigate(3),
-                  ),
-                  // FAQs list tile widget
-                  ListTileWidget(
-                    title: "FAQs",
-                    subtitle: "Frequently asked questions",
-                    icon: Icons.abc_outlined,
-                    onTap: () => navigate(4),
-                  ),
-                  ListTileWidget(
-                    title: "About us",
-                    subtitle: "About hobbyzhub",
-                    icon: Ionicons.information_circle_outline,
-                    onTap: () => navigate(5),
-                  ),
-                  // log out widget
-                  ListTileWidget(
-                    title: "Log out",
-                    subtitle: "",
-                    icon: Ionicons.log_out_outline,
-                    onTap: () => navigate(6),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -2,7 +2,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/auth/auth_bloc.dart';
 import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
 import 'package:hobbyzhub/blocs/create_post/createpost_cubit.dart';
+import 'package:hobbyzhub/blocs/delete_fcm_token/delete_fcm_token_cubit.dart';
 import 'package:hobbyzhub/blocs/delete_post/delete_post_cubit.dart';
+import 'package:hobbyzhub/blocs/fcm_token/fcm_token_cubit.dart';
 import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
 import 'package:hobbyzhub/blocs/get_post/get_post_cubit.dart';
 import 'package:hobbyzhub/blocs/help_center/help_center_cubit.dart';
@@ -38,5 +40,8 @@ class BlocProviders {
     BlocProvider<UserBloc>(create: (context) => UserBloc()),
     BlocProvider<ChatBloc>(create: (context) => ChatBloc()),
     BlocProvider<UpdateProfileCubit>(create: (context) => UpdateProfileCubit()),
+    BlocProvider<FcmTokenCubit>(create: (context) => FcmTokenCubit()),
+    BlocProvider<DeleteFcmTokenCubit>(
+        create: (context) => DeleteFcmTokenCubit()),
   ];
 }

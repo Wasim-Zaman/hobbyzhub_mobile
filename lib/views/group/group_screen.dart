@@ -146,6 +146,7 @@ class _GroupChatTileState extends State<GroupChatTile> {
           fit: BoxFit.cover,
           height: 45.h,
           width: 45.w,
+          errorWidget: Image.asset(ImageAssets.groupImage),
         ),
       ),
       title: Text(

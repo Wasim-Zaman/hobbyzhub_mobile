@@ -2,10 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hobbyzhub/blocs/group/group_bloc.dart';
 import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/profile/edit_profile/edit_profile_screen.dart';
@@ -13,6 +15,7 @@ import 'package:hobbyzhub/views/profile/settings/settings_screen.dart';
 import 'package:hobbyzhub/views/profile/tab_userpost_screen.dart';
 import 'package:hobbyzhub/views/profile/third_person_profile_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/images/network_image_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/text/bio_text_widget.dart';
@@ -30,6 +33,9 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileScreenState extends State<MyProfileScreen> {
   late ProfileCubit profileCubit;
 
+  // Lists
+  List<GroupModel> groups = [];
+
   initCubit() async {
     final userId = await UserSecureStorage.fetchUserId();
 
@@ -37,9 +43,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     profileCubit.getProfileInfo(userId);
   }
 
+  getGroupChats() {
+    context.read<GroupBloc>().add(GroupGetChatsEvent());
+  }
+
   @override
   void initState() {
     initCubit();
+    getGroupChats();
     super.initState();
   }
 
@@ -133,34 +144,50 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                       ],
                                     ),
                                     20.height,
-                                    SizedBox(
-                                      height: 60,
-                                      child: ListView.builder(
-                                        itemBuilder: (context, index) =>
-                                            Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 8),
-                                          width: 60,
+                                    BlocConsumer<GroupBloc, GroupState>(
+                                      listener: (context, state) {
+                                        if (state is GroupGetChatsState) {
+                                          groups = state.chats;
+                                        }
+                                      },
+                                      builder: (context, state) {
+                                        return SizedBox(
                                           height: 60,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              width: 1,
-                                              color: AppColors.darkGrey,
-                                            ),
-                                            image: const DecorationImage(
-                                              image: AssetImage(
-                                                ImageAssets.userProfileImage,
+                                          child: ListView.builder(
+                                            itemBuilder: (context, index) =>
+                                                Container(
+                                              margin: const EdgeInsets.only(
+                                                  right: 8),
+                                              width: 60,
+                                              height: 60,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  width: 1,
+                                                  color: AppColors.darkGrey,
+                                                ),
                                               ),
-                                              fit: BoxFit.cover,
+                                              child: ClipOval(
+                                                child: ImageWidget(
+                                                  imageUrl:
+                                                      groups[index].groupIcon!,
+                                                  height: 60,
+                                                  width: 60,
+                                                  fit: BoxFit.cover,
+                                                  errorWidget: Image.asset(
+                                                    ImageAssets
+                                                        .createGroupImage,
+                                                  ),
+                                                ),
+                                              ),
                                             ),
+                                            itemCount: groups.length,
+                                            scrollDirection: Axis.horizontal,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8),
                                           ),
-                                        ),
-                                        itemCount: 8,
-                                        scrollDirection: Axis.horizontal,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                      ),
+                                        );
+                                      },
                                     ),
                                   ],
                                 );

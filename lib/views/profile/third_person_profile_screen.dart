@@ -12,6 +12,7 @@ import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/views/profile/tab_thirdPersonPost_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/images/network_image_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/shimmer/follow_following_button_shimmer.dart';
@@ -119,15 +120,20 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                                           width: 1,
                                           color: AppColors.darkGrey,
                                         ),
-                                        image: const DecorationImage(
-                                          image: AssetImage(
-                                            ImageAssets.userProfileImage,
-                                          ),
+                                      ),
+                                      child: ClipOval(
+                                        child: ImageWidget(
+                                          imageUrl: groups[index].groupIcon!,
+                                          height: 60,
+                                          width: 60,
                                           fit: BoxFit.cover,
+                                          errorWidget: Image.asset(
+                                            ImageAssets.createGroupImage,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    itemCount: 8,
+                                    itemCount: groups.length,
                                     scrollDirection: Axis.horizontal,
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 8),

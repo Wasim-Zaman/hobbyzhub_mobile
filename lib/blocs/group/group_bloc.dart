@@ -52,14 +52,15 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
         // API logic
         var networkStatus = await isNetworkAvailable();
         if (networkStatus) {
-          final response = await GroupController().getGroupChats();
+          final response = await GroupController().getGroupChats(
+            memberId: event.memberId,
+          );
 
           emit(GroupGetChatsState(chats: response.data));
         } else {
           emit(GroupErrorState(message: 'No internet connection'));
         }
       } catch (error) {
-        print(error);
         emit(GroupErrorState(message: error.toString()));
       }
     });

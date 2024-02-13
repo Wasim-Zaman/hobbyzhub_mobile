@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
+import 'package:hobbyzhub/blocs/group/group_bloc.dart';
 import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/views/profile/tab_thirdPersonPost_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -31,17 +33,23 @@ class ThirdPersonProfileScreen extends StatefulWidget {
 class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
   late ProfileCubit profileCubit;
 
-  initCubit() async {}
+  // Lists
+  List<GroupModel> groups = [];
 
   @override
   void initState() {
     getProfileInfo();
+    getGroupChats();
     super.initState();
   }
 
   getProfileInfo() {
     profileCubit = context.read<ProfileCubit>();
     profileCubit.getProfileInfo(widget.userId);
+  }
+
+  getGroupChats() {
+    context.read<GroupBloc>().add(GroupGetChatsEvent(memberId: widget.userId));
   }
 
   @override
@@ -91,32 +99,41 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                             ),
 
                             20.height,
-                            SizedBox(
-                              height: 60,
-                              child: ListView.builder(
-                                itemBuilder: (context, index) => Container(
-                                  margin: const EdgeInsets.only(right: 8),
-                                  width: 60,
+                            BlocConsumer<GroupBloc, GroupState>(
+                              listener: (context, state) {
+                                if (state is GroupGetChatsState) {
+                                  groups = state.chats;
+                                }
+                              },
+                              builder: (context, state) {
+                                return SizedBox(
                                   height: 60,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      width: 1,
-                                      color: AppColors.darkGrey,
-                                    ),
-                                    image: const DecorationImage(
-                                      image: AssetImage(
-                                        ImageAssets.userProfileImage,
+                                  child: ListView.builder(
+                                    itemBuilder: (context, index) => Container(
+                                      margin: const EdgeInsets.only(right: 8),
+                                      width: 60,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          width: 1,
+                                          color: AppColors.darkGrey,
+                                        ),
+                                        image: const DecorationImage(
+                                          image: AssetImage(
+                                            ImageAssets.userProfileImage,
+                                          ),
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
-                                      fit: BoxFit.cover,
                                     ),
+                                    itemCount: 8,
+                                    scrollDirection: Axis.horizontal,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8),
                                   ),
-                                ),
-                                itemCount: 8,
-                                scrollDirection: Axis.horizontal,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                              ),
+                                );
+                              },
                             ),
                           ],
                         );

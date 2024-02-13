@@ -7,6 +7,7 @@ import 'package:hobbyzhub/blocs/delete_post/delete_post_cubit.dart';
 import 'package:hobbyzhub/blocs/fcm_token/fcm_token_cubit.dart';
 import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
 import 'package:hobbyzhub/blocs/get_post/get_post_cubit.dart';
+import 'package:hobbyzhub/blocs/group/group_bloc.dart';
 import 'package:hobbyzhub/blocs/help_center/help_center_cubit.dart';
 import 'package:hobbyzhub/blocs/image_picker/image_picker_bloc.dart';
 import 'package:hobbyzhub/blocs/like_post/likes_cubit.dart';
@@ -43,5 +44,6 @@ class BlocProviders {
     BlocProvider<FcmTokenCubit>(create: (context) => FcmTokenCubit()),
     BlocProvider<DeleteFcmTokenCubit>(
         create: (context) => DeleteFcmTokenCubit()),
+    BlocProvider<GroupBloc>(create: (context) => GroupBloc()),
   ];
 }

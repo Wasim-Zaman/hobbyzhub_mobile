@@ -13,7 +13,10 @@ class GroupCreateMediaEvent extends GroupEvent {
   GroupCreateMediaEvent({required this.media});
 }
 
-class GroupGetChatsEvent extends GroupEvent {}
+class GroupGetChatsEvent extends GroupEvent {
+  final String? memberId;
+  GroupGetChatsEvent({this.memberId});
+}
 
 class GroupGetMoreChatsEvent extends GroupEvent {
   final int page;

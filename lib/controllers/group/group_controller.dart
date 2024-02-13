@@ -46,12 +46,16 @@ class GroupController {
     }
   }
 
-  Future<ApiResponse> getGroupChats({int page = 0, int size = 5}) async {
+  Future<ApiResponse> getGroupChats({
+    int page = 0,
+    int size = 5,
+    String? memberId,
+  }) async {
     final url = GroupUrl.getChats;
     final token = await UserSecureStorage.fetchToken();
     final userId = await UserSecureStorage.fetchUserId();
 
-    var body = {"memberId": userId, "page": page, "size": size};
+    var body = {"memberId": memberId ?? userId, "page": page, "size": size};
     var headers = <String, String>{
       "Authorization": "Bearer $token",
       "Content-Type": "application/json",

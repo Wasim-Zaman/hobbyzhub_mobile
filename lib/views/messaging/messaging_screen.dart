@@ -17,6 +17,7 @@ import 'package:hobbyzhub/utils/app_date.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/widgets/chat/message_bubble.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
+import 'package:hobbyzhub/views/widgets/text_fields/chat_field.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:stomp_dart_client/stomp.dart';
@@ -351,84 +352,99 @@ class _MessagingScreenState extends State<MessagingScreen> {
                       }),
                 ),
                 Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 1.4,
-                      height: 56.h,
-                      padding: const EdgeInsets.only(
-                        left: 22,
-                      ),
-                      decoration: ShapeDecoration(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                    Expanded(
+                      child: ChatField(
+                        controller: _messageController,
+                        hintText: 'Write your message',
+                        suffixIcon: IconButton(
+                          onPressed: sendMessage,
+                          icon: Icon(Icons.send),
+                          color: AppColors.primary,
                         ),
-                        shadows: [
-                          BoxShadow(
-                            color: Color(0x21000000),
-                            blurRadius: 30,
-                            offset: Offset(5, 4),
-                            spreadRadius: 0,
-                          )
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _messageController,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Write your message',
-                                // prefixIcon: IconButton(
-                                //   onPressed: () {},
-                                //   icon: Icon(Icons.attach_file),
-                                // ),
-                              ),
-                              style:
-                                  AppTextStyle.subcategoryUnSelectedTextStyle,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(12.w),
-                            child: IconButton(
-                              icon: Icon(Icons.send),
-                              color: AppColors.primary,
-                              onPressed: sendMessage,
-                            ),
-                          ),
-                        ],
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Container(
-                        width: 55.w,
-                        height: 56.h,
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x21000000),
-                              blurRadius: 30,
-                              offset: Offset(5, 4),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        child: Center(
-                          child: Icon(Icons.camera_alt_outlined),
-                        )).visible(false),
                   ],
                 ),
+                // Row(
+                //   mainAxisSize: MainAxisSize.min,
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   crossAxisAlignment: CrossAxisAlignment.center,
+                //   children: [
+                //     Container(
+                //       width: MediaQuery.of(context).size.width / 1.4,
+                //       height: 56.h,
+                //       padding: const EdgeInsets.only(
+                //         left: 22,
+                //       ),
+                //       decoration: ShapeDecoration(
+                //         color: Colors.white,
+                //         shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(30),
+                //         ),
+                //         shadows: [
+                //           BoxShadow(
+                //             color: Color(0x21000000),
+                //             blurRadius: 30,
+                //             offset: Offset(5, 4),
+                //             spreadRadius: 0,
+                //           )
+                //         ],
+                //       ),
+                //       child: Row(
+                //         mainAxisSize: MainAxisSize.min,
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         crossAxisAlignment: CrossAxisAlignment.center,
+                //         children: [
+                //           Expanded(
+                //             child: TextField(
+                //               controller: _messageController,
+                //               decoration: InputDecoration(
+                //                 border: InputBorder.none,
+                //                 hintText: 'Write your message',
+                //                 // prefixIcon: IconButton(
+                //                 //   onPressed: () {},
+                //                 //   icon: Icon(Icons.attach_file),
+                //                 // ),
+                //               ),
+                //               style:
+                //                   AppTextStyle.subcategoryUnSelectedTextStyle,
+                //             ),
+                //           ),
+                //           Padding(
+                //             padding: EdgeInsets.all(12.w),
+                //             child: IconButton(
+                //               icon: Icon(Icons.send),
+                //               color: AppColors.primary,
+                //               onPressed: sendMessage,
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //     const SizedBox(width: 10),
+                //     Container(
+                //         width: 55.w,
+                //         height: 56.h,
+                //         decoration: ShapeDecoration(
+                //           color: Colors.white,
+                //           shape: RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(100),
+                //           ),
+                //           shadows: [
+                //             BoxShadow(
+                //               color: Color(0x21000000),
+                //               blurRadius: 30,
+                //               offset: Offset(5, 4),
+                //               spreadRadius: 0,
+                //             )
+                //           ],
+                //         ),
+                //         child: Center(
+                //           child: Icon(Icons.camera_alt_outlined),
+                //         )).visible(false),
+                //   ],
+                // ),
                 Container(height: 20),
               ],
             ),

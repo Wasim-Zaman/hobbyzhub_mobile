@@ -9,6 +9,7 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/group/group_model.dart';
+import 'package:hobbyzhub/utils/app_sheets.dart';
 import 'package:hobbyzhub/views/profile/tab_thirdPersonPost_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
@@ -121,14 +122,23 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                                           color: AppColors.darkGrey,
                                         ),
                                       ),
-                                      child: ClipOval(
-                                        child: ImageWidget(
-                                          imageUrl: groups[index].groupIcon!,
-                                          height: 60,
-                                          width: 60,
-                                          fit: BoxFit.cover,
-                                          errorWidget: Image.asset(
-                                            ImageAssets.createGroupImage,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          // open modal bottom sheet for chat details
+                                          AppSheets.groupDetailsSheet(
+                                            context,
+                                            group: groups[index],
+                                          );
+                                        },
+                                        child: ClipOval(
+                                          child: ImageWidget(
+                                            imageUrl: groups[index].groupIcon!,
+                                            height: 60,
+                                            width: 60,
+                                            fit: BoxFit.cover,
+                                            errorWidget: Image.asset(
+                                              ImageAssets.createGroupImage,
+                                            ),
                                           ),
                                         ),
                                       ),

@@ -9,6 +9,7 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/utils/app_sheets.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/profile/edit_profile/edit_profile_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/settings_screen.dart';
@@ -167,16 +168,25 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                   color: AppColors.darkGrey,
                                                 ),
                                               ),
-                                              child: ClipOval(
-                                                child: ImageWidget(
-                                                  imageUrl:
-                                                      groups[index].groupIcon!,
-                                                  height: 60,
-                                                  width: 60,
-                                                  fit: BoxFit.cover,
-                                                  errorWidget: Image.asset(
-                                                    ImageAssets
-                                                        .createGroupImage,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  // open modal bottom sheet for chat details
+                                                  AppSheets.groupDetailsSheet(
+                                                    context,
+                                                    group: groups[index],
+                                                  );
+                                                },
+                                                child: ClipOval(
+                                                  child: ImageWidget(
+                                                    imageUrl: groups[index]
+                                                        .groupIcon!,
+                                                    height: 60,
+                                                    width: 60,
+                                                    fit: BoxFit.cover,
+                                                    errorWidget: Image.asset(
+                                                      ImageAssets
+                                                          .createGroupImage,
+                                                    ),
                                                   ),
                                                 ),
                                               ),

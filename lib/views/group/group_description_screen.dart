@@ -18,11 +18,6 @@ import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-// Lists
-List<User> searchedUsers = [];
-List<User> members = [];
-List<User> admins = [];
-
 class GroupDescriptionScreen extends StatefulWidget {
   final GroupModel group;
   const GroupDescriptionScreen({super.key, required this.group});
@@ -45,6 +40,9 @@ class _GroupDescriptionScreenState extends State<GroupDescriptionScreen> {
   // Others
   String slug = '';
   GroupModel? group;
+
+  // Lists
+  List<User> searchedUsers = [];
 
   @override
   void initState() {

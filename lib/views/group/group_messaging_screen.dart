@@ -15,7 +15,9 @@ import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_date.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/group/group_description_screen.dart';
 import 'package:hobbyzhub/views/widgets/chat/message_bubble.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/chat_field.dart';
 import 'package:ionicons/ionicons.dart';
@@ -48,8 +50,12 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
   int page = 1;
   int size = 100;
 
+  // Other Variables
+  GroupModel? group;
+
   @override
   void initState() {
+    group = widget.group;
     // go to the last message using scroll controller
     chatScrollController.addListener(() {
       if (chatScrollController.position.pixels ==
@@ -209,26 +215,34 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
               SizedBox(
                 width: 15.w,
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    child: Text(
-                      widget.group.groupName.toString(),
-                      style: AppTextStyle.listTileTitle,
+              GestureDetector(
+                onTap: () {
+                  AppNavigator.goToPage(
+                    context: context,
+                    screen: GroupDescriptionScreen(group: group!),
+                  );
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      child: Text(
+                        group!.groupName.toString(),
+                        style: AppTextStyle.listTileTitle,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  Text(
-                    '${widget.group.chatParticipants!.length} members',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyle.subcategoryUnSelectedTextStyle,
-                  )
-                ],
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Text(
+                      '${group!.chatParticipants!.length} members',
+                      textAlign: TextAlign.center,
+                      style: AppTextStyle.subcategoryUnSelectedTextStyle,
+                    )
+                  ],
+                ),
               ),
             ],
           ),
@@ -308,6 +322,8 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
             messages = state.messages.reversed.toList();
           } else if (state is GroupReceiveMessageState) {
             messages.insert(0, state.message);
+          } else if (state is GroupGetDetailsState) {
+            group = state.group;
           }
         },
         builder: (context, state) {

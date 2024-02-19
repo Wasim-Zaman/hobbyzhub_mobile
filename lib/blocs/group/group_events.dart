@@ -40,3 +40,14 @@ class GroupGetLocalMessagesEvent extends GroupEvent {
   final String groupId;
   GroupGetLocalMessagesEvent({required this.groupId});
 }
+
+class GroupGetDetailsEvent extends GroupEvent {
+  final String chatId;
+  GroupGetDetailsEvent({required this.chatId});
+}
+
+class GroupAddMemberEvent extends GroupEvent {
+  final String chatId;
+  final String memberId;
+  GroupAddMemberEvent({required this.chatId, required this.memberId});
+}

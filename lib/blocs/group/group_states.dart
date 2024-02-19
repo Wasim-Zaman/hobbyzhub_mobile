@@ -40,3 +40,10 @@ class GroupGetLocalMessagesState extends GroupState {
   final List<MessageModel> messages;
   GroupGetLocalMessagesState({required this.messages});
 }
+
+class GroupGetDetailsState extends GroupState {
+  final GroupModel group;
+  GroupGetDetailsState({required this.group});
+}
+
+class GroupAddMemberState extends GroupState {}

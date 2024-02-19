@@ -74,4 +74,46 @@ class GroupController {
       throw Exception(resBody['message']);
     }
   }
+
+  Future<ApiResponse> getGroupDetails(chatId) async {
+    final url = GroupUrl.groupDetails;
+    final token = await UserSecureStorage.fetchToken();
+
+    var body = {"groupChatId": chatId};
+    var headers = <String, String>{
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+    };
+    final response = await ApiManager.postRequest(body, url, headers: headers);
+    var resBody = jsonDecode(response.body);
+
+    if (resBody['success'] && resBody['status'] == 200) {
+      return ApiResponse.fromJson(
+        resBody,
+        (p0) => GroupModel.fromJson(resBody['data']),
+      );
+    } else {
+      throw Exception(resBody['message']);
+    }
+  }
+
+  Future<ApiResponse> addMemberToTheGroup({
+    required String groupChatId,
+    required String memberId,
+  }) async {
+    final url = GroupUrl.addMember;
+    final token = await UserSecureStorage.fetchToken();
+    var body = {"groupChatId": groupChatId, "memberId": memberId};
+    var headers = <String, String>{
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token",
+    };
+    final response = await ApiManager.putRequest(body, url, headers: headers);
+    var resBody = jsonDecode(response.body);
+    if (resBody['success'] && resBody['status'] == 200) {
+      return ApiResponse.fromJson(resBody, (data) => null);
+    } else {
+      throw Exception(resBody['message']);
+    }
+  }
 }

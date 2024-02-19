@@ -15,7 +15,9 @@ import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_date.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/group/group_description_screen.dart';
 import 'package:hobbyzhub/views/widgets/chat/message_bubble.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/chat_field.dart';
 import 'package:ionicons/ionicons.dart';
@@ -48,8 +50,12 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
   int page = 1;
   int size = 100;
 
+  // Other Variables
+  GroupModel? group;
+
   @override
   void initState() {
+    group = widget.group;
     // go to the last message using scroll controller
     chatScrollController.addListener(() {
       if (chatScrollController.position.pixels ==
@@ -172,279 +178,298 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: Padding(
-          padding: EdgeInsets.all(8.w),
-          child: GestureDetector(
-            onTap: () {
-              context.pop();
-            },
-            child: Container(
-              decoration: ShapeDecoration(
-                color: AppColors.white,
-                shape: RoundedRectangleBorder(
-                  side:
-                      const BorderSide(width: 1.5, color: AppColors.borderGrey),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-              ),
-              child: Center(
-                child: Icon(
-                  Ionicons.arrow_back,
-                  size: 20.sp,
-                  color: AppColors.darkGrey,
+    return BlocConsumer<GroupBloc, GroupState>(
+      listener: (context, state) {
+        if (state is GroupGetDetailsState) {
+          group = state.group;
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            leading: Padding(
+              padding: EdgeInsets.all(8.w),
+              child: GestureDetector(
+                onTap: () {
+                  context.pop();
+                },
+                child: Container(
+                  decoration: ShapeDecoration(
+                    color: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(
+                          width: 1.5, color: AppColors.borderGrey),
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Ionicons.arrow_back,
+                      size: 20.sp,
+                      color: AppColors.darkGrey,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-        title: SizedBox(
-          width: MediaQuery.of(context).size.width / 1.6,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: 15.w,
-              ),
-              Column(
+            title: SizedBox(
+              width: MediaQuery.of(context).size.width / 1.6,
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
-                    child: Text(
-                      widget.group.groupName.toString(),
-                      style: AppTextStyle.listTileTitle,
+                    width: 15.w,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      AppNavigator.goToPage(
+                        context: context,
+                        screen: GroupDescriptionScreen(group: group!),
+                      );
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          child: Text(
+                            group!.groupName.toString(),
+                            style: AppTextStyle.listTileTitle,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        Text(
+                          '${group!.chatParticipants!.length} members',
+                          textAlign: TextAlign.center,
+                          style: AppTextStyle.subcategoryUnSelectedTextStyle,
+                        )
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    height: 5.h,
+                ],
+              ),
+            ),
+            actions: [
+              PopupMenuButton<int>(
+                offset: const Offset(0, 50),
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Colors.grey,
+                ),
+                elevation: 1,
+                onSelected: (item) => handleClick(item),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 0,
+                    // row with two children
+                    child: Row(
+                      children: [
+                        Icon(Ionicons.refresh),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Clear Chat',
+                          style: AppTextStyle.listTileSubHeading,
+                        )
+                      ],
+                    ),
                   ),
-                  Text(
-                    '${widget.group.chatParticipants!.length} members',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyle.subcategoryUnSelectedTextStyle,
-                  )
+                  PopupMenuItem(
+                    value: 1,
+                    // row with two children
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete_outline_rounded),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Delete Chat',
+                          style: AppTextStyle.listTileSubHeading,
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 1,
+                    // row with two children
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          ImageAssets.exportImage,
+                          height: 30.h,
+                          width: 30.h,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Export Chat',
+                          style: AppTextStyle.listTileSubHeading,
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
-        ),
-        actions: [
-          PopupMenuButton<int>(
-            offset: const Offset(0, 50),
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0))),
-            icon: Icon(
-              Icons.more_vert,
-              color: Colors.grey,
-            ),
-            elevation: 1,
-            onSelected: (item) => handleClick(item),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 0,
-                // row with two children
-                child: Row(
-                  children: [
-                    Icon(Ionicons.refresh),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Clear Chat',
-                      style: AppTextStyle.listTileSubHeading,
-                    )
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 1,
-                // row with two children
-                child: Row(
-                  children: [
-                    Icon(Icons.delete_outline_rounded),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Delete Chat',
-                      style: AppTextStyle.listTileSubHeading,
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 1,
-                // row with two children
-                child: Row(
-                  children: [
-                    Image.asset(
-                      ImageAssets.exportImage,
-                      height: 30.h,
-                      width: 30.h,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Export Chat',
-                      style: AppTextStyle.listTileSubHeading,
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: BlocConsumer<GroupBloc, GroupState>(
-        listener: (context, state) {
-          if (state is GroupGetLocalMessagesState) {
-            messages = state.messages.reversed.toList();
-          } else if (state is GroupReceiveMessageState) {
-            messages.insert(0, state.message);
-          }
-        },
-        builder: (context, state) {
-          return BlocConsumer<ChatBloc, ChatState>(
+          body: BlocConsumer<GroupBloc, GroupState>(
             listener: (context, state) {
-              if (state is ChatGetMessagesSuccessState) {
-                // append from reverse side
-                messages.insertAll(0, state.messages);
+              if (state is GroupGetLocalMessagesState) {
+                messages = state.messages.reversed.toList();
+              } else if (state is GroupReceiveMessageState) {
+                messages.insert(0, state.message);
+              } else if (state is GroupGetDetailsState) {
+                group = state.group;
               }
             },
             builder: (context, state) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    // Text('Chat started on ${date.day}'),
-                    Expanded(
-                      child: ListView.builder(
-                          controller: chatScrollController,
-                          itemCount: messages.length,
-                          reverse: true,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                GroupMessageBubble(
-                                  message: messages[index],
-                                  myUserId: myUserId.toString(),
-                                  group: widget.group,
-                                ),
-                              ],
-                            );
-                          }),
-                    ),
-                    Row(
+              return BlocConsumer<ChatBloc, ChatState>(
+                listener: (context, state) {
+                  if (state is ChatGetMessagesSuccessState) {
+                    // append from reverse side
+                    messages.insertAll(0, state.messages);
+                  }
+                },
+                builder: (context, state) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        // Text('Chat started on ${date.day}'),
                         Expanded(
-                          child: ChatField(
-                            controller: messageController,
-                            hintText: 'Write your message',
-                            suffixIcon: IconButton(
-                              onPressed: sendMessage,
-                              icon: Icon(Icons.send),
-                              color: AppColors.primary,
-                            ),
-                          ),
+                          child: ListView.builder(
+                              controller: chatScrollController,
+                              itemCount: messages.length,
+                              reverse: true,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    GroupMessageBubble(
+                                      message: messages[index],
+                                      myUserId: myUserId.toString(),
+                                      group: widget.group,
+                                    ),
+                                  ],
+                                );
+                              }),
                         ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ChatField(
+                                controller: messageController,
+                                hintText: 'Write your message',
+                                suffixIcon: IconButton(
+                                  onPressed: sendMessage,
+                                  icon: Icon(Icons.send),
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        // Row(
+                        //   mainAxisSize: MainAxisSize.min,
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   crossAxisAlignment: CrossAxisAlignment.center,
+                        //   children: [
+                        //     Container(
+                        //       width: MediaQuery.of(context).size.width / 1.4,
+                        //       height: 56.h,
+                        //       padding: const EdgeInsets.only(
+                        //         left: 22,
+                        //       ),
+                        //       decoration: ShapeDecoration(
+                        //         color: Colors.white,
+                        //         shape: RoundedRectangleBorder(
+                        //           borderRadius: BorderRadius.circular(30),
+                        //         ),
+                        //         shadows: [
+                        //           BoxShadow(
+                        //             color: Color(0x21000000),
+                        //             blurRadius: 30,
+                        //             offset: Offset(5, 4),
+                        //             spreadRadius: 0,
+                        //           )
+                        //         ],
+                        //       ),
+                        //       child: Row(
+                        //         mainAxisSize: MainAxisSize.min,
+                        //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //         crossAxisAlignment: CrossAxisAlignment.center,
+                        //         children: [
+                        //           Expanded(
+                        //             child: TextField(
+                        //               controller: messageController,
+                        //               decoration: InputDecoration(
+                        //                 border: InputBorder.none,
+                        //                 hintText: 'Write your message',
+                        //                 // prefixIcon: IconButton(
+                        //                 //   onPressed: () {},
+                        //                 //   icon: Icon(Icons.attach_file),
+                        //                 // ),
+                        //               ),
+                        //               style: AppTextStyle
+                        //                   .subcategoryUnSelectedTextStyle,
+                        //             ),
+                        //           ),
+                        //           Padding(
+                        //             padding: EdgeInsets.all(12.w),
+                        //             child: IconButton(
+                        //               icon: Icon(Icons.send),
+                        //               color: AppColors.primary,
+                        //               onPressed: sendMessage,
+                        //             ),
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     ),
+                        //     const SizedBox(width: 10),
+                        //     Container(
+                        //         width: 55.w,
+                        //         height: 56.h,
+                        //         decoration: ShapeDecoration(
+                        //           color: Colors.white,
+                        //           shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.circular(100),
+                        //           ),
+                        //           shadows: [
+                        //             BoxShadow(
+                        //               color: Color(0x21000000),
+                        //               blurRadius: 30,
+                        //               offset: Offset(5, 4),
+                        //               spreadRadius: 0,
+                        //             )
+                        //           ],
+                        //         ),
+                        //         child: Center(
+                        //           child: Icon(Icons.camera_alt_outlined),
+                        //         )).visible(false),
+                        //   ],
+                        // ),
+                        Container(height: 20),
                       ],
                     ),
-                    // Row(
-                    //   mainAxisSize: MainAxisSize.min,
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   crossAxisAlignment: CrossAxisAlignment.center,
-                    //   children: [
-                    //     Container(
-                    //       width: MediaQuery.of(context).size.width / 1.4,
-                    //       height: 56.h,
-                    //       padding: const EdgeInsets.only(
-                    //         left: 22,
-                    //       ),
-                    //       decoration: ShapeDecoration(
-                    //         color: Colors.white,
-                    //         shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(30),
-                    //         ),
-                    //         shadows: [
-                    //           BoxShadow(
-                    //             color: Color(0x21000000),
-                    //             blurRadius: 30,
-                    //             offset: Offset(5, 4),
-                    //             spreadRadius: 0,
-                    //           )
-                    //         ],
-                    //       ),
-                    //       child: Row(
-                    //         mainAxisSize: MainAxisSize.min,
-                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //         crossAxisAlignment: CrossAxisAlignment.center,
-                    //         children: [
-                    //           Expanded(
-                    //             child: TextField(
-                    //               controller: messageController,
-                    //               decoration: InputDecoration(
-                    //                 border: InputBorder.none,
-                    //                 hintText: 'Write your message',
-                    //                 // prefixIcon: IconButton(
-                    //                 //   onPressed: () {},
-                    //                 //   icon: Icon(Icons.attach_file),
-                    //                 // ),
-                    //               ),
-                    //               style: AppTextStyle
-                    //                   .subcategoryUnSelectedTextStyle,
-                    //             ),
-                    //           ),
-                    //           Padding(
-                    //             padding: EdgeInsets.all(12.w),
-                    //             child: IconButton(
-                    //               icon: Icon(Icons.send),
-                    //               color: AppColors.primary,
-                    //               onPressed: sendMessage,
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     ),
-                    //     const SizedBox(width: 10),
-                    //     Container(
-                    //         width: 55.w,
-                    //         height: 56.h,
-                    //         decoration: ShapeDecoration(
-                    //           color: Colors.white,
-                    //           shape: RoundedRectangleBorder(
-                    //             borderRadius: BorderRadius.circular(100),
-                    //           ),
-                    //           shadows: [
-                    //             BoxShadow(
-                    //               color: Color(0x21000000),
-                    //               blurRadius: 30,
-                    //               offset: Offset(5, 4),
-                    //               spreadRadius: 0,
-                    //             )
-                    //           ],
-                    //         ),
-                    //         child: Center(
-                    //           child: Icon(Icons.camera_alt_outlined),
-                    //         )).visible(false),
-                    //   ],
-                    // ),
-                    Container(height: 20),
-                  ],
-                ),
+                  );
+                },
               );
             },
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

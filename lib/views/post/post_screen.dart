@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/delete_post/delete_post_cubit.dart';
 import 'package:hobbyzhub/blocs/get_post/get_post_cubit.dart';
 import 'package:hobbyzhub/blocs/like_post/likes_cubit.dart';
+import 'package:hobbyzhub/blocs/unlike_post/unlike_post_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
@@ -605,7 +606,22 @@ class _PostScreenState extends State<PostScreen> {
                                                       .any((element) =>
                                                           element.userId ==
                                                           userId)
-                                                  ? null
+                                                  ? () {
+                                                      var data = state
+                                                          .postsList
+                                                          .first
+                                                          .data[index]
+                                                          .likes
+                                                          .where((element) =>
+                                                              element.userId ==
+                                                              userId);
+                                                      print(data);
+                                                      context
+                                                          .read<
+                                                              UnlikePostCubit>()
+                                                          .createUnLike(data
+                                                              .first.likeId);
+                                                    }
                                                   : () {
                                                       context
                                                           .read<LikesCubit>()
@@ -1111,7 +1127,22 @@ class _PostScreenState extends State<PostScreen> {
                                                       .any((element) =>
                                                           element.userId ==
                                                           userId)
-                                                  ? null
+                                                  ? () {
+                                                      var data = state
+                                                          .postsList
+                                                          .first
+                                                          .data[index]
+                                                          .likes
+                                                          .where((element) =>
+                                                              element.userId ==
+                                                              userId);
+
+                                                      context
+                                                          .read<
+                                                              UnlikePostCubit>()
+                                                          .createUnLike(data
+                                                              .first.likeId);
+                                                    }
                                                   : () {
                                                       context
                                                           .read<LikesCubit>()

@@ -56,6 +56,7 @@ abstract class PostUrl {
   static final deletepost = "$baseUrl/api/v1/posts/delete/";
   static final createComment = "$baseUrl/api/v1/comments/comment/create";
   static final createLike = "$baseUrl/api/likes/create";
+  static final createUnLike = "$baseUrl/api/likes/unlike";
 }
 
 abstract class CategoryUrl {

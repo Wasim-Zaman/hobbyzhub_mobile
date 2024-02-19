@@ -14,6 +14,7 @@ import 'package:hobbyzhub/blocs/like_post/likes_cubit.dart';
 import 'package:hobbyzhub/blocs/specific_post/specific_post_cubit.dart';
 import 'package:hobbyzhub/blocs/third_user_post/third_user_post_cubit.dart';
 import 'package:hobbyzhub/blocs/timer_cubit/timer_cubit_cubit.dart';
+import 'package:hobbyzhub/blocs/unlike_post/unlike_post_cubit.dart';
 import 'package:hobbyzhub/blocs/update_profile/update_profile_cubit.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/blocs/user_posts/user_post_cubit.dart';
@@ -42,6 +43,7 @@ class BlocProviders {
     BlocProvider<ChatBloc>(create: (context) => ChatBloc()),
     BlocProvider<UpdateProfileCubit>(create: (context) => UpdateProfileCubit()),
     BlocProvider<FcmTokenCubit>(create: (context) => FcmTokenCubit()),
+    BlocProvider<UnlikePostCubit>(create: (context) => UnlikePostCubit()),
     BlocProvider<DeleteFcmTokenCubit>(
         create: (context) => DeleteFcmTokenCubit()),
     BlocProvider<GroupBloc>(create: (context) => GroupBloc()),

@@ -87,7 +87,10 @@ class PostController {
   createLikeFunction(postId) async {
     try {
       final token = await UserSecureStorage.fetchToken();
-      final url = "${PostUrl.createLike}?postId=$postId";
+      final userId = await UserSecureStorage.fetchUserId();
+      print(userId);
+
+      final url = "${PostUrl.createLike}?postId=$postId&likerUserId=$userId";
 
       final headers = <String, String>{
         "Authorization": "Bearer $token",
@@ -96,6 +99,28 @@ class PostController {
 
       final response =
           await ApiManager.postRequestWithoutBody(url, headers: headers);
+      return response;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  createuNLikeFunction(likeId) async {
+    try {
+      final token = await UserSecureStorage.fetchToken();
+      print(likeId);
+
+      final url = "${PostUrl.createUnLike}?likeId=$likeId";
+      print(url);
+
+      final headers = <String, String>{
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json"
+      };
+
+      final response =
+          await ApiManager.postRequestWithoutBody(url, headers: headers);
+      print(response.body);
       return response;
     } catch (_) {
       rethrow;

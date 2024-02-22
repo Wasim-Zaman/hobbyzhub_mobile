@@ -67,6 +67,14 @@ class _PostScreenState extends State<PostScreen> {
             }
           },
         ),
+        BlocListener<UnlikePostCubit, UnlikePostState>(
+          listener: (context, state) {
+            print(state);
+            if (state is UnLikeSuccessfully) {
+              context.read<GetPostCubit>().getPostList();
+            }
+          },
+        ),
       ],
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -615,12 +623,13 @@ class _PostScreenState extends State<PostScreen> {
                                                           .where((element) =>
                                                               element.userId ==
                                                               userId);
-                                                      print(data);
+
                                                       context
                                                           .read<
                                                               UnlikePostCubit>()
                                                           .createUnLike(data
                                                               .first.likeId);
+                                                      print(data.first.likeId);
                                                     }
                                                   : () {
                                                       context
@@ -1142,6 +1151,7 @@ class _PostScreenState extends State<PostScreen> {
                                                               UnlikePostCubit>()
                                                           .createUnLike(data
                                                               .first.likeId);
+                                                      print(data.first.likeId);
                                                     }
                                                   : () {
                                                       context

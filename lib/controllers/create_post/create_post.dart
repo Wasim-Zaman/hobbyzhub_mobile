@@ -108,19 +108,16 @@ class PostController {
   createuNLikeFunction(likeId) async {
     try {
       final token = await UserSecureStorage.fetchToken();
-      print(likeId);
 
       final url = "${PostUrl.createUnLike}?likeId=$likeId";
-      print(url);
 
       final headers = <String, String>{
         "Authorization": "Bearer $token",
         "Content-Type": "application/json"
       };
 
-      final response =
-          await ApiManager.postRequestWithoutBody(url, headers: headers);
-      print(response.body);
+      final response = await ApiManager.getRequest(url, headers: headers);
+
       return response;
     } catch (_) {
       rethrow;

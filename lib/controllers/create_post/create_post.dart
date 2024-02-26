@@ -116,7 +116,7 @@ class PostController {
         "Content-Type": "application/json"
       };
 
-      final response = await ApiManager.getRequest(url, headers: headers);
+      final response = await ApiManager.deleteRequest(url, headers: headers);
 
       return response;
     } catch (_) {

@@ -69,7 +69,6 @@ class _PostScreenState extends State<PostScreen> {
         ),
         BlocListener<UnlikePostCubit, UnlikePostState>(
           listener: (context, state) {
-            print(state);
             if (state is UnLikeSuccessfully) {
               context.read<GetPostCubit>().getPostList();
             }

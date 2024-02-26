@@ -15,7 +15,7 @@ class UnlikePostCubit extends Cubit<UnlikePostState> {
     emit(UnLikeLoading());
     try {
       var response = await postController.createuNLikeFunction(likeId);
-
+      print(response.body);
       if (response.statusCode == 200) {
         emit(UnLikeSuccessfully());
       } else {

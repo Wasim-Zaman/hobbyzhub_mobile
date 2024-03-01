@@ -41,6 +41,8 @@ abstract class ChatUrl {
   static final createPrivateChat = "$chatBase/api/v1/chats/private/create-new";
   static final getChats = "$chatBase/api/v1/chats/private/get-chats";
   static final getServerMessages = "$chatBase/api/v1/chats/messages/retrieve";
+  static final getUsers = "$chatBase/api/v1/chat/usersNotChatted";
+  static final createConversation = "$chatBase/api/v1/chat/createConversation";
 }
 
 abstract class MediaUrl {
@@ -57,6 +59,8 @@ abstract class PostUrl {
   static final createComment = "$baseUrl/api/v1/comments/comment/create";
   static final createLike = "$baseUrl/api/likes/create";
   static final createUnLike = "$baseUrl/api/likes/unlike";
+  static final createStory = "$baseUrl/api/stories/upload";
+  static final getStory = "$baseUrl/api/stories/view/all";
 }
 
 abstract class CategoryUrl {

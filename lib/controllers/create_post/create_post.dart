@@ -146,7 +146,7 @@ class PostController {
     Map<String, dynamic> jsonBody = {
       'storyCaption': "$caption",
       'email': "$email",
-      'storyDuration': 24
+      'storyDuration': duration
     };
     request.files.add(
       http.MultipartFile.fromString(

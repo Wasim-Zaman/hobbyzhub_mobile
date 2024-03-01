@@ -25,10 +25,12 @@ import 'package:hobbyzhub/views/post/comments/comment_screen.dart';
 import 'package:hobbyzhub/views/post/story/story_screen.dart';
 import 'package:hobbyzhub/views/profile/third_person_profile_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/basic_appbar_widget.dart';
+import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostScreen extends StatefulWidget {
@@ -1432,6 +1434,7 @@ class _PostScreenState extends State<PostScreen> {
     ];
     File? image;
     final TextEditingController _captionController = TextEditingController();
+    int _currentValue = 3;
 
     showModalBottomSheet(
       isScrollControlled: true,
@@ -1449,9 +1452,6 @@ class _PostScreenState extends State<PostScreen> {
               if (pickedImage != null) {
                 setState(() {
                   image = File(pickedImage!.path);
-                  context
-                      .read<CreateStoryCubit>()
-                      .createstory(image!, _captionController.text.trim(), '');
                 });
               }
             } else {
@@ -1461,9 +1461,6 @@ class _PostScreenState extends State<PostScreen> {
               if (pickedImage != null) {
                 setState(() {
                   image = File(pickedImage!.path);
-                  context
-                      .read<CreateStoryCubit>()
-                      .createstory(image!, _captionController.text.trim(), '');
                 });
               }
             }
@@ -1501,38 +1498,89 @@ class _PostScreenState extends State<PostScreen> {
                   SizedBox(
                     height: 20.h,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!),
-                        borderRadius: BorderRadius.circular(10.r)),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: editProfileOptionList.length,
-                      itemBuilder: ((context, index) {
-                        return Column(
-                          children: [
-                            ListTile(
-                              onTap: () {
-                                pickImage(index);
-                              },
-                              leading: Icon(editProfileOptionIconsList[index]),
-                              title: Text(
-                                editProfileOptionList[index],
-                                style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            index == 0
-                                ? Divider(
-                                    color: Colors.grey[300],
-                                  )
-                                : const SizedBox()
-                          ],
-                        );
-                      }),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "How long does a story long?",
+                        style: TextStyle(
+                            fontSize: 16.sp, fontWeight: FontWeight.w400),
+                      ),
+                      NumberPicker(
+                        itemHeight: 40,
+                        decoration: BoxDecoration(
+                          color: Colors
+                              .transparent, // Changed color to transparent
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color: Colors.grey[300]!), // Added border
+                        ),
+                        textStyle: TextStyle(color: Colors.black),
+                        selectedTextStyle: TextStyle(color: AppColors.primary),
+                        value: _currentValue,
+                        minValue: 1,
+                        maxValue: 24,
+                        onChanged: (value) =>
+                            setState(() => _currentValue = value),
+                      ),
+                    ],
                   ),
+                  image == null
+                      ? Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300]!),
+                              borderRadius: BorderRadius.circular(10.r)),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: editProfileOptionList.length,
+                            itemBuilder: ((context, index) {
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    onTap: () {
+                                      pickImage(index);
+                                    },
+                                    leading:
+                                        Icon(editProfileOptionIconsList[index]),
+                                    title: Text(
+                                      editProfileOptionList[index],
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                  index == 0
+                                      ? Divider(
+                                          color: Colors.grey[300],
+                                        )
+                                      : const SizedBox()
+                                ],
+                              );
+                            }),
+                          ),
+                        )
+                      : Row(
+                          children: [
+                            Container(
+                              height: 100.h,
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey[300]!),
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              child: Image.file(image!),
+                            ),
+                          ],
+                        ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20, left: 30, right: 30),
+                    child: PrimaryButtonWidget(
+                        width: MediaQuery.of(context).size.width,
+                        caption: 'Upload',
+                        onPressed: () {
+                          context.read<CreateStoryCubit>().createstory(image!,
+                              _captionController.text.trim(), _currentValue);
+                        }),
+                  ),
+                  30.height,
                 ],
               ),
             ),

@@ -22,6 +22,23 @@ class GetPostController {
     }
   }
 
+  getStories() async {
+    var url = PostUrl.getStory;
+    try {
+      final token = await UserSecureStorage.fetchToken();
+
+      final headers = <String, String>{
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json"
+      };
+      final response = await ApiManager.getRequest(url, headers: headers);
+
+      return response;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
   deletePosts(postId) async {
     var url = PostUrl.deletepost + "$postId";
     try {

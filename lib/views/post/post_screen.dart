@@ -1,24 +1,36 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/create_story/create_story_cubit.dart';
 import 'package:hobbyzhub/blocs/delete_post/delete_post_cubit.dart';
 import 'package:hobbyzhub/blocs/get_post/get_post_cubit.dart';
+import 'package:hobbyzhub/blocs/get_stories/get_stories_cubit.dart';
 import 'package:hobbyzhub/blocs/like_post/likes_cubit.dart';
 import 'package:hobbyzhub/blocs/unlike_post/unlike_post_cubit.dart';
+import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/global/themes/app_theme.dart';
+import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/post/comments/comment_screen.dart';
 import 'package:hobbyzhub/views/post/story/story_screen.dart';
 import 'package:hobbyzhub/views/profile/third_person_profile_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/basic_appbar_widget.dart';
+import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
+import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostScreen extends StatefulWidget {
@@ -37,6 +49,8 @@ class _PostScreenState extends State<PostScreen> {
   }
 
   String? userId;
+  late ProfileCubit profileCubit;
+
   @override
   void initState() {
     fetchUserInformation();
@@ -45,6 +59,9 @@ class _PostScreenState extends State<PostScreen> {
 
   fetchUserInformation() async {
     userId = await UserSecureStorage.fetchUserId();
+    profileCubit = context.read<ProfileCubit>();
+    profileCubit.getProfileInfo(userId);
+    context.read<GetStoriesCubit>().getStoriesList();
 
     setState(() {});
   }
@@ -53,6 +70,24 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<CreateStoryCubit, CreateStoryState>(
+          listener: (context, state) async {
+            if (state is CreatestoryLoading) {
+              // unfocus keyboard
+              FocusScope.of(context).unfocus();
+              // show loading
+              AppDialogs.loadingDialog(context);
+              Navigator.of(context).pop();
+            } else if (state is CreatestorySuccessfully) {
+              AppDialogs.closeDialog(context);
+              context.read<GetStoriesCubit>().getStoriesList();
+              // save token to local storage
+            } else if (state is CreatestoryFailed) {
+              AppDialogs.closeDialog(context);
+              toast("Failed to upload");
+            }
+          },
+        ),
         BlocListener<DeletePostCubit, DeletePostState>(
           listener: (context, state) {
             if (state is DeletePostLoaded) {
@@ -89,159 +124,246 @@ class _PostScreenState extends State<PostScreen> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 20.w,
                       height: 150.h,
-                      child: ListView.builder(
-                          itemCount: 5,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          physics: AlwaysScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: SizedBox(
-                                child: index != 0
-                                    ? GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (builder) =>
-                                                      StoryScreen()));
-                                        },
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              width: 100.w,
-                                              height: 120.h,
-                                              child: Stack(
-                                                children: [
-                                                  Positioned(
-                                                    left: 0,
-                                                    top: 0,
-                                                    child: Container(
-                                                      width: 100.w,
-                                                      height: 120.h,
-                                                      decoration:
-                                                          ShapeDecoration(
-                                                        image: DecorationImage(
-                                                          image: NetworkImage(
-                                                              "https://via.placeholder.com/25x25"),
-                                                          fit: BoxFit.fill,
-                                                        ),
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                        ),
-                                                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            BlocBuilder<ProfileCubit, ProfileState>(
+                              builder: (context, state) {
+                                if (state is GetProfileLoaded) {
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      showBottomSheet(
+                                        context,
+                                      );
+                                    },
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          width: 100.w,
+                                          height: 120.h,
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                left: 0,
+                                                top: 0,
+                                                child: Container(
+                                                  width: 100.w,
+                                                  height: 120.h,
+                                                  decoration: ShapeDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(state
+                                                          .userProfile
+                                                          .first
+                                                          .data
+                                                          .profileImage),
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
                                                     ),
                                                   ),
-                                                  Positioned(
-                                                    left: 40.w,
-                                                    top: 90.h,
-                                                    child: Container(
-                                                      width: 25.w,
-                                                      height: 25.h,
-                                                      decoration:
-                                                          ShapeDecoration(
-                                                        image: DecorationImage(
-                                                          image: NetworkImage(
-                                                              "https://via.placeholder.com/25x25"),
-                                                          fit: BoxFit.fill,
-                                                        ),
-                                                        shape: OvalBorder(
-                                                          side: BorderSide(
-                                                              width: 0.50,
-                                                              color: AppColors
-                                                                  .primary),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
+                                                ),
                                               ),
-                                            ),
-                                            Text('Chris',
-                                                textAlign: TextAlign.center,
-                                                style: AppTextStyle
-                                                    .normalFontTextStyle),
-                                          ],
-                                        ),
-                                      )
-                                    : GestureDetector(
-                                        onTap: () {},
-                                        child: Column(
-                                          children: [
-                                            SizedBox(
-                                              width: 100.w,
-                                              height: 120.h,
-                                              child: Stack(
-                                                children: [
-                                                  Positioned(
-                                                    left: 0,
-                                                    top: 0,
-                                                    child: Container(
-                                                      width: 100.w,
-                                                      height: 120.h,
-                                                      decoration:
-                                                          ShapeDecoration(
-                                                        image: DecorationImage(
-                                                          image: NetworkImage(
-                                                              "https://via.placeholder.com/70x100"),
-                                                          fit: BoxFit.fill,
-                                                        ),
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    left: 40.w,
-                                                    top: 90.h,
-                                                    child: Container(
-                                                      width: 25.w,
-                                                      height: 25.h,
-                                                      decoration:
-                                                          ShapeDecoration(
+                                              Positioned(
+                                                left: 40.w,
+                                                top: 90.h,
+                                                child: Container(
+                                                  width: 25.w,
+                                                  height: 25.h,
+                                                  decoration: ShapeDecoration(
+                                                    color: AppColors.primary,
+                                                    shape: OvalBorder(
+                                                      side: BorderSide(
+                                                        width: 0.50,
                                                         color:
                                                             AppColors.primary,
-                                                        shape: OvalBorder(
-                                                          side: BorderSide(
-                                                            width: 0.50,
-                                                            color: AppColors
-                                                                .primary,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    color: AppColors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          'Story',
+                                          textAlign: TextAlign.center,
+                                          style:
+                                              AppTextStyle.normalFontTextStyle,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                } else {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      showBottomSheet(
+                                        context,
+                                      );
+                                    },
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          width: 100.w,
+                                          height: 120.h,
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                left: 0,
+                                                top: 0,
+                                                child: Container(
+                                                  width: 100.w,
+                                                  height: 120.h,
+                                                  decoration: ShapeDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          "https://via.placeholder.com/70x100"),
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                left: 40.w,
+                                                top: 90.h,
+                                                child: Container(
+                                                  width: 25.w,
+                                                  height: 25.h,
+                                                  decoration: ShapeDecoration(
+                                                    color: AppColors.primary,
+                                                    shape: OvalBorder(
+                                                      side: BorderSide(
+                                                        width: 0.50,
+                                                        color:
+                                                            AppColors.primary,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    color: AppColors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          'Your Story',
+                                          textAlign: TextAlign.center,
+                                          style:
+                                              AppTextStyle.normalFontTextStyle,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                            BlocBuilder<GetStoriesCubit, GetStoriesState>(
+                              builder: (context, state) {
+                                if (state is GetStoriesLoaded) {
+                                  return ListView.builder(
+                                      itemCount: state.storiesList.length,
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: SizedBox(
+                                              child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(
+                                                      context)
+                                                  .push(MaterialPageRoute(
+                                                      builder:
+                                                          (builder) => StoryScreen(
+                                                              images: state
+                                                                  .storiesList[
+                                                                      index]
+                                                                  .storyImages,
+                                                              userName: state
+                                                                  .storiesList[
+                                                                      index]
+                                                                  .username,
+                                                              creationTime: state
+                                                                  .storiesList[
+                                                                      index]
+                                                                  .creationTime)));
+                                            },
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: 100.w,
+                                                  height: 120.h,
+                                                  child: Stack(
+                                                    children: [
+                                                      Positioned(
+                                                        left: 0,
+                                                        top: 0,
+                                                        child: Container(
+                                                          width: 100.w,
+                                                          height: 120.h,
+                                                          decoration:
+                                                              ShapeDecoration(
+                                                            image:
+                                                                DecorationImage(
+                                                              image: NetworkImage(
+                                                                  "${state.storiesList[index].storyImages[0]}"),
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
-                                                      child: Icon(
-                                                        Icons.add,
-                                                        color: AppColors.white,
-                                                      ),
-                                                    ),
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                                Text(
+                                                    '${state.storiesList[index].username}',
+                                                    textAlign: TextAlign.center,
+                                                    style: AppTextStyle
+                                                        .normalFontTextStyle),
+                                              ],
                                             ),
-                                            Text(
-                                              'Your Story',
-                                              textAlign: TextAlign.center,
-                                              style: AppTextStyle
-                                                  .normalFontTextStyle,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                              ),
-                            );
-                          }),
+                                          )),
+                                        );
+                                      });
+                                } else {
+                                  return SizedBox();
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     )
                   ],
                 ),
@@ -1301,6 +1423,170 @@ class _PostScreenState extends State<PostScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void showBottomSheet(context) {
+    List<String> editProfileOptionList = ["Take Photo", "Choose Photo"];
+    List<IconData> editProfileOptionIconsList = [
+      Icons.camera_alt_rounded,
+      Icons.image
+    ];
+    File? image;
+    final TextEditingController _captionController = TextEditingController();
+    int _currentValue = 3;
+
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      enableDrag: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          void pickImage(int index) async {
+            final ImagePicker picker = ImagePicker();
+            XFile? pickedImage;
+
+            if (index == 0) {
+              pickedImage = await picker.pickImage(source: ImageSource.camera);
+              if (pickedImage != null) {
+                setState(() {
+                  image = File(pickedImage!.path);
+                });
+              }
+            } else {
+              pickedImage = await picker.pickImage(
+                source: ImageSource.gallery,
+              );
+              if (pickedImage != null) {
+                setState(() {
+                  image = File(pickedImage!.path);
+                });
+              }
+            }
+          }
+
+          return SingleChildScrollView(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(20.r),
+                ),
+              ),
+              padding: EdgeInsets.all(15.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      Text(
+                        "Create Story",
+                        style: TextStyle(
+                            fontSize: 16.sp, fontWeight: FontWeight.w700),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "How long does a story long?",
+                        style: TextStyle(
+                            fontSize: 16.sp, fontWeight: FontWeight.w400),
+                      ),
+                      NumberPicker(
+                        itemHeight: 40,
+                        decoration: BoxDecoration(
+                          color: Colors
+                              .transparent, // Changed color to transparent
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color: Colors.grey[300]!), // Added border
+                        ),
+                        textStyle: TextStyle(color: Colors.black),
+                        selectedTextStyle: TextStyle(color: AppColors.primary),
+                        value: _currentValue,
+                        minValue: 1,
+                        maxValue: 24,
+                        onChanged: (value) =>
+                            setState(() => _currentValue = value),
+                      ),
+                    ],
+                  ),
+                  image == null
+                      ? Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300]!),
+                              borderRadius: BorderRadius.circular(10.r)),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: editProfileOptionList.length,
+                            itemBuilder: ((context, index) {
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    onTap: () {
+                                      pickImage(index);
+                                    },
+                                    leading:
+                                        Icon(editProfileOptionIconsList[index]),
+                                    title: Text(
+                                      editProfileOptionList[index],
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                  index == 0
+                                      ? Divider(
+                                          color: Colors.grey[300],
+                                        )
+                                      : const SizedBox()
+                                ],
+                              );
+                            }),
+                          ),
+                        )
+                      : Row(
+                          children: [
+                            Container(
+                              height: 100.h,
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey[300]!),
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              child: Image.file(image!),
+                            ),
+                          ],
+                        ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20, left: 30, right: 30),
+                    child: PrimaryButtonWidget(
+                        width: MediaQuery.of(context).size.width,
+                        caption: 'Upload',
+                        onPressed: () {
+                          context.read<CreateStoryCubit>().createstory(image!,
+                              _captionController.text.trim(), _currentValue);
+                        }),
+                  ),
+                  30.height,
+                ],
+              ),
+            ),
+          );
+        });
+      },
     );
   }
 }

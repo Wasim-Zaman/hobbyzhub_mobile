@@ -66,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Future.wait([
       UserSecureStorage.setToken(data?.token),
       UserSecureStorage.setUserId(data?.userId),
+      UserSecureStorage.setUserEmail(data?.email),
     ]);
   }
 

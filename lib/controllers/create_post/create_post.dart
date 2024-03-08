@@ -123,4 +123,45 @@ class PostController {
       rethrow;
     }
   }
+
+  createStory(File imageFile, caption, email, duration) async {
+    ;
+    final url = Uri.parse("${PostUrl.createStory}/$email");
+
+    log(url.toString());
+
+    final request = http.MultipartRequest('POST', url);
+
+    String fileName = imageFile.path.split('/').last;
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'files',
+        imageFile.path,
+        filename: fileName,
+      ),
+    );
+
+    final token = await UserSecureStorage.fetchToken();
+
+    Map<String, dynamic> jsonBody = {
+      'storyCaption': "$caption",
+      'email': "$email",
+      'storyDuration': duration
+    };
+    request.files.add(
+      http.MultipartFile.fromString(
+        'request',
+        json.encode(jsonBody),
+        contentType: MediaType('application', 'json'),
+      ),
+    );
+    Map<String, String> headers = {
+      "Authorization": "Bearer $token",
+    };
+    request.headers.addAll(headers);
+
+    final response = await request.send();
+
+    return response;
+  }
 }

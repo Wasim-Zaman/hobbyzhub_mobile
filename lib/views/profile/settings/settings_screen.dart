@@ -8,6 +8,7 @@ import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/auth/login_screen.dart';
+import 'package:hobbyzhub/views/profile/settings/about_us_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/faq_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/help_center_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/notification_settings_screen.dart';
@@ -56,7 +57,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         AppNavigator.goToPage(context: context, screen: const FaqScreen());
         break;
       case 5:
-        // navigate to about us screen
+        AppNavigator.goToPage(context: context, screen: const AboutUsScreen());
         break;
       case 6:
         // navigate to log out screen

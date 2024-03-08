@@ -109,6 +109,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
     stompClient.subscribe(
       destination: '/queue/user-$myUserId',
       callback: (frame) {
+        print("hello");
         if (frame.binaryBody != null) {
           try {
             var decodedData = utf8.decode(frame.binaryBody!);

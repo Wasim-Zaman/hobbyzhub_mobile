@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:hobbyzhub/blocs/group/group_bloc.dart';
@@ -10,10 +11,14 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/group/create_group_screen.dart';
 import 'package:hobbyzhub/views/group/group_messaging_screen.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/shimmer/private_chat_tile_shimmer.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 class GroupScreen extends StatefulWidget {
   const GroupScreen({super.key});
@@ -24,6 +29,52 @@ class GroupScreen extends StatefulWidget {
 
 class _GroupScreenState extends State<GroupScreen> {
   List<GroupModel> groups = [];
+
+  late StompClient stompClient;
+
+  initializeSocket() {
+    stompClient = StompClient(
+      config: StompConfig.sockJS(
+        url: dotenv.env['SOCKET_URL']!,
+        beforeConnect: () async {
+          print("Trying to connect to the new destination");
+        },
+        onConnect: onConnectCallback,
+        onStompError: (p0) {
+          print("Group Stomp error ${p0.body}");
+        },
+        onWebSocketError: (p0) {
+          print("Group Websocket error $p0");
+        },
+        onUnhandledFrame: (p0) {
+          print("Group Unhandled frame $p0");
+        },
+        onUnhandledMessage: (p0) {
+          print("Group Unhandled message $p0");
+        },
+      ),
+    );
+    stompClient.activate();
+  }
+
+  void onConnectCallback(StompFrame connectFrame) async {
+    final userId = await UserSecureStorage.fetchUserId();
+    print("Connected to the new destination");
+    stompClient.subscribe(
+      destination: '/subscribe-group/user/$userId/queue/chat-list',
+      callback: (frame) {
+        print("You have new group message");
+        // update the ui
+        BlocProvider.of<GroupBloc>(context).add(GroupGetChatsEvent());
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    initializeSocket();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

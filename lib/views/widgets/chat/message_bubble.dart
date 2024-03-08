@@ -146,8 +146,9 @@ class GroupMessageBubble extends StatelessWidget {
               borderRadius: BorderRadius.circular(10.0),
               child: ImageWidget(
                 imageUrl: group.chatParticipants!.firstWhere((element) {
-                  return element.userId == message.metadata!.fromUserId;
-                }).profileImage!,
+                      return element.userId == message.metadata!.fromUserId;
+                    }).profileImage ??
+                    "",
                 fit: BoxFit.cover,
                 height: 50.h,
                 width: 50.w,

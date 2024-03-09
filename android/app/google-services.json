@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "552987313953",
-    "project_id": "hobbyzhubnotification",
-    "storage_bucket": "hobbyzhubnotification.appspot.com"
+    "project_number": "939024579364",
+    "project_id": "hobbyzhub-d6093",
+    "storage_bucket": "hobbyzhub-d6093.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:552987313953:android:4458a0b91d0255306ee060",
+        "mobilesdk_app_id": "1:939024579364:android:1f7b7f37e7bb489f8551b1",
         "android_client_info": {
           "package_name": "com.findstoneage.hobbyzhub.hobbyzhub"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAANNygoGhiWdpOu95OXYuukswG_QqhAsU"
+          "current_key": "AIzaSyDIeSSMc5UrQB_SzdmAaPHzER8fgyCBwL0"
         }
       ],
       "services": {

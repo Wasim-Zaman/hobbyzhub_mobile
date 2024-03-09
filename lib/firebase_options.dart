@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,7 +28,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,38 +49,20 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDdBL3cuHsrS2-H38k_flRQuHvLrRIYKjI',
-    appId: '1:552987313953:web:232dc41c4670a4a56ee060',
-    messagingSenderId: '552987313953',
-    projectId: 'hobbyzhubnotification',
-    authDomain: 'hobbyzhubnotification.firebaseapp.com',
-    storageBucket: 'hobbyzhubnotification.appspot.com',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAANNygoGhiWdpOu95OXYuukswG_QqhAsU',
-    appId: '1:552987313953:android:4458a0b91d0255306ee060',
-    messagingSenderId: '552987313953',
-    projectId: 'hobbyzhubnotification',
-    storageBucket: 'hobbyzhubnotification.appspot.com',
+    apiKey: 'AIzaSyDIeSSMc5UrQB_SzdmAaPHzER8fgyCBwL0',
+    appId: '1:939024579364:android:1f7b7f37e7bb489f8551b1',
+    messagingSenderId: '939024579364',
+    projectId: 'hobbyzhub-d6093',
+    storageBucket: 'hobbyzhub-d6093.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD4nkdu7lQgakfl6gId9SNcrkY0suAevO4',
-    appId: '1:552987313953:ios:7ecefe2594b3dbaa6ee060',
-    messagingSenderId: '552987313953',
-    projectId: 'hobbyzhubnotification',
-    storageBucket: 'hobbyzhubnotification.appspot.com',
+    apiKey: 'AIzaSyDV_i3Xd4PX8JwgTYLkDWD9kCy9yAKWWMw',
+    appId: '1:939024579364:ios:92663e65cfe8080b8551b1',
+    messagingSenderId: '939024579364',
+    projectId: 'hobbyzhub-d6093',
+    storageBucket: 'hobbyzhub-d6093.appspot.com',
     iosBundleId: 'com.findstoneage.hobbyzhub.hobbyzhub',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD4nkdu7lQgakfl6gId9SNcrkY0suAevO4',
-    appId: '1:552987313953:ios:2d19186ee40972716ee060',
-    messagingSenderId: '552987313953',
-    projectId: 'hobbyzhubnotification',
-    storageBucket: 'hobbyzhubnotification.appspot.com',
-    iosBundleId: 'com.findstoneage.hobbyzhub.hobbyzhub.RunnerTests',
   );
 }

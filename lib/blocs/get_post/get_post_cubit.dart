@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:hobbyzhub/controllers/get_post/get_post_controller.dart';
 import 'package:hobbyzhub/models/post_model/post_model.dart';
-import 'package:meta/meta.dart';
 
 part 'get_post_state.dart';
 

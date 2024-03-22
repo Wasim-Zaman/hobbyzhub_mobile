@@ -21,7 +21,7 @@ import 'package:nb_utils/nb_utils.dart';
 class EditProfileScreen extends StatefulWidget {
   final UserProfileModel editProfile;
 
-  EditProfileScreen({required this.editProfile});
+  const EditProfileScreen({super.key, required this.editProfile});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -49,6 +49,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   void initState() {
+    print(widget.editProfile.toJson());
     nameController.text = widget.editProfile.data.fullName;
     emailController.text = widget.editProfile.data.email;
     bioController.text = widget.editProfile.data.bio;
@@ -95,10 +96,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    widget.editProfile.data.profileImage.isNotEmpty &&
+                    !widget.editProfile.data.profileImage.isEmptyOrNull &&
                             _imgFile == null
                         ? NetworkImageWidget(
-                            imageUrl: widget.editProfile.data.profileImage,
+                            imageUrl:
+                                widget.editProfile.data.profileImage ?? '',
                             isEditable: true,
                             onEditClicked: () async {
                               final ImagePicker picker = ImagePicker();
@@ -114,7 +116,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               });
                             },
                           )
-                        : widget.editProfile.data.profileImage.isEmpty &&
+                        : widget.editProfile.data.profileImage.isEmptyOrNull &&
                                 _imgFile == null
                             ? const ImagePickWidget()
                             : Center(

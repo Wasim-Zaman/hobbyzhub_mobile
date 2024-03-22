@@ -51,9 +51,9 @@ class Data {
   String email;
   String userId;
   String fullName;
-  String gender;
+  String? gender;
   String bio;
-  String profileImage;
+  String? profileImage;
   String joinedDate;
   String birthdate;
 

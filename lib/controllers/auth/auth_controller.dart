@@ -114,6 +114,7 @@ abstract class AuthController {
     try {
       final response = await ApiManager.postRequest(body, url);
       final json = jsonDecode(response.body);
+      print(json);
       return ApiManager.returnModel(
         response,
         model: json['data'] != null ? LoginModel.fromJson(json['data']) : null,
@@ -154,6 +155,7 @@ abstract class AuthController {
   static Future<Map> refreshToken() async {
     final url = AuthUrl.refreshToken;
     final token = await UserSecureStorage.fetchToken();
+    print(token);
     final response = await ApiManager.postRequestWithoutBody(
       url,
       headers: {
@@ -162,6 +164,7 @@ abstract class AuthController {
       },
     );
     var responseBody = jsonDecode(response.body);
+    print(responseBody);
     if (responseBody['success'] && responseBody['status'] == 200) {
       return responseBody['data'];
     } else {

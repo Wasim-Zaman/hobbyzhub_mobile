@@ -8,15 +8,16 @@ class User {
   String? joinedDate;
   String? birthdate;
 
-  User(
-      {this.email,
-      this.userId,
-      this.fullName,
-      this.gender,
-      this.bio,
-      this.profileImage,
-      this.joinedDate,
-      this.birthdate});
+  User({
+    this.email,
+    this.userId,
+    this.fullName,
+    this.gender,
+    this.bio,
+    this.profileImage,
+    this.joinedDate,
+    this.birthdate,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     email = json['email'];

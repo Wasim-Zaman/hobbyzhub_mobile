@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
 
 import 'dart:io';
 
@@ -17,7 +17,7 @@ import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/global/themes/app_theme.dart';
+import 'package:hobbyzhub/models/post_model/post_model.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
@@ -27,11 +27,16 @@ import 'package:hobbyzhub/views/profile/third_person_profile_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/basic_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
-import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+String formatDateTime(DateTime dateTime) {
+  final now = DateTime.now();
+  final difference = now.difference(dateTime);
+  return timeago.format(now.subtract(difference), locale: 'en');
+}
 
 class PostScreen extends StatefulWidget {
   const PostScreen({super.key});
@@ -41,15 +46,9 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
-  String formatDateTime(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
-
-    return timeago.format(now.subtract(difference), locale: 'en');
-  }
-
   String? userId;
   late ProfileCubit profileCubit;
+  List<PostModel> posts = [];
 
   @override
   void initState() {
@@ -112,7 +111,17 @@ class _PostScreenState extends State<PostScreen> {
       ],
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: BasicAppbarWidget(title: 'Feeds', isBackButton: false),
+        appBar:
+            BasicAppbarWidget(title: 'Feeds', isBackButton: false, actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Image.asset(ImageAssets.searchImage, height: 20, width: 20),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: Image.asset(ImageAssets.notification, height: 20, width: 20),
+          ),
+        ]),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,14 +137,13 @@ class _PostScreenState extends State<PostScreen> {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: [
+                            //! Profile Section
                             BlocBuilder<ProfileCubit, ProfileState>(
                               builder: (context, state) {
                                 if (state is GetProfileLoaded) {
                                   return GestureDetector(
                                     onTap: () async {
-                                      showBottomSheet(
-                                        context,
-                                      );
+                                      showBottomSheet(context);
                                     },
                                     child: Column(
                                       children: [
@@ -153,10 +161,11 @@ class _PostScreenState extends State<PostScreen> {
                                                   decoration: ShapeDecoration(
                                                     image: DecorationImage(
                                                       image: NetworkImage(state
-                                                          .userProfile
-                                                          .first
-                                                          .data
-                                                          .profileImage),
+                                                              .userProfile
+                                                              .first
+                                                              .data
+                                                              .profileImage ??
+                                                          ''),
                                                       fit: BoxFit.fill,
                                                     ),
                                                     shape:
@@ -205,9 +214,7 @@ class _PostScreenState extends State<PostScreen> {
                                 } else {
                                   return GestureDetector(
                                     onTap: () {
-                                      showBottomSheet(
-                                        context,
-                                      );
+                                      showBottomSheet(context);
                                     },
                                     child: Column(
                                       children: [
@@ -274,6 +281,7 @@ class _PostScreenState extends State<PostScreen> {
                                 }
                               },
                             ),
+                            //! Stories
                             BlocBuilder<GetStoriesCubit, GetStoriesState>(
                               builder: (context, state) {
                                 if (state is GetStoriesLoaded) {
@@ -314,7 +322,17 @@ class _PostScreenState extends State<PostScreen> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                SizedBox(
+                                                Container(
+                                                  // decoration: BoxDecoration(
+                                                  //   borderRadius:
+                                                  //       BorderRadius.circular(
+                                                  //           20,),
+                                                  //   border: Border.all(
+                                                  //     color:
+                                                  //         AppColors.borderGrey,
+                                                  //     width: 2,
+                                                  //   ),
+                                                  // ),
                                                   width: 100.w,
                                                   height: 120.h,
                                                   child: Stack(
@@ -368,7 +386,14 @@ class _PostScreenState extends State<PostScreen> {
                   ],
                 ),
               ),
-              BlocBuilder<GetPostCubit, GetPostState>(
+              //! Posts Section
+
+              BlocConsumer<GetPostCubit, GetPostState>(
+                listener: (context, state) {
+                  if (state is GetPostLoaded) {
+                    posts = state.postsList;
+                  }
+                },
                 builder: (context, state) {
                   if (state is GetPostLoading) {
                     return state.postsList.length == 0
@@ -782,9 +807,12 @@ class _PostScreenState extends State<PostScreen> {
                                                   .normalFontTextStyle,
                                             ),
                                             SizedBox(width: 20.w),
-                                            Image.asset(
-                                              ImageAssets.messageImage,
-                                              height: 20.h,
+                                            IconButton(
+                                              onPressed: () {},
+                                              icon: Image.asset(
+                                                ImageAssets.messageImage,
+                                                height: 20.h,
+                                              ),
                                             ),
                                             SizedBox(width: 5.w),
                                             Text(
@@ -1304,9 +1332,24 @@ class _PostScreenState extends State<PostScreen> {
                                                   .normalFontTextStyle,
                                             ),
                                             SizedBox(width: 20.w),
-                                            Image.asset(
-                                              ImageAssets.messageImage,
-                                              height: 20.h,
+                                            IconButton(
+                                              onPressed: () {
+                                                AppNavigator.goToPage(
+                                                  context: context,
+                                                  screen: CommentScreen(
+                                                    postId: state
+                                                        .postsList
+                                                        .first
+                                                        .data[index]
+                                                        .postId
+                                                        .toString(),
+                                                  ),
+                                                );
+                                              },
+                                              icon: Image.asset(
+                                                ImageAssets.messageImage,
+                                                height: 20.h,
+                                              ),
                                             ),
                                             SizedBox(width: 5.w),
                                             Text(
@@ -1373,7 +1416,7 @@ class _PostScreenState extends State<PostScreen> {
                                                           .postsList
                                                           .first
                                                           .data[index]
-                                                          .postId!,
+                                                          .postId,
                                                     )));
                                       },
                                       child: Row(
@@ -1587,6 +1630,362 @@ class _PostScreenState extends State<PostScreen> {
           );
         });
       },
+    );
+  }
+}
+
+class PostWidget extends StatelessWidget {
+  final List<PostModel> postsList;
+  final int index;
+  final String userId;
+  const PostWidget(
+      {Key? key,
+      required this.postsList,
+      required this.index,
+      required this.userId})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              postsList.first.data[index].profileImage == null
+                  ? CircleAvatar(
+                      radius: 20.sp,
+                      child: postsList.first.data[index].username.isNotEmpty
+                          ? Text(postsList.first.data[index].username
+                              .toString()
+                              .substring(0, 1))
+                          : Text(''),
+                    )
+                  : CircleAvatar(
+                      radius: 20.sp,
+                      backgroundImage: NetworkImage(
+                          postsList.first.data[index].profileImage),
+                    ),
+              SizedBox(
+                width: 10.w,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 3.h,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        userId == postsList.first.data[index].userId
+                            ? null
+                            : AppNavigator.goToPage(
+                                context: context,
+                                screen: ThirdPersonProfileScreen(
+                                    userId: postsList.first.data[index].userId),
+                              );
+                      },
+                      child: Text(postsList.first.data[index].username,
+                          style: AppTextStyle.notificationTitleTextStyle),
+                    ),
+                    Text(formatDateTime(postsList.first.data[index].postTime),
+                        style: AppTextStyle.normalFontTextStyle)
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: PopupMenuButton<int>(
+                  onSelected: (item) {
+                    switch (item) {
+                      case 0:
+                        context
+                            .read<DeletePostCubit>()
+                            .deletePost(postsList.first.data[index].postId);
+                        break;
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem<int>(value: 0, child: Text('Delete')),
+                  ],
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
+          postsList.first.data[index].caption != null
+              ? Row(
+                  children: [
+                    SizedBox(
+                      child: Text(postsList.first.data[index].caption!,
+                          style: AppTextStyle.normalFontTextStyle),
+                    ),
+                  ],
+                )
+              : SizedBox(),
+          SizedBox(
+            height: 10.h,
+          ),
+          postsList.first.data[index].hashTags != null
+              ? Row(
+                  children: [
+                    for (int i = 0;
+                        i < postsList.first.data[index].hashTags!.length;
+                        i++) ...[
+                      SizedBox(
+                        child: Text(
+                            "#${postsList.first.data[index].hashTags![i].tagName}",
+                            style: AppTextStyle.codeTextStyle),
+                      ),
+                    ]
+                  ],
+                )
+              : SizedBox(),
+          SizedBox(
+            height: 20.h,
+          ),
+          postsList.first.data[index].imageUrls.length == 1
+              ? CachedNetworkImage(
+                  imageUrl: postsList.first.data[index].imageUrls.first,
+                  placeholder: (context, url) =>
+                      LoadingWidget(), // Empty container as a placeholder
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: double.infinity, // Set the width as needed
+                    height: 210, // Set the height as needed
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                          8.0), // Set border radius as needed
+                    ),
+                  ),
+
+                  fit: BoxFit.cover,
+                  fadeInDuration: Duration(milliseconds: 500),
+                  fadeOutDuration: Duration(milliseconds: 500),
+                  alignment: Alignment.center,
+                  repeat: ImageRepeat.noRepeat,
+                  filterQuality: FilterQuality.high,
+
+                  width: double.infinity, // Set the width as needed
+                  height: 210, // Set the width as needed
+                )
+              : SizedBox(
+                  width: MediaQuery.of(context).size.width /
+                      1.1, // Set the width as needed
+                  height: 210,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: postsList.first.data[index].imageUrls.length,
+                    itemBuilder: (context, _index) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width /
+                            1.1, // Set the width as needed
+                        height: 210, // Set the height as needed
+                        margin: EdgeInsets.only(
+                            right: 2.0), // Add margin between images
+                        child: Stack(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl:
+                                  postsList.first.data[index].imageUrls[_index],
+                              placeholder: (context, url) => LoadingWidget(),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                              fit: BoxFit.cover,
+                              fadeInDuration: Duration(milliseconds: 500),
+                              fadeOutDuration: Duration(milliseconds: 500),
+                              alignment: Alignment.center,
+                              repeat: ImageRepeat.noRepeat,
+                              filterQuality: FilterQuality.high,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    Icons.picture_in_picture_sharp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+          SizedBox(
+            height: 10.h,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 120.w,
+                height: 20.h,
+                child: Stack(
+                    children: List.generate(
+                        postsList.first.data[index].comments.length, (_index) {
+                  return Positioned(
+                      left: 20.0 * index,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: postsList.first.data[index].comments[_index]
+                                    .profileImage ==
+                                null
+                            ? CircleAvatar(
+                                radius: 10.sp,
+                                child: postsList.first.data[index]
+                                        .comments[_index].username.isNotEmpty
+                                    ? Text(postsList.first.data[index]
+                                        .comments[_index].username
+                                        .toString()
+                                        .substring(0, 1))
+                                    : Text(''),
+                              )
+                            : CircleAvatar(
+                                radius: 10.sp,
+                                backgroundImage: NetworkImage(postsList.first
+                                    .data[index].comments[_index].profileImage),
+                              ),
+                      ));
+                })),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                    onTap: postsList.first.data[index].likes
+                            .any((element) => element.userId == userId)
+                        ? () {
+                            var data = postsList.first.data[index].likes
+                                .where((element) => element.userId == userId);
+
+                            context
+                                .read<UnlikePostCubit>()
+                                .createUnLike(data.first.likeId);
+                            print(data.first.likeId);
+                          }
+                        : () {
+                            context
+                                .read<LikesCubit>()
+                                .createLike(postsList.first.data[index].postId);
+                          },
+                    child: postsList.first.data[index].likes
+                            .any((element) => element.userId == userId)
+                        ? Icon(
+                            CupertinoIcons.heart_fill,
+                            color: Colors.red,
+                          )
+                        : Icon(
+                            CupertinoIcons.heart,
+                            color: Colors.black,
+                          ),
+                  ),
+                  SizedBox(width: 5.w),
+                  Text(
+                    '${postsList.first.data[index].likes.length}',
+                    style: AppTextStyle.normalFontTextStyle,
+                  ),
+                  SizedBox(width: 20.w),
+                  IconButton(
+                    onPressed: () {
+                      AppNavigator.goToPage(
+                        context: context,
+                        screen: CommentScreen(
+                          postId: postsList.first.data[index].postId.toString(),
+                        ),
+                      );
+                    },
+                    icon: Image.asset(
+                      ImageAssets.messageImage,
+                      height: 20.h,
+                    ),
+                  ),
+                  SizedBox(width: 5.w),
+                  Text('${postsList.first.data[index].comments.length}',
+                      style: AppTextStyle.normalFontTextStyle),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
+          Row(
+            children: [
+              SizedBox(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                          text: 'Liked by ',
+                          style: AppTextStyle.likeByTextStyle),
+                      TextSpan(
+                          text: postsList.first.data[index].likes.isNotEmpty
+                              ? '${postsList.first.data[index].likes.first.username}'
+                              : 'None',
+                          style: AppTextStyle.likeByTextStyle),
+                      postsList.first.data[index].likes.length > 1
+                          ? TextSpan(
+                              text:
+                                  ' and ${postsList.first.data[index].likes.length} others',
+                              style: AppTextStyle.likeByTextStyle)
+                          : TextSpan(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (builder) => CommentScreen(
+                        postId: postsList.first.data[index].postId,
+                      )));
+            },
+            child: Row(
+              children: [
+                SizedBox(
+                  child: Opacity(
+                    opacity: 0.50,
+                    child: Text(
+                        'View all ${postsList.first.data[index].comments.length} comments',
+                        style: AppTextStyle.likeByTextStyle),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

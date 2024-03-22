@@ -80,7 +80,8 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                             // profile image
                             NetworkImageWidget(
                               imageUrl:
-                                  state.userProfile.first.data.profileImage,
+                                  state.userProfile.first.data.profileImage ??
+                                      "",
                               isEditable: false,
                             ),
                             // Name

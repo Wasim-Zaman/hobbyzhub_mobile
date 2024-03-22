@@ -62,6 +62,7 @@ class _CommentScreenState extends State<CommentScreen> {
         BlocListener<WriteCommentCubit, WriteCommentState>(
           listener: (context, state) {
             if (state is WriteCommentSuccessfully) {
+              _commentController.clear();
               initCubit();
             }
           },
@@ -78,7 +79,7 @@ class _CommentScreenState extends State<CommentScreen> {
         backgroundColor: AppColors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Text('Comments', style: AppTextStyle.headings),
+          title: Text("Comments", style: AppTextStyle.headings),
           leading: Padding(
             padding: const EdgeInsets.all(5.0),
             child: GestureDetector(
@@ -168,18 +169,16 @@ class _CommentScreenState extends State<CommentScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: 20.h,
-                          ),
+                          SizedBox(height: 20.h),
                           state.specificPostsList.first.data.caption.isNotEmpty
                               ? Row(
                                   children: [
                                     SizedBox(
                                       child: Text(
-                                          state.specificPostsList.first.data
-                                              .caption,
-                                          style:
-                                              AppTextStyle.normalFontTextStyle),
+                                        state.specificPostsList.first.data
+                                            .caption,
+                                        style: AppTextStyle.normalFontTextStyle,
+                                      ),
                                     ),
                                   ],
                                 )
@@ -477,7 +476,6 @@ class _CommentScreenState extends State<CommentScreen> {
                                                             .first.data.postId,
                                                         _commentController.text
                                                             .trim());
-                                                _commentController.clear();
                                               },
                                               child: Icon(
                                                 Icons.send,

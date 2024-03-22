@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hobbyzhub/blocs/get_post/get_post_cubit.dart';
+import 'package:hobbyzhub/blocs/group/group_bloc.dart';
 import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
-import 'package:hobbyzhub/views/group/group_chat_list_screen.dart';
+import 'package:hobbyzhub/views/group/group_screen.dart';
 import 'package:hobbyzhub/views/messaging/chat_list_screen.dart';
 import 'package:hobbyzhub/views/post/create_post_screen.dart';
 import 'package:hobbyzhub/views/post/post_screen.dart';
@@ -37,8 +39,8 @@ class _MainTabScreenState extends State<MainTabScreen> {
 
   final pages = [
     const PostScreen(),
-    // const GroupScreen(),
-    const GroupChatListScreen(),
+    const GroupScreen(),
+    // const GroupChatListScreen(),
     const CreatePostScreen(),
     // const ChatScreen(),
     const ChatListScreen(),
@@ -122,7 +124,10 @@ class _MainTabScreenState extends State<MainTabScreen> {
             //     .add(ChatGetPeoplesEvent(page: 0, size: 20));
           }
           if (value == 1) {
-            // BlocProvider.of<GroupBloc>(context).add(GroupGetChatsEvent());
+            BlocProvider.of<GroupBloc>(context).add(GroupGetChatsEvent());
+          }
+          if (value == 0) {
+            context.read<GetPostCubit>().getPostList();
           }
           selectedIndex(value);
         },

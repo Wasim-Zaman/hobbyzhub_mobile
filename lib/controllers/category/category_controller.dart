@@ -96,8 +96,8 @@ class CategoryController {
     final body = {
       "userId": finishAccountModel.userId,
       "userName": finishAccountModel.fullName,
-      "subCategoryId": subCategoryId,
       "profilePicLink": finishAccountModel.profileImage,
+      "subCategoryId": subCategoryId,
     };
 
     try {
@@ -107,6 +107,7 @@ class CategoryController {
         authorizationHeaders: true,
       );
       var responseBody = jsonDecode(response.body);
+      print(response.body);
       if (responseBody['success'] && responseBody['status'] == 200) {
         return ApiResponse.fromJson(responseBody, (data) => null);
       } else {

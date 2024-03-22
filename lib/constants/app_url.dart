@@ -64,7 +64,7 @@ abstract class PostUrl {
 }
 
 abstract class CategoryUrl {
-  static final baseUrl = "${AppUrl.baseUrl}";
+  static final baseUrl = AppUrl.baseUrl;
 
   // Main Categories URL
   static final getMainCategories = "$baseUrl/api/v1/categories/hobby/get-list";

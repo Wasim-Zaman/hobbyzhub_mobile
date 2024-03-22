@@ -70,13 +70,15 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
     }
   }
 
-  subscribeUser() {
+  Future<void> subscribeUser() async {
     // subscribe user to the selected sub categories
     for (int i = 0; i < selectedSubCategories.length; i++) {
       subCategoriesBloc.add(SubCategoriesSubscribeEvent(
         subCategoryId: selectedSubCategories[i].categoryId!,
         finishAccountModel: widget.model,
       ));
+      print('Subscribed to ${selectedSubCategories[i].categoryName}');
+      await Future.delayed(Duration(milliseconds: 100));
     }
   }
 

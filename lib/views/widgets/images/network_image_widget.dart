@@ -30,10 +30,14 @@ class NetworkImageWidget extends StatelessWidget {
                 color: AppColors.borderGrey,
               ),
               image: DecorationImage(
-                // will change it later from asset image to cached network image
-                image: NetworkImage(imageUrl),
-                fit: BoxFit.contain,
-              ),
+                  // will change it later from asset image to cached network image
+                  image: NetworkImage(imageUrl),
+                  fit: BoxFit.contain,
+                  onError: (exception, stackTrace) => const Icon(
+                        Icons.error_outline,
+                        size: 50,
+                        color: AppColors.grey,
+                      )),
             ),
           ),
           Positioned(

@@ -184,24 +184,26 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
           } else if (state is CategoriesNotFoundState) {
             return Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    ImageAssets.searchImage,
-                    height: 200.h,
-                    width: 200.w,
-                  ),
-                  20.height,
-                  Text("Not Found", style: AppTextStyle.subHeading),
-                  20.height,
-                  Text(
-                    "Sorry, the keyword you entered cannot be found. please, check again or search with another keyword.",
-                    textAlign: TextAlign.center,
-                    style: AppTextStyle.subHeading,
-                  ),
-                ],
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      ImageAssets.searchImage,
+                      height: 200.h,
+                      width: 200.w,
+                    ),
+                    20.height,
+                    Text("Not Found", style: AppTextStyle.headings),
+                    20.height,
+                    Text(
+                      "No category found",
+                      textAlign: TextAlign.center,
+                      style: AppTextStyle.subHeading,
+                    ),
+                  ],
+                ),
               ),
             );
           } else if (state is CategoriesEmptyState) {
@@ -246,7 +248,25 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
             );
           } else if (state is CategoriesEmptyState) {
             return Center(
-              child: Text("No Categories Found"),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    ImageAssets.searchImage,
+                    height: 200.h,
+                    width: 200.w,
+                  ),
+                  20.height,
+                  Text("Not Found", style: AppTextStyle.headings),
+                  20.height,
+                  Text(
+                    "No category found",
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.subHeading,
+                  ),
+                ],
+              ),
             );
           }
           return Padding(

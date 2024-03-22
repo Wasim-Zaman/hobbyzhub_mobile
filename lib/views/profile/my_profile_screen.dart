@@ -84,11 +84,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 return Column(
                                   children: [
                                     // profile image
+
                                     NetworkImageWidget(
-                                      imageUrl: state
-                                          .userProfile.first.data.profileImage,
+                                      imageUrl: state.userProfile.first.data
+                                              .profileImage ??
+                                          "",
                                       isEditable: false,
                                     ),
+
                                     // Name
                                     Text(state.userProfile.first.data.fullName,
                                         style: AppTextStyle.subHeading),

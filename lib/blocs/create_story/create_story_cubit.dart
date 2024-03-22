@@ -16,10 +16,8 @@ class CreateStoryCubit extends Cubit<CreateStoryState> {
     emit(CreatestoryLoading());
     try {
       final email = await UserSecureStorage.fetchUserEmail();
-      print(email);
       var response = await storyController.createStory(
           imageFile, caption, email, duration);
-
       if (response.statusCode == 200) {
         emit(CreatestorySuccessfully());
       } else {

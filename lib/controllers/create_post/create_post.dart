@@ -67,7 +67,9 @@ class PostController {
   writeCommentFunction(postId, comment) async {
     try {
       final token = await UserSecureStorage.fetchToken();
-      final url = "${PostUrl.createComment}?postId=$postId";
+      final userId = await UserSecureStorage.fetchUserId();
+      final url = "${PostUrl.createComment}?postId=$postId&userId=$userId";
+      print(url);
 
       final headers = <String, String>{
         "Authorization": "Bearer $token",
@@ -78,6 +80,7 @@ class PostController {
 
       final response =
           await ApiManager.postRequest(body, url, headers: headers);
+      print(response.body);
       return response;
     } catch (_) {
       rethrow;
@@ -125,7 +128,6 @@ class PostController {
   }
 
   createStory(File imageFile, caption, email, duration) async {
-    ;
     final url = Uri.parse("${PostUrl.createStory}/$email");
 
     log(url.toString());
@@ -161,7 +163,9 @@ class PostController {
     request.headers.addAll(headers);
 
     final response = await request.send();
-
+    // print response
+    var res = await response.stream.bytesToString();
+    print(res);
     return response;
   }
 }

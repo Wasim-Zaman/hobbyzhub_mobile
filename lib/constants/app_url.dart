@@ -38,7 +38,8 @@ abstract class ChatUrl {
   static final chatBase = AppUrl.baseUrl;
 
   static final searchUsersByName = "$chatBase/api/v1/accounts/search";
-  static final createPrivateChat = "$chatBase/api/v1/chats/private/create-new";
+  static final createPrivateChat = "$chatBase/api/chats/private/create-chat";
+  static final createGroupChat = "$chatBase/api/chats/group/create-chat";
   static final getChats = "$chatBase/api/v1/chats/private/get-chats";
   static final getServerMessages = "$chatBase/api/v1/chats/messages/retrieve";
   static final getUsers = "$chatBase/api/v1/chat/usersNotChatted";

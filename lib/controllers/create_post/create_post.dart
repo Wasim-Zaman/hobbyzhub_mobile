@@ -69,7 +69,6 @@ class PostController {
       final token = await UserSecureStorage.fetchToken();
       final userId = await UserSecureStorage.fetchUserId();
       final url = "${PostUrl.createComment}?postId=$postId&userId=$userId";
-      print(url);
 
       final headers = <String, String>{
         "Authorization": "Bearer $token",
@@ -80,7 +79,7 @@ class PostController {
 
       final response =
           await ApiManager.postRequest(body, url, headers: headers);
-      print(response.body);
+
       return response;
     } catch (_) {
       rethrow;
@@ -91,7 +90,6 @@ class PostController {
     try {
       final token = await UserSecureStorage.fetchToken();
       final userId = await UserSecureStorage.fetchUserId();
-      print(userId);
 
       final url = "${PostUrl.createLike}?postId=$postId&likerUserId=$userId";
 

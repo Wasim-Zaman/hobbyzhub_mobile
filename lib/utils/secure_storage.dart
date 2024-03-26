@@ -40,6 +40,12 @@ class UserSecureStorage {
     return await _storage.read(key: _userEmail);
   }
 
+  static Future logout() async {
+    await _storage.delete(key: _keyToken);
+    await _storage.delete(key: _keyUserId);
+    await _storage.delete(key: _userEmail);
+  }
+
   static Future deleteAll() async {
     await _storage.deleteAll();
   }

@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_new
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +11,6 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/models/user/user.dart';
-import 'package:hobbyzhub/utils/app_date.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
@@ -23,12 +24,13 @@ import 'package:nb_utils/nb_utils.dart';
 enum UserType { member, admin }
 
 class AddGroupMembers extends StatefulWidget {
-  final String mediaUrl, groupName, groupDescription;
+  final String groupName, groupDescription;
+  final File? groupImage;
   const AddGroupMembers({
     super.key,
-    required this.mediaUrl,
     required this.groupName,
     required this.groupDescription,
+    this.groupImage,
   });
 
   @override
@@ -142,7 +144,11 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
                       if (state is UserSearchByNameLoading) {
                         searchedUsers.clear();
                       } else if (state is UserSearchByNameSuccess) {
-                        searchedUsers = state.users;
+                        if (userType == UserType.admin) {
+                          searchedUsers = members;
+                        } else {
+                          searchedUsers = state.users;
+                        }
                       } else if (state is UserSearchByNameMoreSuccess) {
                         searchedUsers.addAll(state.users);
                       }
@@ -204,15 +210,27 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
                                 onPressed: () {
                                   // add member
                                   if (userType == UserType.member) {
-                                    // check if that user already exists or not
-
-                                    setState(() {
-                                      members.insert(0, searchedUsers[index]);
-                                    });
+                                    print('Member added');
+                                    // check if that user already exists or not.
+                                    if (!members
+                                        .contains(searchedUsers[index])) {
+                                      setState(() {
+                                        members.insert(0, searchedUsers[index]);
+                                      });
+                                    } else {
+                                      toast("User already added");
+                                    }
                                   } else if (userType == UserType.admin) {
-                                    setState(() {
-                                      admins.insert(0, searchedUsers[index]);
-                                    });
+                                    print('admin added');
+                                    // if the admin already exists in the admin list, do not add it again
+                                    if (!admins
+                                        .contains(searchedUsers[index])) {
+                                      setState(() {
+                                        admins.insert(0, searchedUsers[index]);
+                                      });
+                                    } else {
+                                      toast("Admin already added");
+                                    }
                                   }
                                 },
                                 child: Text('Add'),
@@ -323,7 +341,7 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
                     GestureDetector(
                       onTap: () {
                         // show user search sheet
-                        _searchBottomSheet(context, userType: UserType.member);
+                        _searchBottomSheet(context, userType: UserType.admin);
                       },
                       child: Container(
                         height: 70,
@@ -446,18 +464,17 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
 
   void createGroup() {
     var body = {
-      "groupName": widget.groupName,
+      "title": widget.groupName,
       "groupDescription": widget.groupDescription,
-      "groupIcon": widget.mediaUrl,
-      "dateTimeCreated": AppDate.generateTimeString(),
-      "chatParticipants": <String>[
-        userId.toString(),
-        ...members.map((e) => e.userId.toString()).toList(),
+      "participantRequests": <Map>[
+        {"userId": userId.toString()},
+        ...members.map((e) => {"userId": e.userId.toString()}).toList(),
       ],
-      "chatAdmins": <String>[
-        userId.toString(),
-        ...admins.map((e) => e.userId.toString()).toList(),
-      ]
+      "adminIds": <Map>[
+        {"userId": userId.toString()},
+        ...admins.map((e) => {"userId": e.userId.toString()}).toList(),
+      ],
+      "groupImage": widget.groupImage,
     };
     context.read<GroupBloc>().add(GroupCreateEvent(body: body));
   }

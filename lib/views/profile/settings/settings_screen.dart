@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/delete_fcm_token/delete_fcm_token_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
-import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/user/user_profile_model.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
@@ -22,7 +22,8 @@ import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  final UserProfileModel user;
+  const SettingsScreen({Key? key, required this.user}) : super(key: key);
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -66,7 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  void logout() {
+  void logout() async {
     context.read<DeleteFcmTokenCubit>().unRegisterFcmToken();
   }
 
@@ -75,11 +76,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return BlocBuilder<DeleteFcmTokenCubit, DeleteFcmTokenState>(
       builder: (context, state) {
         if (state is DeleteFcmTokenSuccess) {
-          UserSecureStorage.deleteAll().then((value) {
+          UserSecureStorage.logout().then((value) {
             AppDialogs.closeDialog(context);
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-                (Route<dynamic> route) => false);
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+              (route) => false,
+            );
           });
         }
         return Scaffold(
@@ -104,22 +106,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      const ProfileImageWidget(
-                        imageUrl: ImageAssets.userProfileImage,
+                      ProfileImageWidget(
+                        imageUrl: widget.user.data.profileImage.toString(),
                         isEditable: true,
                       ),
                       20.height,
                       Text(
-                        "Sara Stamp",
+                        widget.user.data.fullName,
                         style: AppTextStyle.normal.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       20.height,
-                      const BioTextWidget(
-                        bio:
-                            "I just love the idea of not being what people expect me to be!",
-                      ),
+                      BioTextWidget(bio: widget.user.data.bio),
                       20.height,
                       ListTileWidget(
                         title: "Notification",

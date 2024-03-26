@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
-
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -21,6 +19,8 @@ import 'package:hobbyzhub/models/post_model/post_model.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/explore/explore_screen.dart';
+import 'package:hobbyzhub/views/notification/notification_screen.dart';
 import 'package:hobbyzhub/views/post/comments/comment_screen.dart';
 import 'package:hobbyzhub/views/post/story/story_screen.dart';
 import 'package:hobbyzhub/views/profile/third_person_profile_screen.dart';
@@ -111,17 +111,31 @@ class _PostScreenState extends State<PostScreen> {
       ],
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar:
-            BasicAppbarWidget(title: 'Feeds', isBackButton: false, actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Image.asset(ImageAssets.searchImage, height: 20, width: 20),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Image.asset(ImageAssets.notification, height: 20, width: 20),
-          ),
-        ]),
+        appBar: BasicAppbarWidget(
+          title: 'Feeds',
+          isBackButton: false,
+          actions: [
+            IconButton(
+              onPressed: () {
+                AppNavigator.goToPage(
+                  context: context,
+                  screen: const ExploreScreen(),
+                );
+              },
+              icon: Image.asset(ImageAssets.searchImage, height: 20, width: 20),
+            ),
+            IconButton(
+              onPressed: () {
+                AppNavigator.goToPage(
+                  context: context,
+                  screen: const NotificationScreen(),
+                );
+              },
+              icon:
+                  Image.asset(ImageAssets.notification, height: 20, width: 20),
+            ),
+          ],
+        ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,7 +197,8 @@ class _PostScreenState extends State<PostScreen> {
                                                 child: Container(
                                                   width: 25.w,
                                                   height: 25.h,
-                                                  decoration: ShapeDecoration(
+                                                  decoration:
+                                                      const ShapeDecoration(
                                                     color: AppColors.primary,
                                                     shape: OvalBorder(
                                                       side: BorderSide(
@@ -193,7 +208,7 @@ class _PostScreenState extends State<PostScreen> {
                                                       ),
                                                     ),
                                                   ),
-                                                  child: Icon(
+                                                  child: const Icon(
                                                     Icons.add,
                                                     color: AppColors.white,
                                                   ),
@@ -230,7 +245,8 @@ class _PostScreenState extends State<PostScreen> {
                                                   width: 100.w,
                                                   height: 120.h,
                                                   decoration: ShapeDecoration(
-                                                    image: DecorationImage(
+                                                    image:
+                                                        const DecorationImage(
                                                       image: NetworkImage(
                                                           "https://via.placeholder.com/70x100"),
                                                       fit: BoxFit.fill,
@@ -250,7 +266,8 @@ class _PostScreenState extends State<PostScreen> {
                                                 child: Container(
                                                   width: 25.w,
                                                   height: 25.h,
-                                                  decoration: ShapeDecoration(
+                                                  decoration:
+                                                      const ShapeDecoration(
                                                     color: AppColors.primary,
                                                     shape: OvalBorder(
                                                       side: BorderSide(
@@ -260,7 +277,7 @@ class _PostScreenState extends State<PostScreen> {
                                                       ),
                                                     ),
                                                   ),
-                                                  child: Icon(
+                                                  child: const Icon(
                                                     Icons.add,
                                                     color: AppColors.white,
                                                   ),
@@ -289,7 +306,8 @@ class _PostScreenState extends State<PostScreen> {
                                       itemCount: state.storiesList.length,
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
-                                      physics: NeverScrollableScrollPhysics(),
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
                                       itemBuilder: (context, index) {
                                         return Padding(
                                           padding:
@@ -375,7 +393,7 @@ class _PostScreenState extends State<PostScreen> {
                                         );
                                       });
                                 } else {
-                                  return SizedBox();
+                                  return const SizedBox();
                                 }
                               },
                             ),
@@ -387,7 +405,6 @@ class _PostScreenState extends State<PostScreen> {
                 ),
               ),
               //! Posts Section
-
               BlocConsumer<GetPostCubit, GetPostState>(
                 listener: (context, state) {
                   if (state is GetPostLoaded) {
@@ -404,13 +421,13 @@ class _PostScreenState extends State<PostScreen> {
                               SizedBox(
                                 height: MediaQuery.of(context).size.height / 4,
                               ),
-                              LoadingWidget()
+                              const LoadingWidget()
                             ],
                           )
                         : ListView.builder(
                             itemCount: state.postsList.first.data.length,
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.all(12.0),
@@ -438,7 +455,7 @@ class _PostScreenState extends State<PostScreen> {
                                                         .data[index].username
                                                         .toString()
                                                         .substring(0, 1))
-                                                    : Text(''),
+                                                    : const Text(''),
                                               )
                                             : CircleAvatar(
                                                 radius: 20.sp,
@@ -494,7 +511,7 @@ class _PostScreenState extends State<PostScreen> {
                                               }
                                             },
                                             itemBuilder: (context) => [
-                                              PopupMenuItem<int>(
+                                              const PopupMenuItem<int>(
                                                   value: 0,
                                                   child: Text('Delete')),
                                             ],
@@ -518,7 +535,7 @@ class _PostScreenState extends State<PostScreen> {
                                               ),
                                             ],
                                           )
-                                        : SizedBox(),
+                                        : const SizedBox(),
                                     SizedBox(
                                       height: 10.h,
                                     ),
@@ -545,7 +562,7 @@ class _PostScreenState extends State<PostScreen> {
                                               ]
                                             ],
                                           )
-                                        : SizedBox(),
+                                        : const SizedBox(),
                                     SizedBox(
                                       height: 20.h,
                                     ),
@@ -556,10 +573,10 @@ class _PostScreenState extends State<PostScreen> {
                                             imageUrl: state.postsList.first
                                                 .data[index].imageUrls.first,
                                             placeholder: (context, url) =>
-                                                LoadingWidget(), // Empty container as a placeholder
+                                                const LoadingWidget(), // Empty container as a placeholder
                                             errorWidget:
                                                 (context, url, error) =>
-                                                    Icon(Icons.error),
+                                                    const Icon(Icons.error),
                                             imageBuilder:
                                                 (context, imageProvider) =>
                                                     Container(
@@ -578,10 +595,10 @@ class _PostScreenState extends State<PostScreen> {
                                             ),
 
                                             fit: BoxFit.cover,
-                                            fadeInDuration:
-                                                Duration(milliseconds: 500),
-                                            fadeOutDuration:
-                                                Duration(milliseconds: 500),
+                                            fadeInDuration: const Duration(
+                                                milliseconds: 500),
+                                            fadeOutDuration: const Duration(
+                                                milliseconds: 500),
                                             alignment: Alignment.center,
                                             repeat: ImageRepeat.noRepeat,
                                             filterQuality: FilterQuality.high,
@@ -610,7 +627,7 @@ class _PostScreenState extends State<PostScreen> {
                                                       1.1, // Set the width as needed
                                                   height:
                                                       210, // Set the height as needed
-                                                  margin: EdgeInsets.only(
+                                                  margin: const EdgeInsets.only(
                                                       right:
                                                           2.0), // Add margin between images
                                                   child: Stack(
@@ -621,12 +638,13 @@ class _PostScreenState extends State<PostScreen> {
                                                             .first
                                                             .data[index]
                                                             .imageUrls[_index],
-                                                        placeholder:
-                                                            (context, url) =>
-                                                                LoadingWidget(),
+                                                        placeholder: (context,
+                                                                url) =>
+                                                            const LoadingWidget(),
                                                         errorWidget: (context,
                                                                 url, error) =>
-                                                            Icon(Icons.error),
+                                                            const Icon(
+                                                                Icons.error),
                                                         imageBuilder: (context,
                                                                 imageProvider) =>
                                                             Container(
@@ -646,11 +664,11 @@ class _PostScreenState extends State<PostScreen> {
                                                         ),
                                                         fit: BoxFit.cover,
                                                         fadeInDuration:
-                                                            Duration(
+                                                            const Duration(
                                                                 milliseconds:
                                                                     500),
                                                         fadeOutDuration:
-                                                            Duration(
+                                                            const Duration(
                                                                 milliseconds:
                                                                     500),
                                                         alignment:
@@ -660,15 +678,15 @@ class _PostScreenState extends State<PostScreen> {
                                                         filterQuality:
                                                             FilterQuality.high,
                                                       ),
-                                                      Row(
+                                                      const Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .end,
                                                         children: [
                                                           Padding(
                                                             padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
+                                                                EdgeInsets.all(
+                                                                    8.0),
                                                             child: Icon(
                                                               Icons
                                                                   .picture_in_picture_sharp,
@@ -734,7 +752,7 @@ class _PostScreenState extends State<PostScreen> {
                                                                   .toString()
                                                                   .substring(
                                                                       0, 1))
-                                                              : Text(''),
+                                                              : const Text(''),
                                                         )
                                                       : CircleAvatar(
                                                           radius: 10.sp,
@@ -791,11 +809,11 @@ class _PostScreenState extends State<PostScreen> {
                                                       .any((element) =>
                                                           element.userId ==
                                                           userId)
-                                                  ? Icon(
+                                                  ? const Icon(
                                                       CupertinoIcons.heart_fill,
                                                       color: Colors.red,
                                                     )
-                                                  : Icon(
+                                                  : const Icon(
                                                       CupertinoIcons.heart,
                                                       color: Colors.black,
                                                     ),
@@ -859,7 +877,7 @@ class _PostScreenState extends State<PostScreen> {
                                                             ' and ${state.postsList.first.data[index].likes.length} others',
                                                         style: AppTextStyle
                                                             .likeByTextStyle)
-                                                    : TextSpan(),
+                                                    : const TextSpan(),
                                               ],
                                             ),
                                           ),
@@ -907,13 +925,13 @@ class _PostScreenState extends State<PostScreen> {
                               SizedBox(
                                 height: MediaQuery.of(context).size.height / 4,
                               ),
-                              Text('Post not found'),
+                              const Text('Post not found'),
                             ],
                           )
                         : ListView.builder(
                             itemCount: state.postsList.first.data.length,
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.all(12.0),
@@ -941,7 +959,7 @@ class _PostScreenState extends State<PostScreen> {
                                                         .data[index].username
                                                         .toString()
                                                         .substring(0, 1))
-                                                    : Text(''),
+                                                    : const Text(''),
                                               )
                                             : CircleAvatar(
                                                 radius: 20.sp,
@@ -1019,7 +1037,7 @@ class _PostScreenState extends State<PostScreen> {
                                               }
                                             },
                                             itemBuilder: (context) => [
-                                              PopupMenuItem<int>(
+                                              const PopupMenuItem<int>(
                                                   value: 0,
                                                   child: Text('Delete')),
                                             ],
@@ -1043,7 +1061,7 @@ class _PostScreenState extends State<PostScreen> {
                                               ),
                                             ],
                                           )
-                                        : SizedBox(),
+                                        : const SizedBox(),
                                     SizedBox(
                                       height: 10.h,
                                     ),
@@ -1070,7 +1088,7 @@ class _PostScreenState extends State<PostScreen> {
                                               ]
                                             ],
                                           )
-                                        : SizedBox(),
+                                        : const SizedBox(),
                                     SizedBox(
                                       height: 20.h,
                                     ),
@@ -1081,10 +1099,10 @@ class _PostScreenState extends State<PostScreen> {
                                             imageUrl: state.postsList.first
                                                 .data[index].imageUrls.first,
                                             placeholder: (context, url) =>
-                                                LoadingWidget(), // Empty container as a placeholder
+                                                const LoadingWidget(), // Empty container as a placeholder
                                             errorWidget:
                                                 (context, url, error) =>
-                                                    Icon(Icons.error),
+                                                    const Icon(Icons.error),
                                             imageBuilder:
                                                 (context, imageProvider) =>
                                                     Container(
@@ -1103,10 +1121,10 @@ class _PostScreenState extends State<PostScreen> {
                                             ),
 
                                             fit: BoxFit.cover,
-                                            fadeInDuration:
-                                                Duration(milliseconds: 500),
-                                            fadeOutDuration:
-                                                Duration(milliseconds: 500),
+                                            fadeInDuration: const Duration(
+                                                milliseconds: 500),
+                                            fadeOutDuration: const Duration(
+                                                milliseconds: 500),
                                             alignment: Alignment.center,
                                             repeat: ImageRepeat.noRepeat,
                                             filterQuality: FilterQuality.high,
@@ -1135,7 +1153,7 @@ class _PostScreenState extends State<PostScreen> {
                                                       1.1, // Set the width as needed
                                                   height:
                                                       210, // Set the height as needed
-                                                  margin: EdgeInsets.only(
+                                                  margin: const EdgeInsets.only(
                                                       right:
                                                           2.0), // Add margin between images
                                                   child: Stack(
@@ -1146,12 +1164,13 @@ class _PostScreenState extends State<PostScreen> {
                                                             .first
                                                             .data[index]
                                                             .imageUrls[_index],
-                                                        placeholder:
-                                                            (context, url) =>
-                                                                LoadingWidget(),
+                                                        placeholder: (context,
+                                                                url) =>
+                                                            const LoadingWidget(),
                                                         errorWidget: (context,
                                                                 url, error) =>
-                                                            Icon(Icons.error),
+                                                            const Icon(
+                                                                Icons.error),
                                                         imageBuilder: (context,
                                                                 imageProvider) =>
                                                             Container(
@@ -1171,11 +1190,11 @@ class _PostScreenState extends State<PostScreen> {
                                                         ),
                                                         fit: BoxFit.cover,
                                                         fadeInDuration:
-                                                            Duration(
+                                                            const Duration(
                                                                 milliseconds:
                                                                     500),
                                                         fadeOutDuration:
-                                                            Duration(
+                                                            const Duration(
                                                                 milliseconds:
                                                                     500),
                                                         alignment:
@@ -1185,15 +1204,15 @@ class _PostScreenState extends State<PostScreen> {
                                                         filterQuality:
                                                             FilterQuality.high,
                                                       ),
-                                                      Row(
+                                                      const Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .end,
                                                         children: [
                                                           Padding(
                                                             padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
+                                                                EdgeInsets.all(
+                                                                    8.0),
                                                             child: Icon(
                                                               Icons
                                                                   .picture_in_picture_sharp,
@@ -1259,7 +1278,7 @@ class _PostScreenState extends State<PostScreen> {
                                                                   .toString()
                                                                   .substring(
                                                                       0, 1))
-                                                              : Text(''),
+                                                              : const Text(''),
                                                         )
                                                       : CircleAvatar(
                                                           radius: 10.sp,
@@ -1316,11 +1335,11 @@ class _PostScreenState extends State<PostScreen> {
                                                       .any((element) =>
                                                           element.userId ==
                                                           userId)
-                                                  ? Icon(
+                                                  ? const Icon(
                                                       CupertinoIcons.heart_fill,
                                                       color: Colors.red,
                                                     )
-                                                  : Icon(
+                                                  : const Icon(
                                                       CupertinoIcons.heart,
                                                       color: Colors.black,
                                                     ),
@@ -1396,7 +1415,7 @@ class _PostScreenState extends State<PostScreen> {
                                                             ' and ${state.postsList.first.data[index].likes.length} others',
                                                         style: AppTextStyle
                                                             .likeByTextStyle)
-                                                    : TextSpan(),
+                                                    : const TextSpan(),
                                               ],
                                             ),
                                           ),
@@ -1445,7 +1464,7 @@ class _PostScreenState extends State<PostScreen> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height / 4,
                         ),
-                        Center(child: Text('No Post to display')),
+                        const Center(child: Text('No Post to display')),
                       ],
                     );
                   } else {
@@ -1456,7 +1475,7 @@ class _PostScreenState extends State<PostScreen> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height / 4,
                         ),
-                        LoadingWidget()
+                        const LoadingWidget()
                       ],
                     );
                   }
@@ -1558,8 +1577,9 @@ class _PostScreenState extends State<PostScreen> {
                           border: Border.all(
                               color: Colors.grey[300]!), // Added border
                         ),
-                        textStyle: TextStyle(color: Colors.black),
-                        selectedTextStyle: TextStyle(color: AppColors.primary),
+                        textStyle: const TextStyle(color: Colors.black),
+                        selectedTextStyle:
+                            const TextStyle(color: AppColors.primary),
                         value: _currentValue,
                         minValue: 1,
                         maxValue: 24,
@@ -1614,7 +1634,8 @@ class _PostScreenState extends State<PostScreen> {
                           ],
                         ),
                   Padding(
-                    padding: EdgeInsets.only(top: 20, left: 30, right: 30),
+                    padding:
+                        const EdgeInsets.only(top: 20, left: 30, right: 30),
                     child: PrimaryButtonWidget(
                         width: MediaQuery.of(context).size.width,
                         caption: 'Upload',
@@ -1662,7 +1683,7 @@ class PostWidget extends StatelessWidget {
                           ? Text(postsList.first.data[index].username
                               .toString()
                               .substring(0, 1))
-                          : Text(''),
+                          : const Text(''),
                     )
                   : CircleAvatar(
                       radius: 20.sp,
@@ -1710,7 +1731,7 @@ class PostWidget extends StatelessWidget {
                     }
                   },
                   itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text('Delete')),
+                    const PopupMenuItem<int>(value: 0, child: Text('Delete')),
                   ],
                 ),
               )
@@ -1728,7 +1749,7 @@ class PostWidget extends StatelessWidget {
                     ),
                   ],
                 )
-              : SizedBox(),
+              : const SizedBox(),
           SizedBox(
             height: 10.h,
           ),
@@ -1746,7 +1767,7 @@ class PostWidget extends StatelessWidget {
                     ]
                   ],
                 )
-              : SizedBox(),
+              : const SizedBox(),
           SizedBox(
             height: 20.h,
           ),
@@ -1754,8 +1775,8 @@ class PostWidget extends StatelessWidget {
               ? CachedNetworkImage(
                   imageUrl: postsList.first.data[index].imageUrls.first,
                   placeholder: (context, url) =>
-                      LoadingWidget(), // Empty container as a placeholder
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                      const LoadingWidget(), // Empty container as a placeholder
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                   imageBuilder: (context, imageProvider) => Container(
                     width: double.infinity, // Set the width as needed
                     height: 210, // Set the height as needed
@@ -1770,8 +1791,8 @@ class PostWidget extends StatelessWidget {
                   ),
 
                   fit: BoxFit.cover,
-                  fadeInDuration: Duration(milliseconds: 500),
-                  fadeOutDuration: Duration(milliseconds: 500),
+                  fadeInDuration: const Duration(milliseconds: 500),
+                  fadeOutDuration: const Duration(milliseconds: 500),
                   alignment: Alignment.center,
                   repeat: ImageRepeat.noRepeat,
                   filterQuality: FilterQuality.high,
@@ -1792,16 +1813,17 @@ class PostWidget extends StatelessWidget {
                         width: MediaQuery.of(context).size.width /
                             1.1, // Set the width as needed
                         height: 210, // Set the height as needed
-                        margin: EdgeInsets.only(
+                        margin: const EdgeInsets.only(
                             right: 2.0), // Add margin between images
                         child: Stack(
                           children: [
                             CachedNetworkImage(
                               imageUrl:
                                   postsList.first.data[index].imageUrls[_index],
-                              placeholder: (context, url) => LoadingWidget(),
+                              placeholder: (context, url) =>
+                                  const LoadingWidget(),
                               errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
+                                  const Icon(Icons.error),
                               imageBuilder: (context, imageProvider) =>
                                   Container(
                                 decoration: BoxDecoration(
@@ -1813,17 +1835,18 @@ class PostWidget extends StatelessWidget {
                                 ),
                               ),
                               fit: BoxFit.cover,
-                              fadeInDuration: Duration(milliseconds: 500),
-                              fadeOutDuration: Duration(milliseconds: 500),
+                              fadeInDuration: const Duration(milliseconds: 500),
+                              fadeOutDuration:
+                                  const Duration(milliseconds: 500),
                               alignment: Alignment.center,
                               repeat: ImageRepeat.noRepeat,
                               filterQuality: FilterQuality.high,
                             ),
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: EdgeInsets.all(8.0),
                                   child: Icon(
                                     Icons.picture_in_picture_sharp,
                                     color: Colors.white,
@@ -1864,7 +1887,7 @@ class PostWidget extends StatelessWidget {
                                         .comments[_index].username
                                         .toString()
                                         .substring(0, 1))
-                                    : Text(''),
+                                    : const Text(''),
                               )
                             : CircleAvatar(
                                 radius: 10.sp,
@@ -1896,11 +1919,11 @@ class PostWidget extends StatelessWidget {
                           },
                     child: postsList.first.data[index].likes
                             .any((element) => element.userId == userId)
-                        ? Icon(
+                        ? const Icon(
                             CupertinoIcons.heart_fill,
                             color: Colors.red,
                           )
-                        : Icon(
+                        : const Icon(
                             CupertinoIcons.heart,
                             color: Colors.black,
                           ),
@@ -1954,7 +1977,7 @@ class PostWidget extends StatelessWidget {
                               text:
                                   ' and ${postsList.first.data[index].likes.length} others',
                               style: AppTextStyle.likeByTextStyle)
-                          : TextSpan(),
+                          : const TextSpan(),
                     ],
                   ),
                 ),

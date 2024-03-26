@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/chat/private_chat.dart';
 
 class PrivateMessagingScreen extends StatelessWidget {
-  final QueryDocumentSnapshot<Map<String, dynamic>> chat;
+  final PrivateChat chat;
   final String userId;
+
   const PrivateMessagingScreen(
       {Key? key, required this.chat, required this.userId})
       : super(key: key);
@@ -16,7 +18,7 @@ class PrivateMessagingScreen extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('messages')
-            .where('room', isEqualTo: chat['room'])
+            .where('room', isEqualTo: chat.room.toString())
             // .orderBy('timestamp', descending: true)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {

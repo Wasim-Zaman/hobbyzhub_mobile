@@ -107,7 +107,6 @@ class CategoryController {
         authorizationHeaders: true,
       );
       var responseBody = jsonDecode(response.body);
-      print(response.body);
       if (responseBody['success'] && responseBody['status'] == 200) {
         return ApiResponse.fromJson(responseBody, (data) => null);
       } else {

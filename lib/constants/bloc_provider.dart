@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/auth/auth_bloc.dart';
 import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
+import 'package:hobbyzhub/blocs/chat/private/private_chat_cubit.dart';
 import 'package:hobbyzhub/blocs/create_post/createpost_cubit.dart';
 import 'package:hobbyzhub/blocs/create_story/create_story_cubit.dart';
 import 'package:hobbyzhub/blocs/delete_fcm_token/delete_fcm_token_cubit.dart';
@@ -51,5 +52,6 @@ class BlocProviders {
     BlocProvider<DeleteFcmTokenCubit>(
         create: (context) => DeleteFcmTokenCubit()),
     BlocProvider<GroupBloc>(create: (context) => GroupBloc()),
+    BlocProvider<PrivateChatCubit>(create: (context) => PrivateChatCubit()),
   ];
 }

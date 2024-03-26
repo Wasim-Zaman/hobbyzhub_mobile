@@ -1,16 +1,22 @@
+import 'dart:developer' as dev;
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
+import 'package:hobbyzhub/blocs/chat/private/private_chat_cubit.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/models/chat/chat_model.dart';
-import 'package:hobbyzhub/models/message/message_model.dart';
+import 'package:hobbyzhub/models/chat/private_chat.dart';
 import 'package:hobbyzhub/models/user/user.dart';
+import 'package:hobbyzhub/utils/app_dialogs.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/messaging/private_messaging_screen.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -24,14 +30,13 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
   String? userId;
 
-  List<MessageModel> messages = [];
   // Blocs
   UserBloc userBloc = UserBloc();
   late ChatBloc chatBloc;
 
   // Lists
   List<User> searchedUsers = [];
-  List<ChatModel> chats = [];
+  List<PrivateChat> chats = [];
 
   // Controllers
   ScrollController searchedUserController = ScrollController();
@@ -170,11 +175,13 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                       height: 45.h,
                                       decoration: ShapeDecoration(
                                         image: DecorationImage(
-                                          image: NetworkImage(
-                                            searchedUsers[index]
-                                                .profileImage
-                                                .toString(),
-                                          ),
+                                          image: CachedNetworkImageProvider(
+                                              searchedUsers[index]
+                                                  .profileImage
+                                                  .toString(),
+                                              errorListener: (_) {
+                                            print("error");
+                                          }),
                                           fit: BoxFit.fill,
                                         ),
                                         shape: RoundedRectangleBorder(
@@ -208,12 +215,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
                               // ),
                               trailing: TextButton(
                                 onPressed: () {
-                                  chatBloc.add(
-                                    ChatCreateNewPrivateCatEvent(
-                                      otherUserId: searchedUsers[index]
-                                          .userId
-                                          .toString(),
-                                    ),
+                                  PrivateChatCubit.get(context)
+                                      .createPrivateChat(
+                                    searchedUsers[index].userId.toString(),
                                   );
                                 },
                                 child: const Text('Start Chat'),
@@ -259,142 +263,143 @@ class _ChatListScreenState extends State<ChatListScreen> {
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('chats')
-                    .where('type', isEqualTo: 'private')
-                    .where('participantIds', arrayContains: userId.toString())
-                    // .orderBy('lastMessage.timestamp', descending: true)
-                    .snapshots(),
-                builder: (context,
-                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+            : BlocListener<PrivateChatCubit, PrivateChatState>(
+                listener: (context, state) {
+                  if (state is PrivateChatLoading) {
+                    AppDialogs.loadingDialog(context);
+                  } else if (state is PrivateChatCreate) {
+                    AppDialogs.closeDialog(context);
+                    AppNavigator.goToPage(
+                        context: context,
+                        screen: PrivateMessagingScreen(
+                          chat: state.chat,
+                          userId: userId.toString(),
+                        ));
+                    //Todo Navigate to messaging screen
+                  } else if (state is PrivateChatError) {
+                    AppDialogs.closeDialog(context);
+                    dev.log(state.message);
+                    toast(state.message);
                   }
-                  var chats = snapshot.data!.docs;
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "All Messages",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (ctx, index) {
-                            var record = chats[index]['participants'] as List;
-                            var user = record.firstWhere(
-                                (element) => element['userId'] != userId,
-                                orElse: () => null);
-                            return Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade100,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage: NetworkImage(
-                                      user['profileImage'],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    flex: 3,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(user['fullName'].toString()),
-                                        Text(chats[index]['lastMessage']
-                                            .toString()),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                      child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      // Text(
-                                      //   DateTime.parse(chats[index]['lastMessage']
-                                      //               ['timestamp']
-                                      //           .toDate()
-                                      //           .toString())
-                                      //       .timeAgo,
-                                      //   style: TextStyle(
-                                      //     color: Colors.grey,
-                                      //   ),
-                                      // ),
-                                      const SizedBox(height: 10),
-                                      // timestamp
-                                      Badge(
-                                        label: Text(
-                                          chats[index]['unread']['$userId']
-                                              .toString(),
-                                        ),
-                                        backgroundColor: AppColors.primary,
-                                      ).visible(
-                                        chats[index]['unread']['$userId'] != 0,
-                                      ),
-                                    ],
-                                  )),
-                                ],
-                              ),
-                            );
-                            // ListTile(
-                            //   onTap: () {
-                            //     AppNavigator.goToPage(
-                            //       context: context,
-                            //       screen: PrivateMessagingScreen(
-                            //         chat: chats[index],
-                            //         userId: userId.toString(),
-                            //       ),
-                            //     );
-                            //   },
-                            //   leading: CircleAvatar(
-                            //     backgroundImage: NetworkImage(
-                            //       user['profileImage'].toString(),
-                            //     ),
-                            //   ),
-                            //   title: Text(user['fullName'].toString()),
-                            //   // subtitle: Text(chats[index]['lastMessage'].toString()),
-                            //   trailing: Column(
-                            //     crossAxisAlignment: CrossAxisAlignment.end,
-                            //     children: [
-                            //       // timestamp
-
-                            //       Badge(
-                            //         label: Text(
-                            //           chats[index]['unread']['$userId'].toString(),
-                            //         ),
-                            //         backgroundColor: AppColors.primary,
-                            //       ).visible(
-                            //         chats[index]['unread']['$userId'] != 0,
-                            //       ),
-                            //     ],
-                            //   ),
-                            // );
-                          },
-                        ),
-                      ],
-                    ),
-                  );
                 },
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('private-chats')
+                      .where('type', isEqualTo: 'PRIVATE')
+                      .where('participantIds', arrayContains: userId.toString())
+                      // .orderBy('lastMessage.timestamp', descending: true)
+                      .snapshots(),
+                  builder: (context,
+                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                          snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    var docs = snapshot.data!.docs;
+                    var _chats = snapshot.data!.docs
+                        .map((doc) => PrivateChat.fromJson(doc.data()))
+                        .toList();
+
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "All Messages",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (ctx, index) {
+                                var record =
+                                    docs[index]['participants'] as List;
+                                var user = record.firstWhere(
+                                    (element) => element['userId'] != userId,
+                                    orElse: () => null);
+                                return Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 30,
+                                        backgroundImage: NetworkImage(
+                                          user['profileImage'],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        flex: 3,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(user['fullName'].toString()),
+                                            Text(docs[index]['lastMessage'] ??
+                                                ''),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                          child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          // Text(
+                                          //   DateTime.parse(chats[index]['lastMessage']
+                                          //               ['timestamp']
+                                          //           .toDate()
+                                          //           .toString())
+                                          //       .timeAgo,
+                                          //   style: TextStyle(
+                                          //     color: Colors.grey,
+                                          //   ),
+                                          // ),
+                                          const SizedBox(height: 10),
+                                          // timestamp
+                                          if (docs[index]['unread'] != null)
+                                            Badge(
+                                              label: Text(
+                                                docs[index]['unread']['$userId']
+                                                    .toString(),
+                                              ),
+                                              backgroundColor:
+                                                  AppColors.primary,
+                                            ).visible(
+                                              docs[index]['unread']
+                                                          ['$userId'] !=
+                                                      0 ||
+                                                  docs[index]['unread'] != null,
+                                            ),
+                                        ],
+                                      )),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ));
   }
 }

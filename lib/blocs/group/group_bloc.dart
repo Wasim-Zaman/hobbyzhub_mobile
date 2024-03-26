@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:hobbyzhub/controllers/chat/chat_controller.dart';
 import 'package:hobbyzhub/controllers/group/group_controller.dart';
 import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
@@ -11,6 +12,8 @@ part 'group_events.dart';
 part 'group_states.dart';
 
 class GroupBloc extends Bloc<GroupEvent, GroupState> {
+  static GroupBloc get(context) => context.read<GroupBloc>();
+
   GroupBloc() : super(GroupInitialState()) {
     on<GroupCreateMediaEvent>((event, emit) async {
       emit(GroupLoadingState());
@@ -34,8 +37,19 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
         // API logic
         var networkStatus = await isNetworkAvailable();
         if (networkStatus) {
-          final response = await GroupController().createNewGroup(
-            body: event.body,
+          File? groupImage = event.body['groupImage'];
+          String title = event.body['title'];
+          String groupDescription = event.body['groupDescription'];
+          List<Map<String, dynamic>> adminIds = event.body['adminIds'];
+          List<Map<String, dynamic>> participantRequests =
+              event.body['participantRequests'];
+
+          final response = await ChatController.createGroupChat(
+            groupImage: groupImage,
+            adminIds: adminIds,
+            participantIds: participantRequests,
+            title: title,
+            description: groupDescription,
           );
           emit(GroupCreateGroupState(group: response.data));
         } else {

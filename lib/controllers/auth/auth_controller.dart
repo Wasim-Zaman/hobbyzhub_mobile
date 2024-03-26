@@ -78,15 +78,17 @@ abstract class AuthController {
           ),
         );
       }
+
       // send other fields
       request.fields["userId"] = model.userId.toString();
       request.fields["fullName"] = model.name.toString();
       request.fields["birthdate"] = model.birthDate.toString();
-      request.fields["gender"] = model.birthDate.toString();
+      request.fields["gender"] = model.gender.toString();
       request.fields["bio"] = model.bio.toString();
 
       // send request
       var response = await request.send();
+
       // print response
       var body = jsonDecode(await response.stream.bytesToString());
       print(body);

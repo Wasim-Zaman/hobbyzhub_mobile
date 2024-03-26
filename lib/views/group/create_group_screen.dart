@@ -8,11 +8,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/group/group_bloc.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
-import 'package:hobbyzhub/utils/media_utils.dart';
 import 'package:hobbyzhub/views/group/add_group_members.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
-import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/text_fields_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -32,10 +30,19 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   File? media;
   String mediaUrl = '';
 
+  // Other
+  final groupNameFocusNode = FocusNode();
+  final descriptionFocusNode = FocusNode();
+  final formKey = GlobalKey<FormState>();
+
   pickMedia() async {
-    media = await MediaUtils.pickImage(ImageSource.gallery);
-    if (media != null) {
-      context.read<GroupBloc>().add(GroupCreateMediaEvent(media: media!));
+    final ImagePicker picker = ImagePicker();
+    XFile? pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        print('picked');
+        media = File(pickedImage.path);
+      });
     }
   }
 
@@ -60,105 +67,107 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
         builder: (context, state) {
           return Padding(
             padding: EdgeInsets.all(12.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  child: Text(
-                    'Lets Bring Your Passion to Life. Start Your Own Hobby Community.',
-                    style: TextStyle(
-                      color: Color(0xFF181818),
-                      fontSize: 24,
-                      fontFamily: 'Jost',
-                      fontWeight: FontWeight.w500,
-                      height: 0,
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    child: Text(
+                      'Lets Bring Your Passion to Life. Start Your Own Hobby Community.',
+                      style: TextStyle(
+                        color: Color(0xFF181818),
+                        fontSize: 24,
+                        fontFamily: 'Jost',
+                        fontWeight: FontWeight.w500,
+                        height: 0,
+                      ),
                     ),
                   ),
-                ),
-                30.height,
-                SizedBox(
-                  width: 100.w,
-                  height: 130.h,
-                  child: Stack(
-                    children: [
-                      Container(
-                        width: 100.w,
-                        height: 93.h,
-                        decoration: ShapeDecoration(
-                          color: Color(0xFFA0A2B3),
-                          shape: RoundedRectangleBorder(
+                  30.height,
+                  SizedBox(
+                    width: 100.w,
+                    height: 130.h,
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: 100.w,
+                          height: 93.h,
+                          decoration: ShapeDecoration(
+                            color: Color(0xFFA0A2B3),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(28.r),
+                            ),
+                          ),
+                          child: ClipRRect(
                             borderRadius: BorderRadius.circular(28.r),
+                            child: media != null
+                                ? Image.file(media!)
+                                : Image.asset(
+                                    ImageAssets.createGroupImage,
+                                    color: Colors.black,
+                                  ),
                           ),
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(28.r),
-                          child: mediaUrl != ''
-                              ? ImageWidget(
-                                  imageUrl: mediaUrl, fit: BoxFit.cover)
-                              : Image.asset(
-                                  ImageAssets.createGroupImage,
-                                  color: Colors.black,
+                        Positioned(
+                          left: 28.w,
+                          top: 75.h,
+                          child: GestureDetector(
+                            onTap: () {
+                              // pick image
+                              pickMedia();
+                            },
+                            child: Container(
+                              width: 40.w,
+                              height: 36.h,
+                              decoration: ShapeDecoration(
+                                color: Color(0xFF394851),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14.r),
                                 ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 28.w,
-                        top: 75.h,
-                        child: GestureDetector(
-                          onTap: () {
-                            // pick image
-                            pickMedia();
-                          },
-                          child: Container(
-                            width: 40.w,
-                            height: 36.h,
-                            decoration: ShapeDecoration(
-                              color: Color(0xFF394851),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14.r),
+                              ),
+                              child: Icon(
+                                Icons.camera_alt_outlined,
+                                color: Colors.white,
                               ),
                             ),
-                            child: Icon(
-                              Icons.camera_alt_outlined,
-                              color: Colors.white,
-                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 20.h,
-                ),
-                TextFieldWidget(
-                    labelText: "Group Name",
-                    controller: groupName,
-                    hintText: "Enter your group name"),
-                SizedBox(
-                  height: 20.h,
-                ),
-                TextFieldWidget(
-                    maxLines: 6,
-                    labelText: "Description",
-                    controller: description,
-                    hintText: "Enter group description...."),
-                SizedBox(
-                  height: 20.h,
-                ),
-                PrimaryButtonWidget(
-                    caption: "Next",
-                    onPressed: () {
-                      AppNavigator.goToPage(
-                          context: context,
-                          screen: AddGroupMembers(
-                            groupName: groupName.text,
-                            groupDescription: description.text,
-                            mediaUrl: mediaUrl,
-                          ));
-                    }),
-              ],
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  TextFieldWidget(
+                      labelText: "Group Name",
+                      controller: groupName,
+                      hintText: "Enter your group name"),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  TextFieldWidget(
+                      maxLines: 6,
+                      labelText: "Description",
+                      controller: description,
+                      hintText: "Enter group description...."),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  PrimaryButtonWidget(
+                      caption: "Next",
+                      onPressed: () {
+                        AppNavigator.goToPage(
+                            context: context,
+                            screen: AddGroupMembers(
+                              groupName: groupName.text,
+                              groupDescription: description.text,
+                              groupImage: media,
+                            ));
+                      }),
+                ],
+              ),
             ),
           );
         },

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
@@ -31,8 +32,12 @@ class ProfileImageWidget extends StatelessWidget {
               ),
               image: DecorationImage(
                 // will change it later from asset image to cached network image
-                image: AssetImage(imageUrl),
-                fit: BoxFit.contain,
+                image: CachedNetworkImageProvider(imageUrl),
+                onError: (exception, stackTrace) => const CircleAvatar(
+                  backgroundColor: AppColors.grey,
+                  child: Icon(Icons.person, size: 50),
+                ),
+                fit: BoxFit.cover,
               ),
             ),
           ),

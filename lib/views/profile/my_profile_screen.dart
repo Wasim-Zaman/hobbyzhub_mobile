@@ -129,7 +129,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                             onTap: () {
                                               AppNavigator.goToPage(
                                                 context: context,
-                                                screen: const SettingsScreen(),
+                                                screen: SettingsScreen(
+                                                  user: state.userProfile.first,
+                                                ),
                                               );
                                             },
                                             child: Container(

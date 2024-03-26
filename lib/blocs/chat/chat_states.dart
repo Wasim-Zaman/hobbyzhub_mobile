@@ -64,3 +64,12 @@ class ChatGetSuccessState extends ChatState {
 
   ChatGetSuccessState({required this.chats});
 }
+
+// success states
+class ChatSendNewMessageSuccessState extends ChatState {}
+
+// failure states
+class ChatSendNewMessageFailure extends ChatState {
+  final String errorMessage;
+  ChatSendNewMessageFailure({required this.errorMessage});
+}

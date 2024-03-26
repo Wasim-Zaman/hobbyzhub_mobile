@@ -17,6 +17,19 @@ class ChatCreateNewPrivateCatEvent extends ChatEvent {
   ChatCreateNewPrivateCatEvent({required this.otherUserId});
 }
 
+class ChatSendNewMessageEvent extends ChatEvent {
+  final String mediaType, message, room;
+  final File? media;
+  final Map createMetadataRequest;
+  ChatSendNewMessageEvent({
+    this.mediaType = "TEXT",
+    required this.message,
+    required this.room,
+    required this.media,
+    required this.createMetadataRequest,
+  });
+}
+
 class ChatGetPeoplesEvent extends ChatEvent {
   final int page, size;
   ChatGetPeoplesEvent({

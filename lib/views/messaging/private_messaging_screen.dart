@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/chat/private_chat.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/widgets/text_fields/chat_field.dart';
 
-class PrivateMessagingScreen extends StatelessWidget {
+class PrivateMessagingScreen extends StatefulWidget {
   final PrivateChat chat;
   final String userId;
 
@@ -12,13 +17,65 @@ class PrivateMessagingScreen extends StatelessWidget {
       : super(key: key);
 
   @override
+  State<PrivateMessagingScreen> createState() => _PrivateMessagingScreenState();
+}
+
+class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
+  var messageController = TextEditingController();
+  final ChatBloc bloc = ChatBloc();
+  late var otherUser;
+
+  @override
+  void initState() {
+    super.initState();
+    otherUser = widget.chat.participants!
+        .firstWhere((element) => element.userId.toString() != widget.userId);
+  }
+
+  sendMessage({
+    required String message,
+    required String room,
+    File? media,
+    required Map createMetadataRequest,
+  }) {
+    bloc.add(ChatSendNewMessageEvent(
+      message: message,
+      room: room,
+      media: media,
+      createMetadataRequest: createMetadataRequest,
+    ));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 20,
+              backgroundImage: NetworkImage(otherUser.profileImage.toString()),
+              onBackgroundImageError: (exception, stackTrace) => const Icon(
+                Icons.person,
+                size: 30,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+                child: Text(
+              otherUser.fullName.toString(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 16),
+            )),
+          ],
+        ),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('messages')
-            .where('room', isEqualTo: chat.room.toString())
+            .where('room', isEqualTo: widget.chat.room.toString())
             // .orderBy('timestamp', descending: true)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -29,18 +86,57 @@ class PrivateMessagingScreen extends StatelessWidget {
           if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }
-          return ListView.builder(
-            reverse: true,
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              DocumentSnapshot document = snapshot.data!.docs[index];
-              Map<String, dynamic> data =
-                  document.data() as Map<String, dynamic>;
-              return MessageBubble(
-                message: data,
-                myUserId: userId,
-              );
-            },
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    reverse: true,
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot document = snapshot.data!.docs[index];
+                      Map<String, dynamic> data =
+                          document.data() as Map<String, dynamic>;
+                      return MessageBubble(
+                        message: data,
+                        myUserId: widget.userId,
+                      );
+                    },
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ChatField(
+                        controller: messageController,
+                        hintText: 'Write your message',
+                        suffixIcon: IconButton(
+                          onPressed: () async {
+                            String? myId =
+                                await UserSecureStorage.fetchUserId();
+                            String otherId = widget.chat.participantIds!
+                                .firstWhere((element) =>
+                                    element.toString() != myId.toString());
+                            sendMessage(
+                              message: messageController.text,
+                              room: widget.chat.room.toString(),
+                              createMetadataRequest: {
+                                "room": widget.chat.room.toString(),
+                                "receiver": otherId,
+                                "sender": "$myId",
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.send),
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           );
         },
       ),

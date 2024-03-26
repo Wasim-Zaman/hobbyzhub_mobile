@@ -265,10 +265,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                     SizedBox(
                       width: 10,
                     ),
-                    Text(
-                      'Clear Chat',
-                      style: AppTextStyle.listTileSubHeading,
-                    )
+                    Text('Clear Chat', style: AppTextStyle.listTileSubHeading)
                   ],
                 ),
               ),

@@ -62,6 +62,7 @@ dependencies:
   story_view:
   numberpicker: ^2.1.2
   cloud_firestore: ^4.14.0
+  dio: ^5.4.2
 
 dev_dependencies:
   flutter_test:

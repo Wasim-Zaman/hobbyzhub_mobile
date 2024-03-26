@@ -10,6 +10,7 @@ import 'package:hobbyzhub/models/chat/private_chat.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 abstract class ChatController {
   static Future<ApiResponse> startPrivateChat(String otherUserId) async {
@@ -49,10 +50,13 @@ abstract class ChatController {
     required List<Map> adminIds,
   }) async {
     // multi part request
+
+    final token = await UserSecureStorage.fetchToken();
     final url =
         "${ChatUrl.createGroupChat}?title=$title&type=$type&groupDescription=$description";
+
     final request = http.MultipartRequest('POST', Uri.parse(url));
-    final token = await UserSecureStorage.fetchToken();
+
     request.headers.addAll({
       "Authorization": "Bearer $token",
       "Content-Type": "multipart/form-data",
@@ -62,15 +66,74 @@ abstract class ChatController {
       request.files.add(await http.MultipartFile.fromPath(
         'groupImage',
         groupImage.path,
+        filename: groupImage.path.split('/').last,
+        // contentType: MediaType('image', 'jpeg'),
       ));
     }
-    request.fields.addAll({
-      "participantRequests": jsonEncode(participantIds),
-      "adminIds": jsonEncode(adminIds),
-    });
+
+    request.files.add(http.MultipartFile.fromString(
+      'participantRequests',
+      jsonEncode(participantIds),
+      contentType:
+          MediaType('application', 'json'), // specify the content type here
+    ));
+
+    request.files.add(http.MultipartFile.fromString(
+      'adminIds',
+      jsonEncode(adminIds),
+      contentType:
+          MediaType('application', 'json'), // specify the content type here
+    ));
 
     final response = await request.send();
-    print(response.statusCode);
+    final responseString = await response.stream.bytesToString();
+    final responseJson = jsonDecode(responseString);
+    return ApiResponse.fromJson(
+      responseJson,
+      (data) => null /*PrivateChat.fromJson(responseJson['data']) */,
+    );
+  }
+
+  static Future<ApiResponse> sendMessage({
+    File? media,
+    required String message,
+    required String room,
+    String mediaType = 'TEXT',
+    required Map createMetadataRequest,
+  }) async {
+    final url =
+        "${ChatUrl.createGroupChat}?mediaType=$mediaType&message=$message&room=$room";
+
+    print(message);
+    print(room);
+    print(mediaType);
+    print(createMetadataRequest);
+
+    final token = await UserSecureStorage.fetchToken();
+
+    final request = http.MultipartRequest('POST', Uri.parse(url));
+    request.headers.addAll({
+      "Authorization": "Bearer $token",
+      "Content-Type": "multipart/form-data",
+    });
+
+    if (media != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'mediaUrl',
+        media.path,
+        filename: media.path.split('/').last,
+        // contentType: MediaType('image', 'jpeg'),
+      ));
+    }
+    request.files.add(http.MultipartFile.fromString(
+      'createMetadataRequest',
+      jsonEncode(createMetadataRequest),
+      contentType:
+          MediaType('application', 'json'), // specify the content type here
+    ));
+
+    final response = await request.send();
+    print("Status code : ${response.statusCode}");
     final responseString = await response.stream.bytesToString();
     print(responseString);
     final responseJson = jsonDecode(responseString);

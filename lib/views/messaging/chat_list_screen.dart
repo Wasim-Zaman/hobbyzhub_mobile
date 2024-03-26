@@ -275,7 +275,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           chat: state.chat,
                           userId: userId.toString(),
                         ));
-                    //Todo Navigate to messaging screen
                   } else if (state is PrivateChatError) {
                     AppDialogs.closeDialog(context);
                     dev.log(state.message);
@@ -318,78 +317,96 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           Expanded(
                             child: ListView.builder(
                               shrinkWrap: true,
-                              itemCount: snapshot.data!.docs.length,
+                              itemCount: _chats.length,
                               itemBuilder: (ctx, index) {
-                                var record =
-                                    docs[index]['participants'] as List;
-                                var user = record.firstWhere(
-                                    (element) => element['userId'] != userId,
-                                    orElse: () => null);
-                                return Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade100,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 30,
-                                        backgroundImage: NetworkImage(
-                                          user['profileImage'],
-                                        ),
+                                var record = _chats[index].participants;
+                                var user = record?.firstWhere(
+                                    (element) => element.userId != userId,
+                                    orElse: () => Participants());
+                                return GestureDetector(
+                                  onTap: () {
+                                    // convert the snapshot into a private chat model
+                                    var chat = PrivateChat.fromJson(
+                                      docs[index].data(),
+                                    );
+
+                                    AppNavigator.goToPage(
+                                      context: context,
+                                      screen: PrivateMessagingScreen(
+                                        chat: chat,
+                                        userId: userId.toString(),
                                       ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Column(
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade100,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage: NetworkImage(
+                                            user!.profileImage.toString(),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          flex: 3,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(user.fullName.toString()),
+                                              Text(_chats[index]
+                                                  .lastMessage
+                                                  .toString()),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                            child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
                                           children: [
-                                            Text(user['fullName'].toString()),
-                                            Text(docs[index]['lastMessage'] ??
-                                                ''),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                          child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          // Text(
-                                          //   DateTime.parse(chats[index]['lastMessage']
-                                          //               ['timestamp']
-                                          //           .toDate()
-                                          //           .toString())
-                                          //       .timeAgo,
-                                          //   style: TextStyle(
-                                          //     color: Colors.grey,
-                                          //   ),
-                                          // ),
-                                          const SizedBox(height: 10),
-                                          // timestamp
-                                          if (docs[index]['unread'] != null)
-                                            Badge(
-                                              label: Text(
-                                                docs[index]['unread']['$userId']
-                                                    .toString(),
+                                            // Text(
+                                            //   DateTime.parse(chats[index]['lastMessage']
+                                            //               ['timestamp']
+                                            //           .toDate()
+                                            //           .toString())
+                                            //       .timeAgo,
+                                            //   style: TextStyle(
+                                            //     color: Colors.grey,
+                                            //   ),
+                                            // ),
+                                            const SizedBox(height: 10),
+                                            // timestamp
+                                            if (_chats[index].unread != null)
+                                              Badge(
+                                                label: Text(
+                                                  docs[index]['unread']
+                                                          ['$userId']
+                                                      .toString(),
+                                                ),
+                                                backgroundColor:
+                                                    AppColors.primary,
+                                              ).visible(
+                                                docs[index]['unread']
+                                                            ['$userId'] !=
+                                                        0 ||
+                                                    docs[index]['unread'] !=
+                                                        null,
                                               ),
-                                              backgroundColor:
-                                                  AppColors.primary,
-                                            ).visible(
-                                              docs[index]['unread']
-                                                          ['$userId'] !=
-                                                      0 ||
-                                                  docs[index]['unread'] != null,
-                                            ),
-                                        ],
-                                      )),
-                                    ],
+                                          ],
+                                        )),
+                                      ],
+                                    ),
                                   ),
                                 );
                               },

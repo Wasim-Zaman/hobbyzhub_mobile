@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hobbyzhub/controllers/chat/chat_controller.dart';
@@ -9,6 +11,7 @@ part 'chat_events.dart';
 part 'chat_states.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
+  static ChatBloc get(context) => context.read<ChatBloc>();
   ChatBloc() : super(ChatInitialState()) {
     final List<MessageModel> messages = [];
     on<ChatSendMessageEvent>((event, emit) {
@@ -38,6 +41,32 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         }
       } catch (err) {
         emit(ChatCreatePrivateErrorState(message: err.toString()));
+      }
+    });
+
+    on<ChatSendNewMessageEvent>((event, emit) async {
+      try {
+        // emit(ChatSendNewMessageLoadingState());
+        var networkStatus = await isNetworkAvailable();
+        if (!networkStatus) {
+          emit(ChatSendNewMessageFailure(
+              errorMessage: "No internet connection"));
+        } else {
+          final response = await ChatController.sendMessage(
+            message: event.message,
+            createMetadataRequest: event.createMetadataRequest,
+            room: event.room,
+            media: event.media,
+            mediaType: event.mediaType,
+          );
+          if (response.data != null) {
+            emit(ChatSendNewMessageSuccessState());
+          } else {
+            emit(ChatSendNewMessageFailure(errorMessage: 'No chat found'));
+          }
+        }
+      } catch (err) {
+        emit(ChatSendNewMessageFailure(errorMessage: err.toString()));
       }
     });
 

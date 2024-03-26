@@ -259,6 +259,8 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
             AppDialogs.closeDialog(context);
             groupCreationSheet(context, group: state.group);
           } else if (state is GroupErrorState) {
+            toast(state.message);
+            print(state.message);
             AppDialogs.closeDialog(context);
           }
         },
@@ -466,11 +468,11 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
     var body = {
       "title": widget.groupName,
       "groupDescription": widget.groupDescription,
-      "participantRequests": <Map>[
+      "participantRequests": [
         {"userId": userId.toString()},
         ...members.map((e) => {"userId": e.userId.toString()}).toList(),
       ],
-      "adminIds": <Map>[
+      "adminIds": [
         {"userId": userId.toString()},
         ...admins.map((e) => {"userId": e.userId.toString()}).toList(),
       ],

@@ -76,7 +76,7 @@ class _GroupChatListScreenState extends State<GroupChatListScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "All Messages",
+                        "All Groups",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/models/group/group_model.dart';
+import 'package:hobbyzhub/models/chat/group_chat.dart';
+import 'package:hobbyzhub/models/message/message.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/utils/app_date.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
@@ -111,9 +112,9 @@ class MessageBubble extends StatelessWidget {
 }
 
 class GroupMessageBubble extends StatelessWidget {
-  final MessageModel message; // Replace with your actual Message class
+  final Message message; // Replace with your actual Message class
   final String myUserId;
-  final GroupModel group;
+  final GroupChat group;
 
   const GroupMessageBubble({
     super.key,
@@ -124,9 +125,8 @@ class GroupMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isMe = message.metadata?.fromUserId == myUserId;
-    var dateTime = AppDate.parseTimeStringToDateTime(
-        message.metadata!.dateTimeSent.toString());
+    bool isMe = message.metadata?.sender == myUserId;
+    DateTime dateTime = message.timeStamp!.toDate();
 
     return Container(
       margin: EdgeInsets.only(
@@ -145,8 +145,8 @@ class GroupMessageBubble extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child: ImageWidget(
-                imageUrl: group.chatParticipants!.firstWhere((element) {
-                      return element.userId == message.metadata!.fromUserId;
+                imageUrl: group.participants!.firstWhere((element) {
+                      return element.userId == message.metadata!.sender;
                     }).profileImage ??
                     "",
                 fit: BoxFit.cover,
@@ -189,9 +189,8 @@ class GroupMessageBubble extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        group.chatParticipants!.firstWhere((element) {
-                              return element.userId ==
-                                  message.metadata!.fromUserId;
+                        group.participants!.firstWhere((element) {
+                              return element.userId == message.metadata!.sender;
                             }).fullName ??
                             '',
                         style: const TextStyle(
@@ -203,7 +202,7 @@ class GroupMessageBubble extends StatelessWidget {
                       ).visible(!isMe),
                       10.height.visible(!isMe),
                       Text(
-                        message.messageString
+                        message.message
                             .toString(), // Replace with your actual text field
                         style: TextStyle(
                           color: isMe ? Colors.white : Colors.black,

@@ -5,16 +5,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hobbyzhub/blocs/group/group_bloc.dart';
+import 'package:hobbyzhub/blocs/chat/private/private_chat_cubit.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
-import 'package:hobbyzhub/models/group/group_model.dart';
+import 'package:hobbyzhub/models/chat/group_chat.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
-import 'package:hobbyzhub/views/group/group_messaging_screen.dart';
+import 'package:hobbyzhub/views/bottom_nav_bar/main_tabs_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
@@ -251,16 +251,15 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: BackAppbarWidget(),
-      body: BlocListener<GroupBloc, GroupState>(
+      body: BlocListener<ChatCubit, ChatState>(
         listener: (context, state) {
-          if (state is GroupLoadingState) {
+          if (state is ChatCreateGroupLoading) {
             AppDialogs.loadingDialog(context);
-          } else if (state is GroupCreateGroupState) {
+          } else if (state is ChatCreateGroupSuccess) {
             AppDialogs.closeDialog(context);
             groupCreationSheet(context, group: state.group);
-          } else if (state is GroupErrorState) {
+          } else if (state is ChatCreateGroupError) {
             toast(state.message);
-            print(state.message);
             AppDialogs.closeDialog(context);
           }
         },
@@ -478,11 +477,12 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
       ],
       "groupImage": widget.groupImage,
     };
-    context.read<GroupBloc>().add(GroupCreateEvent(body: body));
+    // context.read<GroupBloc>().add(GroupCreateEvent(body: body));
+    ChatCubit.get(context).createGroupChat(body);
   }
 }
 
-void groupCreationSheet(context, {required GroupModel group}) {
+void groupCreationSheet(context, {required GroupChat group}) {
   showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
@@ -495,7 +495,7 @@ void groupCreationSheet(context, {required GroupModel group}) {
               // ImageWidget(imageUrl: group.groupIcon.toString()),
               Image.asset(ImageAssets.groupCreationImage),
               Text(
-                group.groupName.toString(),
+                group.title.toString(),
                 style: TextStyle(
                   color: Color(0xFF394851),
                   fontSize: 24,
@@ -516,15 +516,14 @@ void groupCreationSheet(context, {required GroupModel group}) {
                 ),
               ),
               PrimaryButtonWidget(
-                  caption: "Continue",
-                  onPressed: () {
-                    AppNavigator.goToPage(
-                      context: context,
-                      screen: GroupMessagingScreen(
-                        group: group,
-                      ),
-                    );
-                  })
+                caption: "Continue",
+                onPressed: () {
+                  AppNavigator.goToPage(
+                    context: context,
+                    screen: MainTabScreen(index: 1),
+                  );
+                },
+              ),
             ],
           ),
         );

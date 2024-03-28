@@ -28,7 +28,6 @@ class _MainTabScreenState extends State<MainTabScreen> {
   @override
   void initState() {
     pageIndex = widget.index;
-
     super.initState();
   }
 

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,7 +8,7 @@ import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/controllers/group/group_controller.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/models/group/group_model.dart';
+import 'package:hobbyzhub/models/chat/group_chat.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
@@ -19,7 +20,7 @@ import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class GroupDescriptionScreen extends StatefulWidget {
-  final GroupModel group;
+  final GroupChat group;
   const GroupDescriptionScreen({super.key, required this.group});
 
   @override
@@ -39,7 +40,7 @@ class _GroupDescriptionScreenState extends State<GroupDescriptionScreen> {
 
   // Others
   String slug = '';
-  GroupModel? group;
+  GroupChat? group;
 
   // Lists
   List<User> searchedUsers = [];
@@ -155,7 +156,7 @@ class _GroupDescriptionScreenState extends State<GroupDescriptionScreen> {
                           itemBuilder: (context, index) {
                             return AddUserTile(
                               user: searchedUsers[index],
-                              chatId: widget.group.chatId!,
+                              chatId: widget.group.room!,
                             );
                           });
                     },
@@ -174,104 +175,121 @@ class _GroupDescriptionScreenState extends State<GroupDescriptionScreen> {
       body: BlocConsumer<GroupBloc, GroupState>(
         listener: (context, state) {
           if (state is GroupGetDetailsState) {
-            group = state.group;
+            // group = state.group;
           }
         },
         builder: (context, state) {
           return group == null
               ? const Center(child: LoadingWidget())
-              : Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Group Image Section
-                      Container(
-                        height: context.height() * 0.3,
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              alignment: Alignment.center,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: ImageWidget(
-                                  imageUrl: group!.groupIcon!,
-                                  fit: BoxFit.cover,
+              : StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('group-chats')
+                      .where('room', isEqualTo: widget.group.room.toString())
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    // I know that this snpshot will always be one
+                    // so take it and assign it to the group
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: LoadingWidget());
+                    }
+                    group = GroupChat.fromJson(snapshot.data?.docs.first.data()
+                        as Map<String, dynamic>);
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Group Image Section
+                          Container(
+                            height: context.height() * 0.3,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
                                   height: 100,
                                   width: 100,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: ImageWidget(
+                                      imageUrl: group?.groupImage ?? '',
+                                      fit: BoxFit.cover,
+                                      height: 100,
+                                      width: 100,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                16.height,
+                                Text(
+                                  group?.title ?? '',
+                                  style: AppTextStyle.headings,
+                                ),
+                                Text("Public Group",
+                                    style: AppTextStyle.normal),
+                              ],
                             ),
-                            16.height,
-                            Text(
-                              group!.groupName!,
-                              style: AppTextStyle.headings,
+                          ),
+                          // Group Details Section
+                          Text("Description", style: AppTextStyle.button),
+                          8.height,
+                          Text(group!.groupDescription!,
+                              style: AppTextStyle.normal),
+                          const Divider(),
+                          // Add member
+                          ListTile(
+                            onTap: () {
+                              _searchBottomSheet(context,
+                                  userType: UserType.member);
+                            },
+                            leading: const Icon(
+                              Icons.group_add_outlined,
+                              color: AppColors.primary,
                             ),
-                            Text("Public Group", style: AppTextStyle.normal),
-                          ],
-                        ),
+                            title:
+                                Text("Add Member", style: AppTextStyle.normal),
+                          ),
+                          // Members
+                          ListTile(
+                            onTap: () {
+                              AppNavigator.goToPage(
+                                context: context,
+                                screen: GroupMembersScreen(
+                                    members: group?.participants),
+                              );
+                            },
+                            leading: const Icon(
+                              Icons.group_outlined,
+                              color: AppColors.primary,
+                            ),
+                            title: Text("Members", style: AppTextStyle.normal),
+                            trailing: Text(
+                              "${group!.participants!.length}",
+                              style: AppTextStyle.button,
+                            ),
+                          ),
+                          // Administrations
+                          ListTile(
+                            leading: const Icon(
+                              Icons.admin_panel_settings_outlined,
+                              color: AppColors.primary,
+                            ),
+                            title: Text("Administrators",
+                                style: AppTextStyle.normal),
+                            trailing: Text(
+                              "${group!.adminIds!.length}",
+                              style: AppTextStyle.button,
+                            ),
+                          ),
+                        ],
                       ),
-                      // Group Details Section
-                      Text("Description", style: AppTextStyle.button),
-                      8.height,
-                      Text(group!.groupDescription!,
-                          style: AppTextStyle.normal),
-                      const Divider(),
-                      // Add member
-                      ListTile(
-                        onTap: () {
-                          _searchBottomSheet(context,
-                              userType: UserType.member);
-                        },
-                        leading: const Icon(
-                          Icons.group_add_outlined,
-                          color: AppColors.primary,
-                        ),
-                        title: Text("Add Member", style: AppTextStyle.normal),
-                      ),
-                      // Members
-                      ListTile(
-                        onTap: () {
-                          AppNavigator.goToPage(
-                            context: context,
-                            screen: GroupMembersScreen(
-                                members: group!.chatParticipants),
-                          );
-                        },
-                        leading: const Icon(
-                          Icons.group_outlined,
-                          color: AppColors.primary,
-                        ),
-                        title: Text("Members", style: AppTextStyle.normal),
-                        trailing: Text(
-                          "${group!.chatParticipants!.length}",
-                          style: AppTextStyle.button,
-                        ),
-                      ),
-                      // Administrations
-                      ListTile(
-                        leading: const Icon(
-                          Icons.admin_panel_settings_outlined,
-                          color: AppColors.primary,
-                        ),
-                        title:
-                            Text("Administrators", style: AppTextStyle.normal),
-                        trailing: Text(
-                          "${group!.chatAdmins!.length}",
-                          style: AppTextStyle.button,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                    );
+                  });
         },
       ),
     );

@@ -22,7 +22,7 @@ class GroupCreateMediaState extends GroupState {
 }
 
 class GroupCreateGroupState extends GroupState {
-  final GroupModel group;
+  final GroupChat group;
   GroupCreateGroupState({required this.group});
 }
 

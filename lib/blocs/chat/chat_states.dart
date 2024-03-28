@@ -1,75 +1,75 @@
 part of 'chat_bloc.dart';
 
-abstract class ChatState {}
+abstract class ChatStates {}
 
-class ChatInitialState extends ChatState {}
+class ChatInitialState extends ChatStates {}
 
-class ChatLoadingState extends ChatState {}
+class ChatLoadingState extends ChatStates {}
 
-class ChatCreatePrivateChatLoadingState extends ChatState {}
+class ChatCreatePrivateChatLoadingState extends ChatStates {}
 
-class ChatConnectedState extends ChatState {}
+class ChatConnectedState extends ChatStates {}
 
-class ChatDisconnectedState extends ChatState {}
+class ChatDisconnectedState extends ChatStates {}
 
-class ChatMessageReceivedState extends ChatState {
+class ChatMessageReceivedState extends ChatStates {
   final MessageModel message;
   ChatMessageReceivedState({required this.message});
 }
 
-class ChatMessageSentState extends ChatState {
+class ChatMessageSentState extends ChatStates {
   final MessageModel message;
   ChatMessageSentState({required this.message});
 }
 
-class ChatErrorState extends ChatState {
+class ChatErrorState extends ChatStates {
   final String message;
 
   ChatErrorState({required this.message});
 }
 
-class ChatCreatePrivateSuccessState extends ChatState {
+class ChatCreatePrivateSuccessState extends ChatStates {
   final ChatModel chat;
   ChatCreatePrivateSuccessState({required this.chat});
 }
 
-class ChatCreatePrivateErrorState extends ChatState {
+class ChatCreatePrivateErrorState extends ChatStates {
   final String message;
   ChatCreatePrivateErrorState({required this.message});
 }
 
-class ChatGetMessagesFromServerLoadingState extends ChatState {}
+class ChatGetMessagesFromServerLoadingState extends ChatStates {}
 
-class ChatGetLocalMessagesLoadingState extends ChatState {}
+class ChatGetLocalMessagesLoadingState extends ChatStates {}
 
-class ChatGetMessagesSuccessState extends ChatState {
+class ChatGetMessagesSuccessState extends ChatStates {
   final List<MessageModel> messages;
   ChatGetMessagesSuccessState({required this.messages});
 }
 
-class ChatGetLocalMessagesSuccessState extends ChatState {
+class ChatGetLocalMessagesSuccessState extends ChatStates {
   final List<MessageModel> messages;
   ChatGetLocalMessagesSuccessState({required this.messages});
 }
 
-class ChatMessagesEmptyState extends ChatState {}
+class ChatMessagesEmptyState extends ChatStates {}
 
-class ChatGetMessagesFailureState extends ChatState {
+class ChatGetMessagesFailureState extends ChatStates {
   final String errorMessage;
   ChatGetMessagesFailureState({required this.errorMessage});
 }
 
-class ChatGetSuccessState extends ChatState {
+class ChatGetSuccessState extends ChatStates {
   final List<ChatModel> chats;
 
   ChatGetSuccessState({required this.chats});
 }
 
 // success states
-class ChatSendNewMessageSuccessState extends ChatState {}
+class ChatSendNewMessageSuccessState extends ChatStates {}
 
 // failure states
-class ChatSendNewMessageFailure extends ChatState {
+class ChatSendNewMessageFailure extends ChatStates {
   final String errorMessage;
   ChatSendNewMessageFailure({required this.errorMessage});
 }

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/models/group/group_model.dart';
+import 'package:hobbyzhub/models/chat/group_chat.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class AppSheets {
-  static groupDetailsSheet(BuildContext context, {required GroupModel group}) {
+  static groupDetailsSheet(BuildContext context, {required GroupChat group}) {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.white,
@@ -28,7 +28,7 @@ class AppSheets {
                 padding: const EdgeInsets.all(10),
                 child: ClipOval(
                   child: ImageWidget(
-                    imageUrl: group.groupIcon!,
+                    imageUrl: group.groupImage ?? '',
                     height: 100,
                     width: 100,
                     fit: BoxFit.cover,
@@ -40,7 +40,7 @@ class AppSheets {
               ),
               // group name
               Text(
-                group.groupName!,
+                group.title.toString(),
                 style: AppTextStyle.subHeading,
               ),
               // group description
@@ -75,11 +75,10 @@ class AppSheets {
                                 width: 50,
                                 height: 50,
                                 fit: BoxFit.cover,
-                                imageUrl:
-                                    group.chatParticipants![i].profileImage!),
+                                imageUrl: group.participants![i].profileImage!),
                           ),
                         ),
-                        itemCount: group.chatParticipants?.length,
+                        itemCount: group.participantIds?.length,
                         scrollDirection: Axis.horizontal,
                       ),
                     ),
@@ -111,13 +110,19 @@ class AppSheets {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: ImageWidget(
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                                imageUrl: group.chatAdmins![i].profileImage!),
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                              imageUrl: group.participants
+                                      ?.where((element) => group.adminIds!
+                                          .contains(element.userId))
+                                      .toList()[i]
+                                      .profileImage ??
+                                  '',
+                            ),
                           ),
                         ),
-                        itemCount: group.chatAdmins?.length,
+                        itemCount: group.adminIds?.length,
                         scrollDirection: Axis.horizontal,
                       ),
                     ),

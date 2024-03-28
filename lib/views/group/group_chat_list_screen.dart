@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
-import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/chat/group_chat.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/group/create_group_screen.dart';
-import 'package:nb_utils/nb_utils.dart';
+import 'package:hobbyzhub/views/widgets/list_tile/group_chat_tile.dart';
 
 class GroupChatListScreen extends StatefulWidget {
   const GroupChatListScreen({super.key});
@@ -18,6 +18,7 @@ class GroupChatListScreen extends StatefulWidget {
 
 class _GroupChatListScreenState extends State<GroupChatListScreen> {
   String? userId;
+  List<GroupChat> groups = [];
 
   @override
   void initState() {
@@ -57,8 +58,8 @@ class _GroupChatListScreenState extends State<GroupChatListScreen> {
           : StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('group-chats')
-                  // .where('type', isEqualTo: 'GROUP')
-                  // .where('participantIds', arrayContains: userId.toString())
+                  .where('type', isEqualTo: 'GROUP')
+                  .where('participantIds', arrayContains: userId.toString())
                   // .orderBy('lastMessage.timestamp', descending: true)
                   .snapshots(),
               builder: (context,
@@ -68,7 +69,9 @@ class _GroupChatListScreenState extends State<GroupChatListScreen> {
                     child: CircularProgressIndicator(),
                   );
                 }
-                var docs = snapshot.data!.docs;
+                groups = snapshot.data!.docs
+                    .map((doc) => GroupChat.fromJson(doc.data()))
+                    .toList();
 
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -88,67 +91,9 @@ class _GroupChatListScreenState extends State<GroupChatListScreen> {
                           shrinkWrap: true,
                           itemCount: snapshot.data!.docs.length,
                           itemBuilder: (ctx, index) {
-                            return Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade100,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage: NetworkImage(
-                                      docs[index]['groupImage'],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    flex: 3,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(docs[index]['title'].toString()),
-                                        Text(docs[index]['lastMessage'] ?? ''),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                      child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      // Text(
-                                      //   DateTime.parse(chats[index]['lastMessage']
-                                      //               ['timestamp']
-                                      //           .toDate()
-                                      //           .toString())
-                                      //       .timeAgo,
-                                      //   style: TextStyle(
-                                      //     color: Colors.grey,
-                                      //   ),
-                                      // ),
-                                      const SizedBox(height: 10),
-                                      // timestamp
-                                      if (docs[index]['unread'] != null)
-                                        Badge(
-                                          label: Text(
-                                            docs[index]['unread']['$userId']
-                                                .toString(),
-                                          ),
-                                          backgroundColor: AppColors.primary,
-                                        ).visible(
-                                          docs[index]['unread']['$userId'] !=
-                                                  0 ||
-                                              docs[index]['unread'] != null,
-                                        ),
-                                    ],
-                                  )),
-                                ],
-                              ),
+                            return GroupChatTile(
+                              group: groups[index],
+                              userId: userId!,
                             );
                           },
                         ),

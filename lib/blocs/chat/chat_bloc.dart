@@ -10,7 +10,7 @@ import 'package:nb_utils/nb_utils.dart';
 part 'chat_events.dart';
 part 'chat_states.dart';
 
-class ChatBloc extends Bloc<ChatEvent, ChatState> {
+class ChatBloc extends Bloc<ChatEvent, ChatStates> {
   static ChatBloc get(context) => context.read<ChatBloc>();
   ChatBloc() : super(ChatInitialState()) {
     final List<MessageModel> messages = [];
@@ -52,18 +52,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           emit(ChatSendNewMessageFailure(
               errorMessage: "No internet connection"));
         } else {
-          final response = await ChatController.sendMessage(
+          await ChatController.sendMessage(
             message: event.message,
             createMetadataRequest: event.createMetadataRequest,
             room: event.room,
             media: event.media,
             mediaType: event.mediaType,
           );
-          if (response.data != null) {
-            emit(ChatSendNewMessageSuccessState());
-          } else {
-            emit(ChatSendNewMessageFailure(errorMessage: 'No chat found'));
-          }
+          emit(ChatSendNewMessageSuccessState());
         }
       } catch (err) {
         emit(ChatSendNewMessageFailure(errorMessage: err.toString()));

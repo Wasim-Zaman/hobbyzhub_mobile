@@ -28,7 +28,6 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   // Media
   File? media;
-  String mediaUrl = '';
 
   // Other
   final groupNameFocusNode = FocusNode();
@@ -40,7 +39,6 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     XFile? pickedImage = await picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
-        print('picked');
         media = File(pickedImage.path);
       });
     }
@@ -59,11 +57,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       backgroundColor: Colors.white,
       appBar: BackAppbarWidget(),
       body: BlocConsumer<GroupBloc, GroupState>(
-        listener: (context, state) {
-          if (state is GroupCreateMediaState) {
-            mediaUrl = state.mediaUrl;
-          }
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           return Padding(
             padding: EdgeInsets.all(12.w),
@@ -103,7 +97,10 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(28.r),
                             child: media != null
-                                ? Image.file(media!)
+                                ? Image.file(
+                                    media!,
+                                    fit: BoxFit.cover,
+                                  )
                                 : Image.asset(
                                     ImageAssets.createGroupImage,
                                     color: Colors.black,
@@ -152,25 +149,28 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                       labelText: "Description",
                       controller: description,
                       hintText: "Enter group description...."),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  PrimaryButtonWidget(
-                      caption: "Next",
-                      onPressed: () {
-                        AppNavigator.goToPage(
-                            context: context,
-                            screen: AddGroupMembers(
-                              groupName: groupName.text,
-                              groupDescription: description.text,
-                              groupImage: media,
-                            ));
-                      }),
+                  // SizedBox(
+                  //   height: 20.h,
+                  // ),
                 ],
               ),
             ),
           );
         },
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: PrimaryButtonWidget(
+            caption: "Next",
+            onPressed: () {
+              AppNavigator.goToPage(
+                  context: context,
+                  screen: AddGroupMembers(
+                    groupName: groupName.text,
+                    groupDescription: description.text,
+                    groupImage: media,
+                  ));
+            }),
       ),
     );
   }

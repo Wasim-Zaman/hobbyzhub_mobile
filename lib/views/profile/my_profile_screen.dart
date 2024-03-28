@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/group/group_bloc.dart';
@@ -7,15 +8,16 @@ import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/models/group/group_model.dart';
+import 'package:hobbyzhub/models/chat/group_chat.dart';
+import 'package:hobbyzhub/models/user/user_profile_model.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/app_sheets.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/profile/edit_profile/edit_profile_screen.dart';
 import 'package:hobbyzhub/views/profile/settings/settings_screen.dart';
 import 'package:hobbyzhub/views/profile/tab_userpost_screen.dart';
-import 'package:hobbyzhub/views/profile/third_person_profile_screen.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/groups_in_common_widget.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/images/network_image_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
@@ -33,12 +35,16 @@ class MyProfileScreen extends StatefulWidget {
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
   late ProfileCubit profileCubit;
+  String? userId;
+
+  UserProfileModel? profileInfo;
 
   // Lists
-  List<GroupModel> groups = [];
+  List<GroupChat> groups = [];
 
   initCubit() async {
-    final userId = await UserSecureStorage.fetchUserId();
+    userId = await UserSecureStorage.fetchUserId();
+    setState(() {});
 
     profileCubit = context.read<ProfileCubit>();
     profileCubit.getProfileInfo(userId);
@@ -76,7 +82,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       flexibleSpace: FlexibleSpaceBar(
                         background: Container(
                           padding: const EdgeInsets.all(16),
-                          child: BlocBuilder<ProfileCubit, ProfileState>(
+                          child: BlocConsumer<ProfileCubit, ProfileState>(
+                            listener: (context, state) {
+                              if (state is GetProfileLoaded) {
+                                profileInfo = state.userProfile.first;
+                              }
+                            },
                             builder: (context, state) {
                               if (state is GetProfileLoading) {
                                 return const LoadingWidget();
@@ -84,7 +95,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 return Column(
                                   children: [
                                     // profile image
-
                                     NetworkImageWidget(
                                       imageUrl: state.userProfile.first.data
                                               .profileImage ??
@@ -150,64 +160,86 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                       ],
                                     ),
                                     20.height,
-                                    BlocConsumer<GroupBloc, GroupState>(
-                                      listener: (context, state) {
-                                        if (state is GroupGetChatsState) {
-                                          groups = state.chats;
-                                        }
-                                      },
-                                      builder: (context, state) {
-                                        return SizedBox(
-                                          height: 60,
-                                          child: ListView.builder(
-                                            itemBuilder: (context, index) =>
-                                                Container(
-                                              margin: const EdgeInsets.only(
-                                                  right: 8),
-                                              width: 60,
-                                              height: 60,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  width: 1,
-                                                  color: AppColors.darkGrey,
+                                    StreamBuilder(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('group-chats')
+                                            .where('type', isEqualTo: 'GROUP')
+                                            .where(
+                                              'participantIds',
+                                              arrayContains: userId.toString(),
+                                            )
+                                            // .orderBy('lastMessage.timestamp', descending: true)
+                                            .limit(100)
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Center(
+                                              child: LoadingWidget(),
+                                            );
+                                          }
+
+                                          groups = snapshot.data!.docs
+                                              .map((doc) => GroupChat.fromJson(
+                                                  doc.data()))
+                                              .toList();
+                                          return SizedBox(
+                                            height: 60,
+                                            child: ListView.builder(
+                                              itemBuilder: (context, index) =>
+                                                  Container(
+                                                margin: const EdgeInsets.only(
+                                                    right: 8),
+                                                width: 60,
+                                                height: 60,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    width: 1,
+                                                    color: AppColors.darkGrey,
+                                                  ),
                                                 ),
-                                              ),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  // open modal bottom sheet for chat details
-                                                  AppSheets.groupDetailsSheet(
-                                                    context,
-                                                    group: groups[index],
-                                                  );
-                                                },
-                                                child: ClipOval(
-                                                  child: ImageWidget(
-                                                    imageUrl: groups[index]
-                                                        .groupIcon!,
-                                                    height: 60,
-                                                    width: 60,
-                                                    fit: BoxFit.cover,
-                                                    errorWidget: Image.asset(
-                                                      ImageAssets
-                                                          .createGroupImage,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    // open modal bottom sheet for chat details
+                                                    AppSheets.groupDetailsSheet(
+                                                      context,
+                                                      group: groups[index],
+                                                    );
+                                                  },
+                                                  child: ClipOval(
+                                                    child: ImageWidget(
+                                                      imageUrl: groups[index]
+                                                              .groupImage ??
+                                                          '',
+                                                      height: 60,
+                                                      width: 60,
+                                                      fit: BoxFit.cover,
+                                                      errorWidget: Image.asset(
+                                                        ImageAssets
+                                                            .createGroupImage,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
+                                              itemCount: groups.length,
+                                              scrollDirection: Axis.horizontal,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8),
                                             ),
-                                            itemCount: groups.length,
-                                            scrollDirection: Axis.horizontal,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8),
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                          );
+                                        }),
                                   ],
                                 );
                               } else {
-                                return const SizedBox();
+                                return Column(
+                                  children: [
+                                    20.height,
+                                    const Text("Something went wrong!"),
+                                  ],
+                                );
                               }
                             },
                           ),
@@ -225,16 +257,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                         tabs: [
                           Tab(text: "Posts"),
-                          Tab(text: "Groups in common"),
+                          Tab(text: "Groups"),
                         ],
                       ),
                     ),
                   ],
-                  body: const TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
+                  body: TabBarView(
+                    physics: const NeverScrollableScrollPhysics(),
                     children: [
-                      TabPostScreen(),
-                      GroupsInCommonScreen(),
+                      const TabPostScreen(),
+                      GroupsInCommonWidget(
+                        otherUserId: userId.toString(),
+                        myId: null,
+                      ),
                     ],
                   ),
                 ),

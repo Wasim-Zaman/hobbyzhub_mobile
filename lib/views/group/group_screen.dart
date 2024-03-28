@@ -13,7 +13,6 @@ import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/group/create_group_screen.dart';
-import 'package:hobbyzhub/views/group/group_messaging_screen.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/shimmer/private_chat_tile_shimmer.dart';
 import 'package:stomp_dart_client/stomp.dart';
@@ -117,9 +116,9 @@ class _GroupScreenState extends State<GroupScreen> {
       ),
       body: BlocConsumer<GroupBloc, GroupState>(
         listener: (context, state) {
-          if (state is GroupGetChatsState) {
-            groups = state.chats;
-          } else if (state is GroupErrorState) {}
+          // if (state is GroupGetChatsState) {
+          //   groups = state.chats;
+          // } else if (state is GroupErrorState) {}
         },
         builder: (context, state) {
           if (state is GroupLoadingState) {
@@ -185,10 +184,10 @@ class _GroupChatTileState extends State<GroupChatTile> {
     return ListTile(
       visualDensity: VisualDensity.standard,
       onTap: () {
-        AppNavigator.goToPage(
-          context: context,
-          screen: GroupMessagingScreen(group: widget.group),
-        );
+        // AppNavigator.goToPage(
+        //   context: context,
+        //   screen: GroupMessagingScreen(group: widget.group),
+        // );
       },
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(10.r),

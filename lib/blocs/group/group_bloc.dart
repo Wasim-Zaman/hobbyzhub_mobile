@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hobbyzhub/controllers/chat/chat_controller.dart';
 import 'package:hobbyzhub/controllers/group/group_controller.dart';
+import 'package:hobbyzhub/models/chat/group_chat.dart';
 import 'package:hobbyzhub/models/group/group_model.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:nb_utils/nb_utils.dart';

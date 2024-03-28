@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hobbyzhub/blocs/chat/chat_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hobbyzhub/blocs/chat/private/private_chat_cubit.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/chat/private_chat.dart';
+import 'package:hobbyzhub/models/message/message.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/chat_field.dart';
 
@@ -22,8 +24,10 @@ class PrivateMessagingScreen extends StatefulWidget {
 
 class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
   var messageController = TextEditingController();
-  final ChatBloc bloc = ChatBloc();
+  String message = '';
+
   late var otherUser;
+  List<Message> messages = [];
 
   @override
   void initState() {
@@ -38,12 +42,11 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
     File? media,
     required Map createMetadataRequest,
   }) {
-    bloc.add(ChatSendNewMessageEvent(
+    ChatCubit.get(context).sendMessage(
       message: message,
       room: room,
-      media: media,
       createMetadataRequest: createMetadataRequest,
-    ));
+    );
   }
 
   @override
@@ -86,6 +89,14 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
           if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }
+
+          // convert the snapshots to the model
+          messages = snapshot.data!.docs
+              .map(
+                  (doc) => Message.fromJson(doc.data() as Map<String, dynamic>))
+              .toList()
+            ..reversed;
+
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -93,13 +104,10 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
                 Expanded(
                   child: ListView.builder(
                     reverse: true,
-                    itemCount: snapshot.data!.docs.length,
+                    itemCount: messages.length,
                     itemBuilder: (context, index) {
-                      DocumentSnapshot document = snapshot.data!.docs[index];
-                      Map<String, dynamic> data =
-                          document.data() as Map<String, dynamic>;
                       return MessageBubble(
-                        message: data,
+                        message: messages[index],
                         myUserId: widget.userId,
                       );
                     },
@@ -111,25 +119,33 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
                       child: ChatField(
                         controller: messageController,
                         hintText: 'Write your message',
-                        suffixIcon: IconButton(
-                          onPressed: () async {
-                            String? myId =
-                                await UserSecureStorage.fetchUserId();
-                            String otherId = widget.chat.participantIds!
-                                .firstWhere((element) =>
-                                    element.toString() != myId.toString());
-                            sendMessage(
-                              message: messageController.text,
-                              room: widget.chat.room.toString(),
-                              createMetadataRequest: {
-                                "room": widget.chat.room.toString(),
-                                "receiver": otherId,
-                                "sender": "$myId",
-                              },
-                            );
+                        suffixIcon: BlocListener<ChatCubit, ChatState>(
+                          listener: (context, state) {
+                            if (state is ChatSendMessageLoading) {
+                              message = messageController.text;
+                              messageController.clear();
+                            } else if (state is ChatSendMessageSuccess) {
+                              messageController.clear();
+                            } else {
+                              messageController.text = message;
+                            }
                           },
-                          icon: const Icon(Icons.send),
-                          color: AppColors.primary,
+                          child: IconButton(
+                            onPressed: () async {
+                              String? myId =
+                                  await UserSecureStorage.fetchUserId();
+                              sendMessage(
+                                message: messageController.text,
+                                room: widget.chat.room.toString(),
+                                createMetadataRequest: {
+                                  "room": widget.chat.room.toString(),
+                                  "sender": myId
+                                },
+                              );
+                            },
+                            icon: const Icon(Icons.send),
+                            color: AppColors.primary,
+                          ),
                         ),
                       ),
                     ),
@@ -145,7 +161,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
 }
 
 class MessageBubble extends StatelessWidget {
-  final Map<String, dynamic> message;
+  final Message message;
   final String myUserId;
 
   const MessageBubble({
@@ -156,8 +172,8 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isMe = message['metaData']['sender'] == myUserId;
-    Timestamp timestamp = message['timestamp'];
+    bool isMe = message.metadata?.sender.toString() == myUserId;
+    Timestamp timestamp = message.timeStamp as Timestamp;
     DateTime dateTime = timestamp.toDate();
 
     return Container(
@@ -205,7 +221,7 @@ class MessageBubble extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    message['message']
+                    message.message
                         .toString(), // Adjust according to your message structure
                     style: TextStyle(
                       color: isMe ? Colors.white : Colors.black,

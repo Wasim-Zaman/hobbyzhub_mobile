@@ -52,6 +52,6 @@ class BlocProviders {
     BlocProvider<DeleteFcmTokenCubit>(
         create: (context) => DeleteFcmTokenCubit()),
     BlocProvider<GroupBloc>(create: (context) => GroupBloc()),
-    BlocProvider<PrivateChatCubit>(create: (context) => PrivateChatCubit()),
+    BlocProvider<ChatCubit>(create: (context) => ChatCubit()),
   ];
 }

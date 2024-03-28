@@ -111,6 +111,7 @@ class FAndFController {
   static Future<Map<String, dynamic>> getCount({String? uid}) async {
     final url = FollowersUrl.getCount;
     final userId = uid ?? await UserSecureStorage.fetchUserId();
+    print("UID $userId");
     final token = await UserSecureStorage.fetchToken();
     var body = {"userID": userId};
     var headers = {

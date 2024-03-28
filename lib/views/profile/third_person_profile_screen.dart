@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
@@ -8,11 +9,13 @@ import 'package:hobbyzhub/blocs/user_profile/profile_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
-import 'package:hobbyzhub/models/group/group_model.dart';
+import 'package:hobbyzhub/models/chat/group_chat.dart';
 import 'package:hobbyzhub/utils/app_sheets.dart';
+import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/profile/tab_thirdPersonPost_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/buttons/primary_button.dart';
+import 'package:hobbyzhub/views/widgets/groups_in_common_widget.dart';
 import 'package:hobbyzhub/views/widgets/images/image_widget.dart';
 import 'package:hobbyzhub/views/widgets/images/network_image_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
@@ -34,14 +37,21 @@ class ThirdPersonProfileScreen extends StatefulWidget {
 
 class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
   late ProfileCubit profileCubit;
+  String? myId;
 
   // Lists
-  List<GroupModel> groups = [];
+  List<GroupChat> groups = [];
 
   @override
   void initState() {
-    getProfileInfo();
-    getGroupChats();
+    UserSecureStorage.fetchUserId().then((id) {
+      setState(() {
+        myId = id;
+        getProfileInfo();
+        getGroupChats();
+      });
+    });
+
     super.initState();
   }
 
@@ -98,60 +108,79 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
                             // Posts, following and followers in one row
 
                             FollowFollowingButton(
-                              otherUserId: widget.userId,
+                              otherUserId: state.userProfile.first.data.userId
+                                  .toString(),
                             ),
 
                             20.height,
-                            BlocConsumer<GroupBloc, GroupState>(
-                              listener: (context, state) {
-                                if (state is GroupGetChatsState) {
-                                  groups = state.chats;
-                                }
-                              },
-                              builder: (context, state) {
-                                return SizedBox(
-                                  height: 60,
-                                  child: ListView.builder(
-                                    itemBuilder: (context, index) => Container(
-                                      margin: const EdgeInsets.only(right: 8),
-                                      width: 60,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          width: 1,
-                                          color: AppColors.darkGrey,
+                            StreamBuilder(
+                                stream: FirebaseFirestore.instance
+                                    .collection('group-chats')
+                                    .where('type', isEqualTo: 'GROUP')
+                                    .where(
+                                      'participantIds',
+                                      arrayContains: widget.userId.toString(),
+                                    )
+                                    // .orderBy('lastMessage.timestamp', descending: true)
+                                    .limit(100)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                      child: LoadingWidget(),
+                                    );
+                                  }
+
+                                  groups = snapshot.data!.docs
+                                      .map((doc) =>
+                                          GroupChat.fromJson(doc.data()))
+                                      .toList();
+                                  return SizedBox(
+                                    height: 60,
+                                    child: ListView.builder(
+                                      itemBuilder: (context, index) =>
+                                          Container(
+                                        margin: const EdgeInsets.only(right: 8),
+                                        width: 60,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            width: 1,
+                                            color: AppColors.darkGrey,
+                                          ),
                                         ),
-                                      ),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          // open modal bottom sheet for chat details
-                                          AppSheets.groupDetailsSheet(
-                                            context,
-                                            group: groups[index],
-                                          );
-                                        },
-                                        child: ClipOval(
-                                          child: ImageWidget(
-                                            imageUrl: groups[index].groupIcon!,
-                                            height: 60,
-                                            width: 60,
-                                            fit: BoxFit.cover,
-                                            errorWidget: Image.asset(
-                                              ImageAssets.createGroupImage,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            // open modal bottom sheet for chat details
+                                            AppSheets.groupDetailsSheet(
+                                              context,
+                                              group: groups[index],
+                                            );
+                                          },
+                                          child: ClipOval(
+                                            child: ImageWidget(
+                                              imageUrl:
+                                                  groups[index].groupImage ??
+                                                      '',
+                                              height: 60,
+                                              width: 60,
+                                              fit: BoxFit.cover,
+                                              errorWidget: Image.asset(
+                                                ImageAssets.createGroupImage,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
+                                      itemCount: groups.length,
+                                      scrollDirection: Axis.horizontal,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
                                     ),
-                                    itemCount: groups.length,
-                                    scrollDirection: Axis.horizontal,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8),
-                                  ),
-                                );
-                              },
-                            ),
+                                  );
+                                }),
                           ],
                         );
                       } else {
@@ -182,7 +211,10 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
               TabThirdPersonPostScreen(
                 userId: widget.userId,
               ),
-              const GroupsInCommonScreen(),
+              GroupsInCommonWidget(
+                otherUserId: widget.userId,
+                myId: myId.toString(),
+              ),
             ],
           ),
         ),
@@ -205,6 +237,7 @@ class _FollowFollowingButtonState extends State<FollowFollowingButton> {
 
   @override
   void initState() {
+    print(widget.otherUserId);
     checkFollowing();
     super.initState();
   }
@@ -306,21 +339,6 @@ class _FollowFollowingButtonState extends State<FollowFollowingButton> {
           ],
         );
       },
-    );
-  }
-}
-
-class GroupsInCommonScreen extends StatelessWidget {
-  const GroupsInCommonScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        Center(
-          child: Text("Hello"),
-        ),
-      ],
     );
   }
 }

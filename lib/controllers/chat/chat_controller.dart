@@ -6,6 +6,7 @@ import 'package:hobbyzhub/constants/api_manager.dart';
 import 'package:hobbyzhub/constants/app_url.dart';
 import 'package:hobbyzhub/models/api_response.dart';
 import 'package:hobbyzhub/models/chat/chat_model.dart';
+import 'package:hobbyzhub/models/chat/group_chat.dart';
 import 'package:hobbyzhub/models/chat/private_chat.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
@@ -87,10 +88,12 @@ abstract class ChatController {
 
     final response = await request.send();
     final responseString = await response.stream.bytesToString();
+    log(responseString);
     final responseJson = jsonDecode(responseString);
+
     return ApiResponse.fromJson(
       responseJson,
-      (data) => null /*PrivateChat.fromJson(responseJson['data']) */,
+      (data) => GroupChat.fromJson(responseJson['data']),
     );
   }
 
@@ -102,20 +105,23 @@ abstract class ChatController {
     required Map createMetadataRequest,
   }) async {
     final url =
-        "${ChatUrl.createGroupChat}?mediaType=$mediaType&message=$message&room=$room";
-
-    print(message);
-    print(room);
-    print(mediaType);
-    print(createMetadataRequest);
+        "${ChatUrl.sendMessage}?mediaType=$mediaType&message=$message&room=$room";
 
     final token = await UserSecureStorage.fetchToken();
 
     final request = http.MultipartRequest('POST', Uri.parse(url));
-    request.headers.addAll({
-      "Authorization": "Bearer $token",
-      "Content-Type": "multipart/form-data",
-    });
+
+    if (media != null) {
+      request.headers.addAll({
+        "Authorization": "Bearer $token",
+        "Content-Type": "multipart/form-data",
+      });
+    } else {
+      request.headers.addAll({
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      });
+    }
 
     if (media != null) {
       request.files.add(await http.MultipartFile.fromPath(
@@ -139,7 +145,7 @@ abstract class ChatController {
     final responseJson = jsonDecode(responseString);
     return ApiResponse.fromJson(
       responseJson,
-      (data) => null /*PrivateChat.fromJson(responseJson['data']) */,
+      (data) => MessageModel.fromJson(responseJson['data']),
     );
   }
 

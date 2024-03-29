@@ -3,45 +3,46 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class GroupChat {
   String? room;
   String? groupImage;
-  Map? lastMessage;
+  dynamic? lastMessage;
   List<String>? participantIds;
   List<Participants>? participants;
   Timestamp? timeStamp;
   String? title;
   String? type;
   List<String>? adminIds;
-  Map? unread;
+  dynamic? unread;
   String? groupDescription;
 
-  GroupChat({
-    this.room,
-    this.groupImage,
-    this.lastMessage,
-    this.participantIds,
-    this.participants,
-    this.timeStamp,
-    this.title,
-    this.type,
-    this.adminIds,
-    this.unread,
-    this.groupDescription,
-  });
+  GroupChat(
+      {this.room,
+      this.groupImage,
+      this.lastMessage,
+      this.participantIds,
+      this.participants,
+      this.timeStamp,
+      this.title,
+      this.type,
+      this.adminIds,
+      this.unread,
+      this.groupDescription});
 
   GroupChat.fromJson(Map<String, dynamic> json) {
-    room = json['room'];
-    groupImage = json['groupImage'];
+    room = json['room'] as String?;
+    groupImage = json['groupImage'] as String?;
     lastMessage = json['lastMessage'];
-    participantIds = json['participantIds'].cast<String>();
+    participantIds = (json['participantIds'] as List?)?.cast<String>();
     if (json['participants'] != null) {
-      participants = <Participants>[];
-      json['participants'].forEach((v) {});
+      participants = (json['participants'] as List)
+          .map((v) => Participants.fromJson(v as Map<String, dynamic>))
+          .toList();
     }
-    timeStamp = json['timeStamp'];
-    title = json['title'];
-    type = json['type'];
-    adminIds = json['adminIds'].cast<String>();
+    timeStamp =
+        json['timeStamp'] is Timestamp ? json['timeStamp'] as Timestamp : null;
+    title = json['title'] as String?;
+    type = json['type'] as String?;
+    adminIds = (json['adminIds'] as List?)?.cast<String>();
     unread = json['unread'];
-    groupDescription = json['groupDescription'];
+    groupDescription = json['groupDescription'] as String?;
   }
 
   Map<String, dynamic> toJson() {

@@ -46,7 +46,7 @@ class _UserAllCountWidgetState extends State<UserAllCountWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: FAndFController.getCount(uid: widget.userId.toString()),
+      future: FAndFController.getCount(uid: widget.userId),
       builder: (context, snapshot) {
         String posts = '0';
         String followings = '0';

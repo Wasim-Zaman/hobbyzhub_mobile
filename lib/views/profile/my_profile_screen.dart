@@ -112,7 +112,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                     ),
                                     20.height,
                                     // Posts, following and followers in one row
-                                    const UserAllCountWidget(),
+                                    const UserAllCountWidget(
+                                      isThirdPerson: null,
+                                      userId: null,
+                                    ),
                                     20.height,
                                     Row(
                                       mainAxisAlignment:

@@ -30,30 +30,28 @@ class ChatCubit extends Cubit<ChatState> {
 
   void createGroupChat(Map<dynamic, dynamic> body) async {
     emit(ChatCreatePrivateLoading());
-    try {
-      // check internet connection
-      if (await isNetworkAvailable()) {
-        File? groupImage = body['groupImage'];
-        String title = body['title'];
-        String groupDescription = body['groupDescription'];
-        List<Map<String, dynamic>> adminIds = body['adminIds'];
-        List<Map<String, dynamic>> participantRequests =
-            body['participantRequests'];
 
-        final response = await ChatController.createGroupChat(
-          groupImage: groupImage,
-          adminIds: adminIds,
-          participantIds: participantRequests,
-          title: title,
-          description: groupDescription,
-        );
+    // check internet connection
+    var networkStatus = await isNetworkAvailable();
+    if (networkStatus) {
+      File? groupImage = body['groupImage'];
+      String title = body['title'];
+      String groupDescription = body['groupDescription'];
+      List<Map<String, dynamic>> adminIds = body['adminIds'];
+      List<Map<String, dynamic>> participantRequests =
+          body['participantRequests'];
 
-        emit(ChatCreateGroupSuccess(group: response.data));
-      } else {
-        emit(ChatCreateGroupError(message: 'No internet connection'));
-      }
-    } catch (err) {
-      emit(ChatCreatePrivateError(message: err.toString()));
+      final response = await ChatController.createGroupChat(
+        groupImage: groupImage,
+        adminIds: adminIds,
+        participantIds: participantRequests,
+        title: title,
+        description: groupDescription,
+      );
+
+      emit(ChatCreateGroupSuccess(group: response.data));
+    } else {
+      emit(ChatCreateGroupError(message: 'No internet connection'));
     }
   }
 
@@ -65,18 +63,22 @@ class ChatCubit extends Cubit<ChatState> {
     required Map createMetadataRequest,
   }) async {
     emit(ChatSendMessageLoading());
-    var networkStatus = await isNetworkAvailable();
-    if (!networkStatus) {
+    try {
+      var networkStatus = await isNetworkAvailable();
+      if (!networkStatus) {
+        emit(ChatSendMessageError());
+      } else {
+        await ChatController.sendMessage(
+          message: message,
+          createMetadataRequest: createMetadataRequest,
+          room: room,
+          media: media,
+          mediaType: mediaType,
+        );
+        emit(ChatSendMessageSuccess());
+      }
+    } catch (err) {
       emit(ChatSendMessageError());
-    } else {
-      await ChatController.sendMessage(
-        message: message,
-        createMetadataRequest: createMetadataRequest,
-        room: room,
-        media: media,
-        mediaType: mediaType,
-      );
-      emit(ChatSendMessageSuccess());
     }
   }
 }

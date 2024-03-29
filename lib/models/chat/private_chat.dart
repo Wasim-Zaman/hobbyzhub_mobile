@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hobbyzhub/models/message/message.dart';
+
 class PrivateChat {
   String? room;
-  Map? lastMessage;
+  Message? lastMessage;
   List<String>? participantIds;
   List<Participants>? participants;
   Map? unread;
-  String? timeStamp;
+  Timestamp? timeStamp;
   String? type;
 
   PrivateChat(
@@ -18,7 +21,9 @@ class PrivateChat {
 
   PrivateChat.fromJson(Map<String, dynamic> json) {
     room = json['room'];
-    lastMessage = json['lastMessage'];
+    lastMessage = json['lastMessage'] == null
+        ? Message()
+        : Message.fromJson(json['lastMessage']);
     participantIds = json['participantIds'].cast<String>();
     if (json['participants'] != null) {
       participants = <Participants>[];
@@ -27,7 +32,8 @@ class PrivateChat {
       });
     }
     unread = json['unread'];
-    // timeStamp = json['timeStamp'];
+    timeStamp =
+        json['timeStamp'] is Timestamp ? json['timeStamp'] as Timestamp : null;
     type = json['type'];
   }
 

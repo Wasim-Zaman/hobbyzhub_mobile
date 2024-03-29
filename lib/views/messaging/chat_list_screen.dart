@@ -10,7 +10,6 @@ import 'package:hobbyzhub/blocs/chat/private/private_chat_cubit.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
-import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/chat/private_chat.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
@@ -284,7 +283,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('private-chats')
-                    .where('type', isEqualTo: 'PRIVATE')
+                    // .where('type', isEqualTo: 'PRIVATE')
                     .where('participantIds', arrayContains: userId.toString())
                     // .orderBy('lastMessage.timestamp', descending: true)
                     .snapshots(),
@@ -297,7 +296,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     );
                   }
                   var docs = snapshot.data!.docs;
-                  var _chats = snapshot.data!.docs
+
+                  chats = snapshot.data!.docs
                       .map((doc) => PrivateChat.fromJson(doc.data()))
                       .toList();
 
@@ -317,23 +317,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         Expanded(
                           child: ListView.builder(
                             shrinkWrap: true,
-                            itemCount: _chats.length,
+                            itemCount: chats.length,
                             itemBuilder: (ctx, index) {
-                              var record = _chats[index].participants;
+                              var record = chats[index].participants;
                               var user = record?.firstWhere(
                                   (element) => element.userId != userId,
                                   orElse: () => Participants());
                               return GestureDetector(
                                 onTap: () {
-                                  // convert the snapshot into a private chat model
-                                  var chat = PrivateChat.fromJson(
-                                    docs[index].data(),
-                                  );
-
                                   AppNavigator.goToPage(
                                     context: context,
                                     screen: PrivateMessagingScreen(
-                                      chat: chat,
+                                      chat: chats[index],
                                       userId: userId.toString(),
                                     ),
                                   );
@@ -362,9 +357,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(user.fullName.toString()),
-                                            Text(_chats[index]
-                                                .lastMessage
-                                                .toString()),
+                                            if (chats[index].lastMessage !=
+                                                null)
+                                              Text(
+                                                chats[index]
+                                                    .lastMessage!
+                                                    .message
+                                                    .toString(),
+                                              ),
                                           ],
                                         ),
                                       ),
@@ -387,20 +387,20 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                           // ),
                                           const SizedBox(height: 10),
                                           // timestamp
-                                          if (_chats[index].unread != null)
-                                            Badge(
-                                              label: Text(
-                                                docs[index]['unread']['$userId']
-                                                    .toString(),
-                                              ),
-                                              backgroundColor:
-                                                  AppColors.primary,
-                                            ).visible(
-                                              docs[index]['unread']
-                                                          ['$userId'] !=
-                                                      0 ||
-                                                  docs[index]['unread'] != null,
-                                            ),
+                                          // if (chats[index].unread != null)
+                                          //   Badge(
+                                          //     label: Text(
+                                          //       docs[index]['unread']['$userId']
+                                          //           .toString(),
+                                          //     ),
+                                          //     backgroundColor:
+                                          //         AppColors.primary,
+                                          //   ).visible(
+                                          //     docs[index]['unread']
+                                          //                 ['$userId'] !=
+                                          //             0 ||
+                                          //         docs[index]['unread'] != null,
+                                          //   ),
                                         ],
                                       )),
                                     ],

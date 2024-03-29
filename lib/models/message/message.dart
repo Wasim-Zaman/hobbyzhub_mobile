@@ -31,7 +31,8 @@ class Message {
     metadata =
         json['metadata'] != null ? Metadata.fromJson(json['metadata']) : null;
     room = json['room'];
-    timeStamp = json['timeStamp'];
+    timeStamp =
+        json['timeStamp'] is Timestamp ? json['timeStamp'] as Timestamp : null;
     unread = json['unread'];
     messageCounter = json['messageCounter'];
   }

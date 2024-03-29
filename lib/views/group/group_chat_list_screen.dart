@@ -70,7 +70,7 @@ class _GroupChatListScreenState extends State<GroupChatListScreen> {
                   );
                 }
                 groups = snapshot.data!.docs
-                    .map((doc) => GroupChat.fromJson(doc.data()))
+                    .map((e) => GroupChat.fromJson(e.data()))
                     .toList();
 
                 return Padding(
@@ -89,7 +89,7 @@ class _GroupChatListScreenState extends State<GroupChatListScreen> {
                       Expanded(
                         child: ListView.builder(
                           shrinkWrap: true,
-                          itemCount: snapshot.data!.docs.length,
+                          itemCount: groups.length,
                           itemBuilder: (ctx, index) {
                             return GroupChatTile(
                               group: groups[index],

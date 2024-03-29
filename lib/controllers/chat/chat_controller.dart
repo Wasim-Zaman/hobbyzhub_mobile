@@ -28,14 +28,12 @@ abstract class ChatController {
     };
 
     final response = await ApiManager.postRequest(body, url, headers: headers);
-    log(response.body);
+    log(response.statusCode.toString());
     final responseBody = jsonDecode(response.body);
     if (responseBody['success'] == true) {
       return ApiResponse.fromJson(
         responseBody,
-        (data) => PrivateChat.fromJson(
-          responseBody['data'],
-        ),
+        (data) => PrivateChat.fromJson(responseBody['data']),
       );
     } else {
       throw Exception(responseBody['message']);
@@ -88,7 +86,7 @@ abstract class ChatController {
 
     final response = await request.send();
     final responseString = await response.stream.bytesToString();
-    log(responseString);
+
     final responseJson = jsonDecode(responseString);
 
     return ApiResponse.fromJson(

@@ -518,7 +518,9 @@ void groupCreationSheet(context, {required GroupChat group}) {
               PrimaryButtonWidget(
                 caption: "Continue",
                 onPressed: () {
-                  AppNavigator.goToPage(
+                  // close the sheet
+                  Navigator.pop(context);
+                  AppNavigator.goToPageWithReplacement(
                     context: context,
                     screen: MainTabScreen(index: 1),
                   );

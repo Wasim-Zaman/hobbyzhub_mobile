@@ -94,7 +94,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatStates> {
       try {
         final response = await ChatController.getServerMessages(
           event.chatId,
-          page: event.page,
+          from: event.page,
           size: event.size,
         );
         var network = await isNetworkAvailable();

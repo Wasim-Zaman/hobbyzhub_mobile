@@ -82,3 +82,20 @@ class Metadata {
     return data;
   }
 }
+
+// give me a list of 100 messages
+List<Message> getDummyMessages() {
+  List<Message> messages = [];
+  for (int i = 0; i < 100; i++) {
+    messages.add(Message(
+        messageId: 'message-$i',
+        message: 'This is message number $i',
+        metadata: Metadata(
+            metadataId: 'metadata-$i',
+            sender: 'sender-$i',
+            receiver: 'receiver-$i',
+            room: 'room-$i',
+            timeStamp: Timestamp.now())));
+  }
+  return messages;
+}

@@ -13,6 +13,8 @@ final class ChatCreateGroupLoading extends ChatState {}
 
 final class ChatSendMessageLoading extends ChatState {}
 
+final class ChatGetMessagesLoading extends ChatState {}
+
 // Failure states
 final class ChatCreatePrivateError extends ChatState {
   final String message;
@@ -25,7 +27,17 @@ final class ChatCreateGroupError extends ChatState {
   ChatCreateGroupError({required this.message});
 }
 
-final class ChatSendMessageError extends ChatState {}
+final class ChatSendMessageError extends ChatState {
+  final String message;
+
+  ChatSendMessageError({required this.message});
+}
+
+final class ChatGetMessagesError extends ChatState {
+  final String message;
+
+  ChatGetMessagesError({required this.message});
+}
 
 // Success states
 final class ChatCreatePrivateSuccess extends ChatState {
@@ -40,3 +52,9 @@ final class ChatCreateGroupSuccess extends ChatState {
 }
 
 final class ChatSendMessageSuccess extends ChatState {}
+
+final class ChatGetMessagesSuccess extends ChatState {
+  final List<Message> messages;
+
+  ChatGetMessagesSuccess({required this.messages});
+}

@@ -9,6 +9,7 @@ import 'package:hobbyzhub/models/chat/chat_model.dart';
 import 'package:hobbyzhub/models/chat/group_chat.dart';
 import 'package:hobbyzhub/models/chat/private_chat.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
+import 'package:hobbyzhub/utils/app_exceptions.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -36,7 +37,7 @@ abstract class ChatController {
         (data) => PrivateChat.fromJson(responseBody['data']),
       );
     } else {
-      throw Exception(responseBody['message']);
+      throw ErrorException(responseBody['message']);
     }
   }
 
@@ -141,10 +142,14 @@ abstract class ChatController {
     final responseString = await response.stream.bytesToString();
     print(responseString);
     final responseJson = jsonDecode(responseString);
-    return ApiResponse.fromJson(
-      responseJson,
-      (data) => MessageModel.fromJson(responseJson['data']),
-    );
+    if (responseJson['success'] == true) {
+      return ApiResponse.fromJson(
+        responseJson,
+        (data) => MessageModel.fromJson(responseJson['data']),
+      );
+    } else {
+      throw ErrorException(responseJson['message']);
+    }
   }
 
   static Future<ApiResponse> getAllChats({int page = 0, int size = 20}) async {
@@ -165,15 +170,16 @@ abstract class ChatController {
       });
       return ApiResponse.fromJson(responseBody, (p0) => chatModels);
     } else {
-      throw Exception(responseBody['message']);
+      throw ErrorException(responseBody['message']);
     }
   }
 
-  static Future<ApiResponse> getServerMessages(String chatId,
-      {int page = 0, int size = 100}) async {
+  static Future<ApiResponse> getServerMessages(String room,
+      {required int from, int size = 100}) async {
     final url = ChatUrl.getServerMessages;
     final token = await UserSecureStorage.fetchToken();
-    final body = {"chatId": chatId, "page": page, "size": size};
+
+    final body = {"room": room, "from": from, "size": size};
     final headers = <String, String>{
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -187,7 +193,7 @@ abstract class ChatController {
       });
       return ApiResponse.fromJson(responseBody, (p0) => messages);
     } else {
-      throw Exception(responseBody['message']);
+      throw ErrorException(responseBody['message']);
     }
   }
 }

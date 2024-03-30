@@ -266,8 +266,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 if (state is ChatCreatePrivateLoading) {
                   AppDialogs.loadingDialog(context);
                 } else if (state is ChatCreatePrivateSuccess) {
+                  // close loading
                   AppDialogs.closeDialog(context);
-
+                  // close bottom sheet
+                  Navigator.pop(context);
                   AppNavigator.goToPage(
                       context: context,
                       screen: PrivateMessagingScreen(
@@ -283,9 +285,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('private-chats')
-                    // .where('type', isEqualTo: 'PRIVATE')
                     .where('participantIds', arrayContains: userId.toString())
-                    // .orderBy('lastMessage.timestamp', descending: true)
+                    .orderBy('lastMessage.timestamp', descending: true)
                     .snapshots(),
                 builder: (context,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -295,11 +296,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  var docs = snapshot.data!.docs;
-
-                  chats = snapshot.data!.docs
-                      .map((doc) => PrivateChat.fromJson(doc.data()))
-                      .toList();
+                  // var docs = snapshot.data!.docs;
+                  if (snapshot.hasData) {
+                    chats = snapshot.data!.docs
+                        .map((doc) => PrivateChat.fromJson(doc.data()))
+                        .toList();
+                  }
 
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -375,16 +377,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
-                                          // Text(
-                                          //   DateTime.parse(chats[index]['lastMessage']
-                                          //               ['timestamp']
-                                          //           .toDate()
-                                          //           .toString())
-                                          //       .timeAgo,
-                                          //   style: TextStyle(
-                                          //     color: Colors.grey,
-                                          //   ),
-                                          // ),
+                                          Text(
+                                            DateTime.parse(chats[index]
+                                                    .lastMessage!
+                                                    .timeStamp!
+                                                    .toDate()
+                                                    .toString())
+                                                .timeAgo,
+                                            style: const TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ).visible(
+                                              chats[index].lastMessage != null),
                                           const SizedBox(height: 10),
                                           // timestamp
                                           // if (chats[index].unread != null)

@@ -1,5 +1,5 @@
-class ServerException implements Exception {
+class ErrorException implements Exception {
   final String message;
 
-  ServerException({this.message = "Server error, please try again later."});
+  ErrorException(this.message);
 }

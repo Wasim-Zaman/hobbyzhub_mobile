@@ -4,11 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hobbyzhub/blocs/chat/private/private_chat_cubit.dart';
+import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/chat/private_chat.dart';
 import 'package:hobbyzhub/models/message/message.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/widgets/loading/paginated_loading.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/chat_field.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class PrivateMessagingScreen extends StatefulWidget {
   final PrivateChat chat;
@@ -23,17 +26,34 @@ class PrivateMessagingScreen extends StatefulWidget {
 }
 
 class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
+  // * Controllers
   var messageController = TextEditingController();
-  String message = '';
+  var scrollController = ScrollController();
 
+  // * Lists
+  List<Message> messages = getDummyMessages();
+
+  // * Others
+  String message = '';
   late var otherUser;
-  List<Message> messages = [];
 
   @override
   void initState() {
     super.initState();
     otherUser = widget.chat.participants!
         .firstWhere((element) => element.userId.toString() != widget.userId);
+
+    // use scroll controller to scroll to the last message
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        print("reached");
+        ChatCubit.get(context).getMessages(
+          room: widget.chat.room.toString(),
+          from: message.length,
+        );
+      }
+    });
   }
 
   sendMessage({
@@ -75,40 +95,68 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
           ],
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('messages')
-            .where('room', isEqualTo: widget.chat.room.toString())
-            // .orderBy('timestamp', descending: true)
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('messages')
+              .where('room', isEqualTo: widget.chat.room.toString())
+              .orderBy('timestamp', descending: true)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
+            if (snapshot.hasError) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Something went wrong! ${snapshot.error.toString()}",
+                    style: AppTextStyle.headings,
+                  ),
+                ],
+              );
+            }
 
-          // convert the snapshots to the model
-          messages = snapshot.data!.docs
-              .map(
-                  (doc) => Message.fromJson(doc.data() as Map<String, dynamic>))
-              .toList()
-            ..reversed;
+            // convert the snapshots to the model
+            messages = snapshot.data!.docs
+                .map((doc) =>
+                    Message.fromJson(doc.data() as Map<String, dynamic>))
+                .toList()
+              ..reversed;
 
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
+            return Column(
               children: [
                 Expanded(
-                  child: ListView.builder(
-                    reverse: true,
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      return MessageBubble(
-                        message: messages[index],
-                        myUserId: widget.userId,
+                  child: BlocConsumer<ChatCubit, ChatState>(
+                    listener: (context, state) {
+                      if (state is ChatGetMessagesSuccess) {
+                        scrollController.animateTo(
+                          scrollController.position.maxScrollExtent,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut,
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      return ListView.builder(
+                        reverse: true,
+                        itemCount: messages.length + 1,
+                        controller: scrollController,
+                        itemBuilder: (context, index) {
+                          // show loading in loading state
+                          if (index == messages.length) {
+                            return const PaginatedLoading()
+                                .visible(state is ChatGetMessagesLoading);
+                          }
+                          return MessageBubble(
+                            message: messages[index],
+                            myUserId: widget.userId,
+                          );
+                        },
                       );
                     },
                   ),
@@ -152,9 +200,9 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
                   ],
                 ),
               ],
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

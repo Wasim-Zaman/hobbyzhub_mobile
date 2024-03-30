@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hobbyzhub/models/message/message.dart';
 
 class GroupChat {
   String? room;
   String? groupImage;
-  dynamic? lastMessage;
+  Message? lastMessage;
   List<String>? participantIds;
   List<Participants>? participants;
   Timestamp? timeStamp;
@@ -29,7 +30,9 @@ class GroupChat {
   GroupChat.fromJson(Map<String, dynamic> json) {
     room = json['room'] as String?;
     groupImage = json['groupImage'] as String?;
-    lastMessage = json['lastMessage'];
+    lastMessage = json['lastMessage'] == null
+        ? Message()
+        : Message.fromJson(json['lastMessage']);
     participantIds = (json['participantIds'] as List?)?.cast<String>();
     if (json['participants'] != null) {
       participants = (json['participants'] as List)

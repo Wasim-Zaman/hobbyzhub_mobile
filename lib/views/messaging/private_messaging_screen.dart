@@ -31,11 +31,11 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
   var scrollController = ScrollController();
 
   // * Lists
-  List<Message> messages = getDummyMessages();
+  List<Message> messages = [];
 
   // * Others
   String message = '';
-  late var otherUser;
+  late dynamic otherUser;
 
   @override
   void initState() {
@@ -47,7 +47,6 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        print("reached");
         ChatCubit.get(context).getMessages(
           room: widget.chat.room.toString(),
           from: message.length,
@@ -102,6 +101,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
               .collection('messages')
               .where('room', isEqualTo: widget.chat.room.toString())
               .orderBy('timestamp', descending: true)
+              .limit(10)
               .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -121,12 +121,13 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
               );
             }
 
-            // convert the snapshots to the model
-            messages = snapshot.data!.docs
-                .map((doc) =>
-                    Message.fromJson(doc.data() as Map<String, dynamic>))
-                .toList()
-              ..reversed;
+            if (snapshot.hasData) {
+              // convert the snapshots to the model
+              messages = snapshot.data!.docs
+                  .map((doc) =>
+                      Message.fromJson(doc.data() as Map<String, dynamic>))
+                  .toList();
+            }
 
             return Column(
               children: [
@@ -134,16 +135,13 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
                   child: BlocConsumer<ChatCubit, ChatState>(
                     listener: (context, state) {
                       if (state is ChatGetMessagesSuccess) {
-                        scrollController.animateTo(
-                          scrollController.position.maxScrollExtent,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeOut,
-                        );
+                        // append those messages with old messages
+                        messages.addAll(state.messages);
                       }
                     },
                     builder: (context, state) {
                       return ListView.builder(
-                        reverse: true,
+                        reverse: false,
                         itemCount: messages.length + 1,
                         controller: scrollController,
                         itemBuilder: (context, index) {
@@ -183,7 +181,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
                               String? myId =
                                   await UserSecureStorage.fetchUserId();
                               sendMessage(
-                                message: messageController.text,
+                                message: messageController.text.trim(),
                                 room: widget.chat.room.toString(),
                                 createMetadataRequest: {
                                   "room": widget.chat.room.toString(),
@@ -193,7 +191,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
                             },
                             icon: const Icon(Icons.send),
                             color: AppColors.primary,
-                          ),
+                          ).visible(messageController.text.isNotEmpty),
                         ),
                       ),
                     ),

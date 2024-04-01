@@ -126,7 +126,7 @@ class GroupMessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isMe = message.metadata?.sender == myUserId;
-    DateTime dateTime = message.timeStamp!.toDate();
+    // DateTime dateTime = message.timeStamp!.toDate();
 
     return Container(
       margin: EdgeInsets.only(
@@ -220,10 +220,10 @@ class GroupMessageBubble extends StatelessWidget {
                     right: isMe ? 10 : 0,
                   ),
                   child: Text(
-                    // i want to display hour, minute and am or pm along with 12 hours formate
-                    // '${dateTime.hour}:${dateTime.minute} ${dateTime.hour > 12 ? 'PM' : 'AM'}',
-                    '${dateTime.hour}:${dateTime.minute}',
-                  ),
+                      // i want to display hour, minute and am or pm along with 12 hours formate
+                      // '${dateTime.hour}:${dateTime.minute} ${dateTime.hour > 12 ? 'PM' : 'AM'}',
+                      // '${dateTime.hour}:${dateTime.minute}',
+                      ''),
                 ),
               ],
             ),

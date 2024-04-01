@@ -8,6 +8,7 @@ import 'package:hobbyzhub/models/api_response.dart';
 import 'package:hobbyzhub/models/chat/chat_model.dart';
 import 'package:hobbyzhub/models/chat/group_chat.dart';
 import 'package:hobbyzhub/models/chat/private_chat.dart';
+import 'package:hobbyzhub/models/message/message.dart';
 import 'package:hobbyzhub/models/message/message_model.dart';
 import 'package:hobbyzhub/utils/app_exceptions.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
@@ -138,9 +139,7 @@ abstract class ChatController {
     ));
 
     final response = await request.send();
-    print("Status code : ${response.statusCode}");
     final responseString = await response.stream.bytesToString();
-    print(responseString);
     final responseJson = jsonDecode(responseString);
     if (responseJson['success'] == true) {
       return ApiResponse.fromJson(
@@ -176,20 +175,23 @@ abstract class ChatController {
 
   static Future<ApiResponse> getServerMessages(String room,
       {required int from, int size = 100}) async {
-    final url = ChatUrl.getServerMessages;
+    final url = ChatUrl.getMessages;
     final token = await UserSecureStorage.fetchToken();
 
     final body = {"room": room, "from": from, "size": size};
+
     final headers = <String, String>{
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     };
+
     final response = await ApiManager.postRequest(body, url, headers: headers);
+    log(response.body);
     final responseBody = jsonDecode(response.body);
     if (responseBody['success'] == true && responseBody['status'] == 200) {
-      List<MessageModel> messages = [];
+      List<Message> messages = [];
       responseBody['data'].forEach((chat) {
-        messages.add(MessageModel.fromJson(chat));
+        messages.add(Message.fromJson(chat));
       });
       return ApiResponse.fromJson(responseBody, (p0) => messages);
     } else {

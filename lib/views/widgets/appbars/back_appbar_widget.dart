@@ -8,7 +8,9 @@ import 'package:nb_utils/nb_utils.dart';
 class BackAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final Color? color;
-  const BackAppbarWidget({Key? key, this.title, this.color}) : super(key: key);
+  final void Function()? onTap;
+  const BackAppbarWidget({Key? key, this.title, this.color, this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +27,10 @@ class BackAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
       leading: Padding(
         padding: EdgeInsets.all(8.w),
         child: GestureDetector(
-          onTap: () {
-            context.pop();
-          },
+          onTap: onTap ??
+              () {
+                context.pop();
+              },
           child: Container(
             decoration: ShapeDecoration(
               color: AppColors.white,

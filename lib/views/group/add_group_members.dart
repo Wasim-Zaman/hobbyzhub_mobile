@@ -12,7 +12,6 @@ import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/models/chat/group_chat.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
-import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/bottom_nav_bar/main_tabs_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/back_appbar_widget.dart';
@@ -257,10 +256,12 @@ class _AddGroupMembersState extends State<AddGroupMembers> {
             AppDialogs.loadingDialog(context);
           } else if (state is ChatCreateGroupSuccess) {
             AppDialogs.closeDialog(context);
-            groupCreationSheet(context, group: state.group);
+            Future.delayed(Duration(milliseconds: 500)).then((value) {
+              groupCreationSheet(context, group: state.group);
+            });
           } else if (state is ChatCreateGroupError) {
-            toast(state.message);
             AppDialogs.closeDialog(context);
+            toast(state.message);
           }
         },
         child: Padding(
@@ -517,13 +518,16 @@ void groupCreationSheet(context, {required GroupChat group}) {
               ),
               PrimaryButtonWidget(
                 caption: "Continue",
-                onPressed: () {
+                onPressed: () async {
                   // close the sheet
                   Navigator.pop(context);
-                  AppNavigator.goToPageWithReplacement(
-                    context: context,
-                    screen: MainTabScreen(index: 1),
-                  );
+                  await Future.delayed(Duration(milliseconds: 500));
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MainTabScreen(index: 1),
+                      ),
+                      (route) => false);
                 },
               ),
             ],

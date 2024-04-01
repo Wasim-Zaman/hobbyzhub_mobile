@@ -13,7 +13,7 @@ part 'private_chat_states.dart';
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit() : super(ChatInitial());
 
-  static ChatCubit get(context) => BlocProvider.of(context);
+  static ChatCubit get(context) => BlocProvider.of<ChatCubit>(context);
 
   int limit = 100;
 
@@ -107,17 +107,16 @@ class ChatCubit extends Cubit<ChatState> {
     }
   }
 
-  void getMessages({required String room, required int from}) async {
+  void getMessages(
+      {required String room, required int from, int size = 100}) async {
     emit(ChatGetMessagesLoading());
     try {
       var networkStatus = await isNetworkAvailable();
       if (!networkStatus) {
         emit(ChatGetMessagesError(message: "Network is not available"));
       } else {
-        // var res = await ChatController.getServerMessages(room, from: from);
-        // emit(ChatGetMessagesSuccess(messages: res.data));
-        await Future.delayed(const Duration(seconds: 1));
-        emit(ChatGetMessagesSuccess(messages: []));
+        var res = await ChatController.getServerMessages(room, from: from);
+        emit(ChatGetMessagesSuccess(messages: res.data));
       }
     } catch (err) {
       if (err is ErrorException) {

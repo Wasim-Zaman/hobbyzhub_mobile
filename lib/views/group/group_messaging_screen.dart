@@ -18,6 +18,7 @@ import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/group/group_description_screen.dart';
 import 'package:hobbyzhub/views/widgets/chat/message_bubble.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
+import 'package:hobbyzhub/views/widgets/loading/paginated_loading.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/chat_field.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -41,10 +42,6 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
   // Lists
   var messages = <Message>[];
 
-  // Pagination
-  int page = 1;
-  int size = 100;
-
   @override
   void initState() {
     super.initState();
@@ -54,6 +51,17 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
           myUserId = id;
         });
       });
+    });
+
+    // use scroll controller to scroll to the last message
+    chatScrollController.addListener(() {
+      if (chatScrollController.position.pixels ==
+          chatScrollController.position.maxScrollExtent) {
+        ChatCubit.get(context).getMessages(
+          room: widget.chat.room.toString(),
+          from: messages.length,
+        );
+      }
     });
   }
 
@@ -231,6 +239,7 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
                   .collection('messages')
                   .where('room', isEqualTo: widget.chat.room.toString())
                   // .orderBy('timestamp', descending: true)
+                  .limit(7)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -238,24 +247,41 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
                   return const Center(child: LoadingWidget());
                 }
 
-                // if (snapshot.hasError) {
-                //   return Text(snapshot.error.toString());
-                // }
+                if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                }
 
-                // convert the snapshots to the model
-                messages = snapshot.data!.docs
-                    .map((doc) =>
-                        Message.fromJson(doc.data() as Map<String, dynamic>))
-                    .toList();
+                if (snapshot.hasData) {
+                  messages = snapshot.data!.docs
+                      .map((doc) =>
+                          Message.fromJson(doc.data() as Map<String, dynamic>))
+                      .toList();
+                }
 
-                return ListView.builder(
-                  reverse: true,
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    return GroupMessageBubble(
-                      message: messages[index],
-                      myUserId: myUserId ?? '',
-                      group: widget.chat,
+                return BlocConsumer<ChatCubit, ChatState>(
+                  listener: (context, state) {
+                    if (state is ChatGetMessagesSuccess) {
+                      // append those messages with old messages
+                      messages.addAll(state.messages);
+                    }
+                  },
+                  builder: (context, state) {
+                    return ListView.builder(
+                      controller: chatScrollController,
+                      reverse: true,
+                      itemCount: messages.length + 1,
+                      itemBuilder: (context, index) {
+                        // show loading in loading state
+                        if (index == messages.length) {
+                          return const PaginatedLoading()
+                              .visible(state is ChatGetMessagesLoading);
+                        }
+                        return GroupMessageBubble(
+                          message: messages[index],
+                          myUserId: myUserId ?? '',
+                          group: widget.chat,
+                        );
+                      },
                     );
                   },
                 );

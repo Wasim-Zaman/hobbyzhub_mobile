@@ -4,11 +4,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hobbyzhub/blocs/explore/explore_cubit.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
-import 'package:hobbyzhub/global/assets/app_assets.dart';
+import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/user/user.dart';
+import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/profile/third_person_profile_screen.dart';
 import 'package:hobbyzhub/views/widgets/appbars/basic_appbar_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -31,6 +35,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   @override
   void initState() {
+    ExploreCubit.get(context).getSubscribedHobbyz();
     UserSecureStorage.fetchUserId().then((value) {
       userId = value!;
     });
@@ -41,8 +46,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar:
-          BasicAppbarWidget(title: 'Explore', isBackButton: false, actions: [
+      appBar: BasicAppbarWidget(title: 'Explore', isBackButton: true, actions: [
         IconButton(
           onPressed: () {
             // show searching results
@@ -56,134 +60,281 @@ class _ExploreScreenState extends State<ExploreScreen> {
           ),
         ).visible(screen != 2),
       ]),
-      body: screen == 2
-          ? UsersListScreen(userId: userId)
-          : Padding(
-              padding: EdgeInsets.all(8.w),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      SizedBox(
-                        height: 40.h,
-                        child: ListView.builder(
-                            //  controller: scrollController,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 10,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: EdgeInsets.only(left: 5.w, right: 5.w),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 5),
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          width: 1, color: Color(0x2D3C3C43)),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text('Art',
-                                          textAlign: TextAlign.center,
-                                          style: AppTextStyle.dialogNormal),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }),
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      Text(
-                        'People',
-                        style: AppTextStyle.exploreSubHead,
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      SizedBox(
-                        height: 130.h,
-                        child: ListView.builder(
-                            // controller: scrollController,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 10,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: EdgeInsets.only(left: 5.w, right: 5.w),
-                                child: Container(
-                                  width: 100.w,
-                                  height: 130.h,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  child: Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: 20.h,
-                                      color: Color(0xCCD9D9D9),
-                                      child: Text(
-                                        '@tom_lee',
-                                        textAlign: TextAlign.center,
-                                        style: AppTextStyle.dialogNormal,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }),
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      Text(
-                        'Hobbies',
-                        style: AppTextStyle.exploreSubHead,
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      GridView.count(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        crossAxisCount: 2,
-                        children: List<Widget>.generate(25, (index) {
-                          return GridTile(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.network(
-                                "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          );
-                        }),
-                      ),
-                    ],
-                  ),
-                ),
+      body: screen == 0
+          ? BlocConsumer<ExploreCubit, ExploreState>(
+              listener: (context, state) {
+                if (state is ExploreGetHobbyzPostsSuccess) {
+                  ExploreCubit.get(context).hobbyz = state.res.data;
+                } else if (state is ExploreGetSubscribedHobbyzSuccess) {
+                  ExploreCubit.get(context).hobbyzPosts = state.res.data;
+                  screen = 1;
+                }
+              },
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    SizedBox(
+                      height: 40,
+                      child: HobbyItems(hobbies: [
+                        'All',
+                        ...ExploreCubit.get(context)
+                            .hobbyz
+                            .map((e) => e.categoryName ?? '')
+                            .toList()
+                      ]),
+                    ),
+                    16.height,
+                    Expanded(
+                      child: screen == 1
+                          ? HobbyPostsWidget()
+                          : RandomPeopleAndHobbyz(),
+                    ),
+                  ],
+                );
+              },
+            )
+          : screen == 2
+              ? UsersListScreen(userId: userId)
+              : SizedBox.shrink(),
+    );
+  }
+}
+
+class HobbyItems extends StatefulWidget {
+  final List<String> hobbies;
+
+  const HobbyItems({super.key, required this.hobbies});
+
+  @override
+  State<HobbyItems> createState() => _HobbyItemsState();
+}
+
+class _HobbyItemsState extends State<HobbyItems> {
+  int selectedIndex = 0;
+  var scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        // setState(() {
+        //   selectedIndex = (selectedIndex + 1) % widget.hobbies.length;
+        // });
+        ExploreCubit.get(context).getMoreSubscribedHobbyz();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: widget.hobbies.length,
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      controller: scrollController,
+      itemBuilder: (context, index) {
+        return Container(
+          margin: const EdgeInsets.only(right: 8),
+          child: OutlinedButton(
+            onPressed: () {
+              setState(() {
+                selectedIndex = index;
+              });
+              ExploreCubit.get(context).getHobbyPosts(widget.hobbies[index]);
+            },
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(
+                color:
+                    selectedIndex == index ? AppColors.primary : AppColors.grey,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: selectedIndex == index
+                  ? AppColors.primary
+                  : AppColors.transparent,
+            ),
+            child: Text(
+              widget.hobbies[index],
+              style: TextStyle(
+                color: selectedIndex == index
+                    ? AppColors.white
+                    : AppColors.darkGrey,
+                fontWeight: FontWeight.w400,
               ),
             ),
+          ),
+        ).visible(index != 0);
+      },
+    );
+  }
+}
+
+class RandomPeopleAndHobbyz extends StatefulWidget {
+  const RandomPeopleAndHobbyz({Key? key}) : super(key: key);
+
+  @override
+  State<RandomPeopleAndHobbyz> createState() => _RandomPeopleAndHobbyzState();
+}
+
+class _RandomPeopleAndHobbyzState extends State<RandomPeopleAndHobbyz> {
+  final ScrollController hobbiesScroll = ScrollController();
+  final ScrollController usersScroll = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    ExploreCubit.get(context).getRandomPosts();
+    ExploreCubit.get(context).getRandomUsers();
+
+    hobbiesScroll.addListener(() {
+      if (hobbiesScroll.position.pixels ==
+          hobbiesScroll.position.maxScrollExtent) {
+        ExploreCubit.get(context).getMoreRandomPosts();
+      }
+    });
+    usersScroll.addListener(() {
+      if (usersScroll.position.pixels == usersScroll.position.maxScrollExtent) {
+        ExploreCubit.get(context).getMoreRandomUsers();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Users Section
+          Text("People", style: AppTextStyle.subHeading),
+          10.height,
+          BlocConsumer<ExploreCubit, ExploreState>(
+            listener: (context, state) {
+              if (state is ExploreGetRandomUsersSuccess) {
+                ExploreCubit.get(context).users = state.res.data;
+              } else if (state is ExploreGetMoreRandomUsersSuccess) {
+                ExploreCubit.get(context).users.addAll(state.res.data);
+              }
+            },
+            builder: (context, state) {
+              return Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  controller: usersScroll,
+                  itemBuilder: (context, index) {
+                    if (index == ExploreCubit.get(context).users.length) {
+                      return Center(
+                        child: LoadingWidget(),
+                      ).visible(state is ExploreGetMoreRandomUsersLoading);
+                    }
+                    var user = ExploreCubit.get(context).users[index];
+                    return Container(
+                      margin: EdgeInsets.only(right: 10.w),
+                      child: GridTile(
+                        // footer: GridTileBar(
+                        //   title: Text(user.fullName ?? ''),
+                        //   backgroundColor: Colors.black.withOpacity(0.5),
+                        // ),
+                        child: CachedNetworkImage(
+                          imageUrl: user.profileImage ?? '',
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
+                      ),
+                    );
+                  },
+                  itemCount: ExploreCubit.get(context).users.length + 1,
+                ),
+              );
+            },
+          ),
+          20.height,
+          // Posts Section
+          Text("Hobbies", style: AppTextStyle.subHeading),
+          10.height,
+          BlocConsumer<ExploreCubit, ExploreState>(
+            listener: (context, state) {
+              if (state is ExploreGetRandomPostsSuccess) {
+                ExploreCubit.get(context).posts = state.res.data;
+              } else if (state is ExploreGetMoreRandomPostsSuccess) {
+                ExploreCubit.get(context).posts.addAll(state.res.data);
+              }
+            },
+            builder: (context, state) {
+              return Expanded(
+                  flex: 3,
+                  child: MasonryGridView.count(
+                    controller: hobbiesScroll,
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
+                    itemBuilder: (context, index) {
+                      var post = ExploreCubit.get(context).posts[index];
+                      return GridTile(
+                        child: CachedNetworkImage(
+                          imageUrl: post.imageUrls!.first,
+                        ),
+                      );
+                    },
+                    itemCount: ExploreCubit.get(context).posts.length,
+                  ));
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class HobbyPostsWidget extends StatefulWidget {
+  const HobbyPostsWidget({Key? key}) : super(key: key);
+
+  @override
+  State<HobbyPostsWidget> createState() => _HobbyPostsWidgetState();
+}
+
+class _HobbyPostsWidgetState extends State<HobbyPostsWidget> {
+  var postsScroll = ScrollController();
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("Hobbies", style: AppTextStyle.subHeading),
+        10.height,
+        BlocConsumer<ExploreCubit, ExploreState>(
+          listener: (context, state) {
+            if (state is ExploreGetHobbyzPostsSuccess) {
+              ExploreCubit.get(context).hobbyzPosts = state.res.data;
+            } else if (state is ExploreGetMoreHobbyzPostsSuccess) {
+              ExploreCubit.get(context).hobbyzPosts.addAll(state.res.data);
+            }
+          },
+          builder: (context, state) {
+            return Expanded(
+                flex: 3,
+                child: MasonryGridView.count(
+                  controller: postsScroll,
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  itemBuilder: (context, index) {
+                    var post = ExploreCubit.get(context).hobbyzPosts[index];
+                    return GridTile(
+                      child: CachedNetworkImage(
+                        imageUrl: post.imageUrls!.first,
+                      ),
+                    );
+                  },
+                  itemCount: ExploreCubit.get(context).hobbyzPosts.length,
+                ));
+          },
+        ),
+      ],
     );
   }
 }
@@ -225,6 +376,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
   }
 
   searchUserMore() {
+    page = page + 1;
     context.read<UserBloc>().add(
           UserSearchByNameMoreEvent(slug: slug, page: page, pageSize: pageSize),
         );
@@ -243,14 +395,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
               searchUserInit();
             },
             decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(width: 0.5, color: Colors.grey),
-              ),
-              prefixIcon: Image.asset(
-                ImageAssets.searchImage,
-                height: 10,
-              ),
+              prefixIcon: Icon(LineIcons.search),
             ),
           ),
           10.height,
@@ -287,7 +432,13 @@ class _UsersListScreenState extends State<UsersListScreen> {
                     itemCount: searchedUsers.length,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        onTap: () {},
+                        onTap: () {
+                          AppNavigator.goToPage(
+                              context: context,
+                              screen: ThirdPersonProfileScreen(
+                                userId: searchedUsers[index].userId.toString(),
+                              ));
+                        },
                         leading: SizedBox(
                           width: 45.w,
                           height: 45.h,

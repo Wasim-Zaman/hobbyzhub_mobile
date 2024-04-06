@@ -18,8 +18,6 @@ class _GroupsInCommonWidgetState extends State<GroupsInCommonWidget> {
   @override
   void initState() {
     super.initState();
-
-    print(widget.otherUserId);
   }
 
   @override

@@ -6,6 +6,7 @@ import 'package:hobbyzhub/blocs/create_post/createpost_cubit.dart';
 import 'package:hobbyzhub/blocs/create_story/create_story_cubit.dart';
 import 'package:hobbyzhub/blocs/delete_fcm_token/delete_fcm_token_cubit.dart';
 import 'package:hobbyzhub/blocs/delete_post/delete_post_cubit.dart';
+import 'package:hobbyzhub/blocs/explore/explore_cubit.dart';
 import 'package:hobbyzhub/blocs/fcm_token/fcm_token_cubit.dart';
 import 'package:hobbyzhub/blocs/follower_following/f_and_f_bloc.dart';
 import 'package:hobbyzhub/blocs/get_post/get_post_cubit.dart';
@@ -53,5 +54,6 @@ class BlocProviders {
         create: (context) => DeleteFcmTokenCubit()),
     BlocProvider<GroupBloc>(create: (context) => GroupBloc()),
     BlocProvider<ChatCubit>(create: (context) => ChatCubit()),
+    BlocProvider<ExploreCubit>(create: (context) => ExploreCubit()),
   ];
 }

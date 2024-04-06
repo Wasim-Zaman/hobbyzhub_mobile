@@ -87,48 +87,49 @@ class AppSheets {
               ),
               // admins
               20.height,
-              Row(
-                children: [
-                  Text(
-                    "Total Admins:",
-                    style: AppTextStyle.subHeading,
-                  ),
-                  Expanded(child: Container()),
-                ],
-              ),
-              10.height,
-              Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 50,
-                      child: ListView.builder(
-                        itemBuilder: (context, i) => Container(
-                          margin: const EdgeInsets.only(right: 10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10)),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: ImageWidget(
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                              imageUrl: group.participants
-                                      ?.where((element) => group.adminIds!
-                                          .contains(element.userId))
-                                      .toList()[i]
-                                      .profileImage ??
-                                  '',
-                            ),
-                          ),
-                        ),
-                        itemCount: group.adminIds?.length,
-                        scrollDirection: Axis.horizontal,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Text(
+              //       "Total Admins:",
+              //       style: AppTextStyle.subHeading,
+              //     ),
+              //     Expanded(child: Container()),
+              //   ],
+              // ),
+              // 10.height,
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: SizedBox(
+              //         height: 50,
+              //         child: ListView.builder(
+              //           itemBuilder: (context, i) {
+              //             return Container(
+              //               margin: const EdgeInsets.only(right: 10),
+              //               decoration: BoxDecoration(
+              //                   borderRadius: BorderRadius.circular(10)),
+              //               child: ClipRRect(
+              //                 borderRadius: BorderRadius.circular(10),
+              //                 child: ImageWidget(
+              //                   width: 50,
+              //                   height: 50,
+              //                   fit: BoxFit.cover,
+              //                   imageUrl: group.participants!
+              //                           .firstWhere((element) => group.adminIds!
+              //                               .contains(element.userId))
+              //                           .profileImage ??
+              //                       '',
+              //                 ),
+              //               ),
+              //             );
+              //           },
+              //           itemCount: group.adminIds?.length,
+              //           scrollDirection: Axis.horizontal,
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         );

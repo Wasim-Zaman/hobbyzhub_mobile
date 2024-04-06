@@ -109,6 +109,8 @@ class GroupController {
       "Authorization": "Bearer $token",
     };
     final response = await ApiManager.putRequest(body, url, headers: headers);
+    print(response.statusCode);
+
     var resBody = jsonDecode(response.body);
     if (resBody['success'] && resBody['status'] == 200) {
       return ApiResponse.fromJson(resBody, (data) => null);

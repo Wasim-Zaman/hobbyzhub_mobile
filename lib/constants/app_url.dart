@@ -113,3 +113,12 @@ abstract class GroupUrl {
   static final groupDetails = "$groupBase/api/v1/chats/groups/get-group";
   static final addMember = "$groupBase/api/v1/chats/groups/add-member";
 }
+
+abstract class ExploreUrl {
+  static final baseUrl = AppUrl.baseUrl;
+
+  static final getRandomUsers = "$baseUrl/api/v1/accounts/users/shuffled";
+  static final getRandomPosts = "$baseUrl/api/v1/posts/shuffled";
+  static final getHobbyz = "$baseUrl/api/v1/categories/hobby/hobbies";
+  static final getPostsByHobby = "$baseUrl/api/v1/posts/explore-by-hobby";
+}

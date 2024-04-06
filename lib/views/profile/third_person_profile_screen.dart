@@ -213,7 +213,7 @@ class _ThirdPersonProfileScreenState extends State<ThirdPersonProfileScreen> {
               ),
               GroupsInCommonWidget(
                 otherUserId: widget.userId,
-                myId: myId.toString(),
+                // myId: myId.toString(),
               ),
             ],
           ),

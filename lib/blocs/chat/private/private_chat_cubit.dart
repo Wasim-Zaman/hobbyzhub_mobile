@@ -130,4 +130,74 @@ class ChatCubit extends Cubit<ChatState> {
       }
     }
   }
+
+  void makeMemberAnAdmin(String memberId) async {
+    emit(ChatMakeMemberAdminLoading());
+    try {
+      var networkStatus = await isNetworkAvailable();
+      if (!networkStatus) {
+        emit(ChatMakeMemberAdminError(message: "Network is not available"));
+      } else {
+        await ChatController.makeMemberAnAdmin(memberId);
+        emit(ChatMakeMemberAdminSuccess());
+      }
+    } catch (err) {
+      if (err is ErrorException) {
+        emit(ChatMakeMemberAdminError(message: err.toString()));
+      } else {
+        emit(
+          ChatMakeMemberAdminError(
+            message: "An error occurred while making member an admin",
+          ),
+        );
+      }
+    }
+  }
+
+  void removeMember(String memberId) async {
+    emit(ChatRemoveMemberFromGroupLoading());
+    try {
+      var networkStatus = await isNetworkAvailable();
+      if (!networkStatus) {
+        emit(ChatRemoveMemberFromGroupError(
+            message: "Network is not available"));
+      } else {
+        await ChatController.removeMemberFromGroup(memberId);
+        emit(ChatRemoveMemberFromGroupSuccess());
+      }
+    } catch (err) {
+      if (err is ErrorException) {
+        emit(ChatRemoveMemberFromGroupError(message: err.toString()));
+      } else {
+        emit(
+          ChatRemoveMemberFromGroupError(
+            message: "An error occurred while removing member",
+          ),
+        );
+      }
+    }
+  }
+
+  void addMember(String memberId) async {
+    emit(ChatAddMemberToGroupLoading());
+    try {
+      var networkStatus = await isNetworkAvailable();
+      if (!networkStatus) {
+        emit(ChatAddMemberToGroupError(message: "Network is not available"));
+      } else {
+        await ChatController.addMemberToGroup(memberId);
+        emit(ChatAddMemberToGroupSuccess());
+      }
+    } catch (err) {
+      if (err is ErrorException) {
+        emit(ChatAddMemberToGroupError(message: err.toString()));
+      } else {
+        emit(
+          ChatAddMemberToGroupError(
+            message: "An error occurred while adding member",
+          ),
+        );
+      }
+    }
+  }
 }

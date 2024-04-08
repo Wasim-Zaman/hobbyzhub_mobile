@@ -45,6 +45,9 @@ abstract class ChatUrl {
   static final getMessages = "$chatBase/api/chats/messages";
   static final getUsers = "$chatBase/api/v1/chat/usersNotChatted";
   static final createConversation = "$chatBase/api/v1/chat/createConversation";
+  static final makeMemberAdmin = "$chatBase/api/v1/chat/makeMemberAdmin";
+  static final removeMember = "$chatBase/api/v1/chat/removeMember";
+  static final addMember = "$chatBase/api/v1/chat/addMember";
 }
 
 abstract class MediaUrl {
@@ -119,6 +122,7 @@ abstract class ExploreUrl {
 
   static final getRandomUsers = "$baseUrl/api/v1/accounts/users/shuffled";
   static final getRandomPosts = "$baseUrl/api/v1/posts/shuffled";
-  static final getHobbyz = "$baseUrl/api/v1/categories/hobby/hobbies";
+  static final getHobbyz =
+      "$baseUrl/api/v1/categories/subscription/user-subscribed-hobbies";
   static final getPostsByHobby = "$baseUrl/api/v1/posts/explore-by-hobby";
 }

@@ -22,11 +22,11 @@ class ExploreCubit extends Cubit<ExploreState> {
 
   // pagination
   int initialRandomPostsPage = 0;
-  int initialRandomPostsSize = 20;
+  int initialRandomPostsSize = 10;
   int initialRandomUsersPage = 0;
-  int initialRandomUsersSize = 20;
-  int hobbiesPage = 0, hobbiesSize = 50;
-  int hobbiesPostsPage = 0, hobbiesPostsSize = 50;
+  int initialRandomUsersSize = 10;
+  int hobbiesPage = 0, hobbiesSize = 10;
+  int hobbiesPostsPage = 0, hobbiesPostsSize = 10;
 
   getRandomUsers() async {
     emit(ExploreGetRandomUsersLoading());

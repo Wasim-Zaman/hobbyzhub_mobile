@@ -15,7 +15,13 @@ final class ChatSendMessageLoading extends ChatState {}
 
 final class ChatGetMessagesLoading extends ChatState {}
 
-// Failure states
+final class ChatMakeMemberAdminLoading extends ChatState {}
+
+final class ChatRemoveMemberFromGroupLoading extends ChatState {}
+
+final class ChatAddMemberToGroupLoading extends ChatState {}
+
+// ! Failure states
 final class ChatCreatePrivateError extends ChatState {
   final String message;
 
@@ -39,6 +45,22 @@ final class ChatGetMessagesError extends ChatState {
   ChatGetMessagesError({required this.message});
 }
 
+final class ChatMakeMemberAdminError extends ChatState {
+  final String message;
+
+  ChatMakeMemberAdminError({required this.message});
+}
+
+final class ChatRemoveMemberFromGroupError extends ChatState {
+  final String message;
+  ChatRemoveMemberFromGroupError({required this.message});
+}
+
+final class ChatAddMemberToGroupError extends ChatState {
+  final String message;
+  ChatAddMemberToGroupError({required this.message});
+}
+
 // Success states
 final class ChatCreatePrivateSuccess extends ChatState {
   final PrivateChat chat;
@@ -58,3 +80,9 @@ final class ChatGetMessagesSuccess extends ChatState {
 
   ChatGetMessagesSuccess({required this.messages});
 }
+
+final class ChatMakeMemberAdminSuccess extends ChatState {}
+
+final class ChatRemoveMemberFromGroupSuccess extends ChatState {}
+
+final class ChatAddMemberToGroupSuccess extends ChatState {}

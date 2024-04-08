@@ -260,7 +260,8 @@ class _GroupDescriptionScreenState extends State<GroupDescriptionScreen> {
                               AppNavigator.goToPage(
                                 context: context,
                                 screen: GroupMembersScreen(
-                                    members: group?.participants),
+                                  group: group,
+                                ),
                               );
                             },
                             leading: const Icon(
@@ -274,18 +275,18 @@ class _GroupDescriptionScreenState extends State<GroupDescriptionScreen> {
                             ),
                           ),
                           // Administrations
-                          ListTile(
-                            leading: const Icon(
-                              Icons.admin_panel_settings_outlined,
-                              color: AppColors.primary,
-                            ),
-                            title: Text("Administrators",
-                                style: AppTextStyle.normal),
-                            trailing: Text(
-                              "${group!.adminIds!.length}",
-                              style: AppTextStyle.button,
-                            ),
-                          ),
+                          // ListTile(
+                          //   leading: const Icon(
+                          //     Icons.admin_panel_settings_outlined,
+                          //     color: AppColors.primary,
+                          //   ),
+                          //   title: Text("Administrators",
+                          //       style: AppTextStyle.normal),
+                          //   trailing: Text(
+                          //     "${group!.adminIds!.length}",
+                          //     style: AppTextStyle.button,
+                          //   ),
+                          // ),
                         ],
                       ),
                     );

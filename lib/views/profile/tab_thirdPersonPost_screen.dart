@@ -35,13 +35,13 @@ class _TabThirdPersonPostScreenState extends State<TabThirdPersonPostScreen> {
         if (state is ThirdUserLoaded) {
           return GridView.builder(
               itemCount: state.thirdUserPost.first.data.length,
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3),
               itemBuilder: ((context, index) {
                 return Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: state
                           .thirdUserPost.first.data[index].imageUrls.length,
                       itemBuilder: ((context, _index) {
@@ -49,9 +49,9 @@ class _TabThirdPersonPostScreenState extends State<TabThirdPersonPostScreen> {
                           children: [
                             CachedNetworkImage(
                                 placeholder: (context, url) =>
-                                    CircularProgressIndicator(),
+                                    const CircularProgressIndicator(),
                                 errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
+                                    const Icon(Icons.error),
                                 imageUrl: state.thirdUserPost.first.data[index]
                                     .imageUrls[_index]),
                             state.thirdUserPost.first.data[index].imageUrls
@@ -68,18 +68,18 @@ class _TabThirdPersonPostScreenState extends State<TabThirdPersonPostScreen> {
                                       ),
                                     ),
                                   )
-                                : SizedBox(),
+                                : const SizedBox(),
                           ],
                         );
                       })),
                 );
               }));
         } else if (state is ThirdUserFailed) {
-          return SizedBox(
-            child: Text('Post not found'),
+          return const Center(
+            child: Text('No posts found'),
           );
         } else {
-          return SizedBox();
+          return const SizedBox();
         }
       },
     );

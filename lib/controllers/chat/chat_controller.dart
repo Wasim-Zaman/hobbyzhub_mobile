@@ -198,4 +198,55 @@ abstract class ChatController {
       throw ErrorException(responseBody['message']);
     }
   }
+
+  static Future<ApiResponse> makeMemberAnAdmin(memberId) async {
+    final url = ChatUrl.makeMemberAdmin;
+    final token = await UserSecureStorage.fetchToken();
+    final body = {"participantId": memberId};
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final response = await ApiManager.postRequest(body, url, headers: headers);
+    final responseBody = jsonDecode(response.body);
+    if (responseBody['success'] == true && responseBody['status'] == 200) {
+      return ApiResponse.fromJson(responseBody, (p0) => null);
+    } else {
+      throw ErrorException(responseBody['message']);
+    }
+  }
+
+  static Future<ApiResponse> removeMemberFromGroup(memberId) async {
+    final url = ChatUrl.removeMember;
+    final token = await UserSecureStorage.fetchToken();
+    final body = {"participantId": memberId};
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final response = await ApiManager.postRequest(body, url, headers: headers);
+    final responseBody = jsonDecode(response.body);
+    if (responseBody['success'] == true && responseBody['status'] == 200) {
+      return ApiResponse.fromJson(responseBody, (p0) => null);
+    } else {
+      throw ErrorException(responseBody['message']);
+    }
+  }
+
+  static Future<ApiResponse> addMemberToGroup(memberid) async {
+    final url = ChatUrl.addMember;
+    final token = await UserSecureStorage.fetchToken();
+    final body = {"participantId": memberid};
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final response = await ApiManager.postRequest(body, url, headers: headers);
+    final responseBody = jsonDecode(response.body);
+    if (responseBody['success'] == true && responseBody['status'] == 200) {
+      return ApiResponse.fromJson(responseBody, (p0) => null);
+    } else {
+      throw ErrorException(responseBody['message']);
+    }
+  }
 }

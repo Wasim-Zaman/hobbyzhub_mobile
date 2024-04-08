@@ -91,9 +91,44 @@ class _GroupChatListScreenState extends State<GroupChatListScreen> {
                           shrinkWrap: true,
                           itemCount: groups.length,
                           itemBuilder: (ctx, index) {
-                            return GroupChatTile(
-                              group: groups[index],
-                              userId: userId!,
+                            return Dismissible(
+                              key: Key(
+                                groups[index].participantIds!.firstWhere(
+                                      (id) => id == userId,
+                                    ),
+                              ),
+                              confirmDismiss: (direction) async {
+                                return await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text("Confirm"),
+                                      content: const Text(
+                                          "Are you sure you want to delete this chat?"),
+                                      actions: <Widget>[
+                                        TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(true),
+                                            child: const Text("DELETE")),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(false),
+                                          child: const Text("CANCEL"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              onDismissed: (direction) {
+                                // remove the group from the list
+                                groups.removeAt(index);
+                              },
+                              background: Container(color: Colors.red),
+                              child: GroupChatTile(
+                                group: groups[index],
+                                userId: userId!,
+                              ),
                             );
                           },
                         ),

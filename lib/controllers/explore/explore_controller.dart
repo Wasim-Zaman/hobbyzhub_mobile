@@ -20,7 +20,6 @@ class ExploreController {
       'Authorization': 'Bearer $token',
     };
     final response = await ApiManager.getRequest(url, headers: headers);
-
     final responseBody = jsonDecode(response.body);
     if (responseBody['success']) {
       List<Post> posts = [];
@@ -60,7 +59,6 @@ class ExploreController {
     final token = await UserSecureStorage.fetchToken();
 
     final url = "${ExploreUrl.getHobbyz}?page=$page&size=$size&userId=$userId";
-    print(url);
     final headers = <String, String>{
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

@@ -35,13 +35,13 @@ class _TabPostScreenState extends State<TabPostScreen> {
         if (state is UserPostLoaded) {
           return GridView.builder(
               itemCount: state.userPost.first.data.length,
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3),
               itemBuilder: ((context, index) {
                 return Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount:
                           state.userPost.first.data[index].imageUrls.length,
                       itemBuilder: ((context, _index) {
@@ -49,9 +49,9 @@ class _TabPostScreenState extends State<TabPostScreen> {
                           children: [
                             CachedNetworkImage(
                                 placeholder: (context, url) =>
-                                    CircularProgressIndicator(),
+                                    const CircularProgressIndicator(),
                                 errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
+                                    const Icon(Icons.error),
                                 imageUrl: state.userPost.first.data[index]
                                     .imageUrls[_index]),
                             state.userPost.first.data[index].imageUrls.length >
@@ -67,18 +67,18 @@ class _TabPostScreenState extends State<TabPostScreen> {
                                       ),
                                     ),
                                   )
-                                : SizedBox(),
+                                : const SizedBox(),
                           ],
                         );
                       })),
                 );
               }));
         } else if (state is UserPostFailed) {
-          return SizedBox(
-            child: Text('Post not found'),
+          return const Center(
+            child: Text('No posts found'),
           );
         } else {
-          return SizedBox();
+          return const SizedBox();
         }
       },
     );

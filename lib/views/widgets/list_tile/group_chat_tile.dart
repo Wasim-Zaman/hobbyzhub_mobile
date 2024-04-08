@@ -43,8 +43,9 @@ class GroupChatTile extends StatelessWidget {
                 children: [
                   Text(group.title.toString()),
                   Text(
-                    group.lastMessage.toString(),
-                  ),
+                    group.lastMessage!.message.toString(),
+                  ).visible(group.lastMessage != null ||
+                      group.lastMessage?.message != null),
                 ],
               ),
             ),

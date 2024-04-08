@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hobbyzhub/blocs/chat/private/private_chat_cubit.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
-import 'package:hobbyzhub/global/assets/app_assets.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/chat/group_chat.dart';
 import 'package:hobbyzhub/models/message/message.dart';
@@ -162,74 +161,74 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
             ],
           ),
         ),
-        actions: [
-          PopupMenuButton<int>(
-            offset: const Offset(0, 50),
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0))),
-            icon: Icon(
-              Icons.more_vert,
-              color: Colors.grey,
-            ),
-            elevation: 1,
-            onSelected: (item) => handleClick(item),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 0,
-                // row with two children
-                child: Row(
-                  children: [
-                    Icon(Ionicons.refresh),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Clear Chat',
-                      style: AppTextStyle.listTileSubHeading,
-                    )
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 1,
-                // row with two children
-                child: Row(
-                  children: [
-                    Icon(Icons.delete_outline_rounded),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Delete Chat',
-                      style: AppTextStyle.listTileSubHeading,
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 1,
-                // row with two children
-                child: Row(
-                  children: [
-                    Image.asset(
-                      ImageAssets.exportImage,
-                      height: 30.h,
-                      width: 30.h,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Export Chat',
-                      style: AppTextStyle.listTileSubHeading,
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
+        // actions: [
+        //   PopupMenuButton<int>(
+        //     offset: const Offset(0, 50),
+        //     color: Colors.white,
+        //     shape: RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.all(Radius.circular(15.0))),
+        //     icon: Icon(
+        //       Icons.more_vert,
+        //       color: Colors.grey,
+        //     ),
+        //     elevation: 1,
+        //     onSelected: (item) => handleClick(item),
+        //     itemBuilder: (context) => [
+        //       PopupMenuItem(
+        //         value: 0,
+        //         // row with two children
+        //         child: Row(
+        //           children: [
+        //             Icon(Ionicons.refresh),
+        //             SizedBox(
+        //               width: 10,
+        //             ),
+        //             Text(
+        //               'Clear Chat',
+        //               style: AppTextStyle.listTileSubHeading,
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //       PopupMenuItem(
+        //         value: 1,
+        //         // row with two children
+        //         child: Row(
+        //           children: [
+        //             Icon(Icons.delete_outline_rounded),
+        //             SizedBox(
+        //               width: 10,
+        //             ),
+        //             Text(
+        //               'Delete Chat',
+        //               style: AppTextStyle.listTileSubHeading,
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //       PopupMenuItem(
+        //         value: 1,
+        //         // row with two children
+        //         child: Row(
+        //           children: [
+        //             Image.asset(
+        //               ImageAssets.exportImage,
+        //               height: 30.h,
+        //               width: 30.h,
+        //             ),
+        //             SizedBox(
+        //               width: 10,
+        //             ),
+        //             Text(
+        //               'Export Chat',
+        //               style: AppTextStyle.listTileSubHeading,
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ],
       ),
       body: Column(
         children: [

@@ -42,10 +42,11 @@ class GroupChatTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(group.title.toString()),
-                  Text(
-                    group.lastMessage!.message.toString(),
-                  ).visible(group.lastMessage != null ||
-                      group.lastMessage?.message != null),
+                  if (group.lastMessage != null)
+                    Text(
+                      group.lastMessage!.message.toString(),
+                    ).visible(group.lastMessage != null ||
+                        group.lastMessage?.message != null),
                 ],
               ),
             ),
@@ -54,16 +55,12 @@ class GroupChatTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // Text(
-                //   DateTime.parse(chats[index]['lastMessage']
-                //               ['timestamp']
-                //           .toDate()
-                //           .toString())
-                //       .timeAgo,
-                //   style: TextStyle(
-                //     color: Colors.grey,
-                //   ),
-                // ),
+                Text(
+                  DateTime.parse(group.timeStamp!.toDate().toString()).timeAgo,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
                 const SizedBox(height: 10),
                 // timestamp
 

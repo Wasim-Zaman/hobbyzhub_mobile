@@ -31,7 +31,7 @@ class GroupChat {
     room = json['room'] as String?;
     groupImage = json['groupImage'] as String?;
     lastMessage = json['lastMessage'] == null
-        ? Message()
+        ? null
         : Message.fromJson(json['lastMessage']);
     participantIds = (json['participantIds'] as List?)?.cast<String>();
     if (json['participants'] != null) {

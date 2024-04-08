@@ -11,7 +11,7 @@ class GroupChat {
   String? title;
   String? type;
   List<String>? adminIds;
-  dynamic? unread;
+  Map? unread;
   String? groupDescription;
 
   GroupChat(
@@ -44,7 +44,8 @@ class GroupChat {
     title = json['title'] as String?;
     type = json['type'] as String?;
     adminIds = (json['adminIds'] as List?)?.cast<String>();
-    unread = json['unread'];
+    // unread = json['unread'] == null ? null : Unread.fromMap(json['unread']);
+    unread = json['unread'] as Map?;
     groupDescription = json['groupDescription'] as String?;
   }
 
@@ -109,5 +110,28 @@ class Participants {
     data['userId'] = userId;
     data['room'] = room;
     return data;
+  }
+}
+
+class Unread {
+  String userId;
+  int counter;
+
+  Unread({
+    required this.userId,
+    required this.counter,
+  });
+
+  factory Unread.fromMap(Map<String, dynamic> map) {
+    String userId = map.keys.first;
+    int counter = map[userId];
+    return Unread(
+      userId: userId,
+      counter: counter,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {userId: counter};
   }
 }

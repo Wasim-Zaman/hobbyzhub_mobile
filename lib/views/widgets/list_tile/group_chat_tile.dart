@@ -66,15 +66,16 @@ class GroupChatTile extends StatelessWidget {
                 // ),
                 const SizedBox(height: 10),
                 // timestamp
-                if (group.unread != null)
-                  Badge(
-                    label: Text(
-                      group.unread!['$userId'].toString(),
-                    ),
-                    backgroundColor: AppColors.primary,
-                  ).visible(
-                    group.unread!['$userId'] != 0 || group.unread != null,
+
+                Badge(
+                  label: Text(
+                    group.unread![userId].toString(),
                   ),
+                  backgroundColor: AppColors.primary,
+                ).visible(
+                  group.unread!.containsKey(userId) &&
+                      group.unread![userId] != 0,
+                ),
               ],
             )),
           ],

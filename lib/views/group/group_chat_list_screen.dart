@@ -69,6 +69,7 @@ class _GroupChatListScreenState extends State<GroupChatListScreen> {
                     child: CircularProgressIndicator(),
                   );
                 }
+
                 groups = snapshot.data!.docs
                     .map((e) => GroupChat.fromJson(e.data()))
                     .toList();

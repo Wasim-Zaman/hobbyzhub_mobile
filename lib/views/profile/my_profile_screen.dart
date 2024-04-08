@@ -166,7 +166,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                     StreamBuilder(
                                         stream: FirebaseFirestore.instance
                                             .collection('group-chats')
-                                            .where('type', isEqualTo: 'GROUP')
                                             .where(
                                               'participantIds',
                                               arrayContains: userId.toString(),

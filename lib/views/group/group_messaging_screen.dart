@@ -46,9 +46,9 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
     super.initState();
     UserSecureStorage.fetchUserId().then((id) {
       setState(() {
-        setState(() {
-          myUserId = id;
-        });
+        myUserId = id;
+        // reset the counter for current user
+        resetCounter();
       });
     });
 
@@ -62,6 +62,17 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
         );
       }
     });
+  }
+
+  resetCounter() {
+    FirebaseFirestore.instance
+        .collection('group-chats')
+        .doc(widget.chat.room)
+        .set({
+          'unread': {myUserId: 0}
+        }, SetOptions(merge: true))
+        .then((_) => print('Counter reset for user $myUserId'))
+        .catchError((error) => print('Failed to reset counter: $error'));
   }
 
   sendMessage({
@@ -89,7 +100,7 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
   @override
   void dispose() {
     messageController.dispose();
-
+    resetCounter();
     super.dispose();
   }
 

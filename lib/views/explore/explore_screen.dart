@@ -66,6 +66,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 if (state is ExploreGetHobbyzPostsSuccess) {
                   ExploreCubit.get(context).hobbyz = state.res.data;
                 } else if (state is ExploreGetSubscribedHobbyzSuccess) {
+                  ExploreCubit.get(context).hobbyz = state.res.data;
+                } else if (state is ExploreGetHobbyzPostsSuccess) {
                   ExploreCubit.get(context).hobbyzPosts = state.res.data;
                   screen = 1;
                 }

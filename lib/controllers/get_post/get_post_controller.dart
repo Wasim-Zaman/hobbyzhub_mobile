@@ -15,7 +15,6 @@ class GetPostController {
         "Content-Type": "application/json"
       };
       final response = await ApiManager.getRequest(url, headers: headers);
-
       return response;
     } catch (_) {
       rethrow;

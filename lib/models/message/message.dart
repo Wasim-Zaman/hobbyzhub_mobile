@@ -67,9 +67,14 @@ class Metadata {
   Metadata.fromJson(Map<String, dynamic> json) {
     metadataId = json['metadataId'];
     sender = json['sender'];
-    receiver = json['receiver'];
+    // receiver = json['receiver'] == null ? null : json['receiver'];
     room = json['room'];
-    timeStamp = json['timeStamp'];
+    if (json['timeStamp'] is String) {
+      timeStamp =
+          Timestamp.fromMillisecondsSinceEpoch(int.parse(json['timeStamp']));
+    } else if (json['timeStamp'] is Timestamp) {
+      timeStamp = json['timeStamp'] as Timestamp;
+    }
   }
 
   Map<String, dynamic> toJson() {

@@ -31,6 +31,7 @@ abstract class ChatController {
 
     final response = await ApiManager.postRequest(body, url, headers: headers);
     log(response.statusCode.toString());
+    log(response.body);
     final responseBody = jsonDecode(response.body);
     if (responseBody['success'] == true) {
       return ApiResponse.fromJson(
@@ -186,7 +187,7 @@ abstract class ChatController {
     };
 
     final response = await ApiManager.postRequest(body, url, headers: headers);
-    log(response.body);
+    log(response.statusCode.toString());
     final responseBody = jsonDecode(response.body);
     if (responseBody['success'] == true && responseBody['status'] == 200) {
       List<Message> messages = [];

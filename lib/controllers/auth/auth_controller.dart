@@ -18,6 +18,8 @@ abstract class AuthController {
         'email': email,
         'password': password,
       }, url);
+
+      print(response.body);
       return ApiManager.returnModel(response);
     } catch (_) {
       rethrow;
@@ -115,7 +117,7 @@ abstract class AuthController {
     Map body = {'email': email, 'password': password};
     try {
       final response = await ApiManager.postRequest(body, url);
-      print(response.body);
+      print(response.statusCode);
       final json = jsonDecode(response.body);
       return ApiManager.returnModel(
         response,

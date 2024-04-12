@@ -49,7 +49,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
           scrollController.position.maxScrollExtent) {
         ChatCubit.get(context).getMessages(
           room: widget.chat.room.toString(),
-          from: message.length,
+          from: messages.length,
         );
       }
     });
@@ -100,7 +100,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
           stream: FirebaseFirestore.instance
               .collection('messages')
               .where('room', isEqualTo: widget.chat.room.toString())
-              .orderBy('timestamp', descending: true)
+              .orderBy('timeStamp', descending: true)
               .limit(10)
               .snapshots(),
           builder:
@@ -114,7 +114,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "Something went wrong! ${snapshot.error.toString()}",
+                    "Something went wrong!",
                     style: AppTextStyle.headings,
                   ),
                 ],
@@ -141,7 +141,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
                     },
                     builder: (context, state) {
                       return ListView.builder(
-                        reverse: false,
+                        reverse: true,
                         itemCount: messages.length + 1,
                         controller: scrollController,
                         itemBuilder: (context, index) {
@@ -191,7 +191,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
                             },
                             icon: const Icon(Icons.send),
                             color: AppColors.primary,
-                          ).visible(messageController.text.isNotEmpty),
+                          ),
                         ),
                       ),
                     ),

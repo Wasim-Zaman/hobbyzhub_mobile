@@ -58,13 +58,13 @@ class ExploreController {
     final userId = await UserSecureStorage.fetchUserId();
     final token = await UserSecureStorage.fetchToken();
 
-    final url = "${ExploreUrl.getHobbyz}?page=$page&size=$size&userId=$userId";
+    final url = "${ExploreUrl.getHobbyz}/$userId/hobbies?page=$page&size=$size";
     final headers = <String, String>{
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     };
     final response = await ApiManager.getRequest(url, headers: headers);
-    print(response.statusCode);
+    // print("response code ${response.statusCode}");
     log(response.body);
     final responseBody = jsonDecode(response.body);
     if (responseBody['success'] && responseBody['status'] == 200) {

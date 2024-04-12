@@ -10,19 +10,20 @@ class PrivateChat {
   Timestamp? timeStamp;
   String? type;
 
-  PrivateChat(
-      {this.room,
-      this.lastMessage,
-      this.participantIds,
-      this.participants,
-      this.unread,
-      this.timeStamp,
-      this.type});
+  PrivateChat({
+    this.room,
+    this.lastMessage,
+    this.participantIds,
+    this.participants,
+    this.unread,
+    this.timeStamp,
+    this.type,
+  });
 
   PrivateChat.fromJson(Map<String, dynamic> json) {
     room = json['room'];
     lastMessage = json['lastMessage'] == null
-        ? Message()
+        ? null
         : Message.fromJson(json['lastMessage']);
     participantIds = json['participantIds'].cast<String>();
     if (json['participants'] != null) {

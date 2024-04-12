@@ -57,13 +57,9 @@ class GroupChatTile extends StatelessWidget {
               children: [
                 Text(
                   DateTime.parse(group.timeStamp!.toDate().toString()).timeAgo,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                  ),
+                  style: const TextStyle(color: Colors.grey),
                 ),
                 const SizedBox(height: 10),
-                // timestamp
-
                 Badge(
                   label: Text(
                     group.unread![userId].toString(),

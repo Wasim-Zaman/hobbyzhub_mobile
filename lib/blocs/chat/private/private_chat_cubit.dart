@@ -28,6 +28,7 @@ class ChatCubit extends Cubit<ChatState> {
         emit(ChatCreatePrivateError(message: 'No internet connection'));
       }
     } catch (err) {
+      print(err);
       if (err is ErrorException) {
         emit(ChatCreatePrivateError(message: err.toString()));
       } else {
@@ -108,14 +109,15 @@ class ChatCubit extends Cubit<ChatState> {
   }
 
   void getMessages(
-      {required String room, required int from, int size = 100}) async {
+      {required String room, required int from, int size = 5}) async {
     emit(ChatGetMessagesLoading());
     try {
       var networkStatus = await isNetworkAvailable();
       if (!networkStatus) {
         emit(ChatGetMessagesError(message: "Network is not available"));
       } else {
-        var res = await ChatController.getServerMessages(room, from: from);
+        var res = await ChatController.getServerMessages(room,
+            from: from, size: size);
         emit(ChatGetMessagesSuccess(messages: res.data));
       }
     } catch (err) {

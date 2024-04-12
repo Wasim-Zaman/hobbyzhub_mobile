@@ -52,7 +52,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
       widget.selectedCategories.length,
       (index) => {
         widget.selectedCategories[index].categoryName!: [],
-        "iconLink": widget.selectedCategories[index].iconLink!,
+        "iconLink": widget.selectedCategories[index].iconLink ?? '',
       },
     );
   }

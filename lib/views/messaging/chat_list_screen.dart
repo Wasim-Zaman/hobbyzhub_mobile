@@ -286,7 +286,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 stream: FirebaseFirestore.instance
                     .collection('private-chats')
                     .where('participantIds', arrayContains: userId.toString())
-                    .orderBy('lastMessage.timestamp', descending: true)
+                    // .orderBy('lastMessage.timestamp', descending: true)
                     .snapshots(),
                 builder: (context,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -298,9 +298,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   }
                   // var docs = snapshot.data!.docs;
                   if (snapshot.hasData) {
-                    chats = snapshot.data!.docs
-                        .map((doc) => PrivateChat.fromJson(doc.data()))
-                        .toList();
+                    chats = snapshot.data!.docs.map((doc) {
+                      dev.log(doc.data().toString());
+                      return PrivateChat.fromJson(doc.data());
+                    }).toList();
                   }
 
                   return Padding(

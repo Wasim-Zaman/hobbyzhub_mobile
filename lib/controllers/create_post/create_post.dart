@@ -12,6 +12,7 @@ class PostController {
   createPost(List<File> files, caption, hashtags) async {
     final userId = await UserSecureStorage.fetchUserId();
     final url = Uri.parse("${PostUrl.createPost}/$userId");
+    print(url);
 
     log(url.toString());
 
@@ -60,6 +61,10 @@ class PostController {
     request.headers.addAll(headers);
 
     final response = await request.send();
+    // print response
+    final responseString = await response.stream.bytesToString();
+    log(responseString);
+    log(response.statusCode.toString());
 
     return response;
   }

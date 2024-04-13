@@ -20,6 +20,7 @@ class ExploreController {
       'Authorization': 'Bearer $token',
     };
     final response = await ApiManager.getRequest(url, headers: headers);
+    log(response.body);
     final responseBody = jsonDecode(response.body);
     if (responseBody['success']) {
       List<Post> posts = [];
@@ -64,8 +65,6 @@ class ExploreController {
       'Authorization': 'Bearer $token',
     };
     final response = await ApiManager.getRequest(url, headers: headers);
-    // print("response code ${response.statusCode}");
-    log(response.body);
     final responseBody = jsonDecode(response.body);
     if (responseBody['success'] && responseBody['status'] == 200) {
       List<CategoryModel> hobbyz = [];

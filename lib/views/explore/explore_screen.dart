@@ -64,7 +64,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           ? BlocConsumer<ExploreCubit, ExploreState>(
               listener: (context, state) {
                 if (state is ExploreGetHobbyzPostsSuccess) {
-                  ExploreCubit.get(context).hobbyz = state.res.data;
+                  ExploreCubit.get(context).hobbyzPosts = state.res.data;
                 } else if (state is ExploreGetSubscribedHobbyzSuccess) {
                   ExploreCubit.get(context).hobbyz = state.res.data;
                 } else if (state is ExploreGetHobbyzPostsSuccess) {
@@ -235,17 +235,27 @@ class _RandomPeopleAndHobbyzState extends State<RandomPeopleAndHobbyz> {
                       ).visible(state is ExploreGetMoreRandomUsersLoading);
                     }
                     var user = ExploreCubit.get(context).users[index];
-                    return Container(
-                      margin: EdgeInsets.only(right: 10.w),
-                      child: GridTile(
-                        // footer: GridTileBar(
-                        //   title: Text(user.fullName ?? ''),
-                        //   backgroundColor: Colors.black.withOpacity(0.5),
-                        // ),
-                        child: CachedNetworkImage(
-                          imageUrl: user.profileImage ?? '',
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                    return GestureDetector(
+                      onTap: () {
+                        AppNavigator.goToPage(
+                          context: context,
+                          screen: ThirdPersonProfileScreen(
+                            userId: user.userId.toString(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(right: 10.w),
+                        child: GridTile(
+                          // footer: GridTileBar(
+                          //   title: Text(user.fullName ?? ''),
+                          //   backgroundColor: Colors.black.withOpacity(0.5),
+                          // ),
+                          child: CachedNetworkImage(
+                            imageUrl: user.profileImage ?? '',
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          ),
                         ),
                       ),
                     );
@@ -265,6 +275,8 @@ class _RandomPeopleAndHobbyzState extends State<RandomPeopleAndHobbyz> {
                 ExploreCubit.get(context).posts = state.res.data;
               } else if (state is ExploreGetMoreRandomPostsSuccess) {
                 ExploreCubit.get(context).posts.addAll(state.res.data);
+              } else if (state is ExploreGetRandomPostsError) {
+                print(state.message);
               }
             },
             builder: (context, state) {
@@ -306,7 +318,7 @@ class _HobbyPostsWidgetState extends State<HobbyPostsWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("Hobbies", style: AppTextStyle.subHeading),
+        Text("Posts", style: AppTextStyle.subHeading),
         10.height,
         BlocConsumer<ExploreCubit, ExploreState>(
           listener: (context, state) {
@@ -318,22 +330,21 @@ class _HobbyPostsWidgetState extends State<HobbyPostsWidget> {
           },
           builder: (context, state) {
             return Expanded(
-                flex: 3,
                 child: MasonryGridView.count(
-                  controller: postsScroll,
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                  itemBuilder: (context, index) {
-                    var post = ExploreCubit.get(context).hobbyzPosts[index];
-                    return GridTile(
-                      child: CachedNetworkImage(
-                        imageUrl: post.imageUrls!.first,
-                      ),
-                    );
-                  },
-                  itemCount: ExploreCubit.get(context).hobbyzPosts.length,
-                ));
+              controller: postsScroll,
+              crossAxisCount: 2,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+              itemBuilder: (context, index) {
+                var post = ExploreCubit.get(context).hobbyzPosts[index];
+                return GridTile(
+                  child: CachedNetworkImage(
+                    imageUrl: post.imageUrls!.first,
+                  ),
+                );
+              },
+              itemCount: ExploreCubit.get(context).hobbyzPosts.length,
+            ));
           },
         ),
       ],

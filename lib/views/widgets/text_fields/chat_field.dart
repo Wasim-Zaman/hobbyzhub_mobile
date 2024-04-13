@@ -7,6 +7,7 @@ class ChatField extends StatelessWidget {
   final String? hintText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final void Function(String)? onChanged;
 
   const ChatField({
     Key? key,
@@ -15,6 +16,7 @@ class ChatField extends StatelessWidget {
     this.hintText,
     this.prefixIcon,
     this.suffixIcon,
+    this.onChanged,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,7 @@ class ChatField extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: TextField(
           controller: controller,
+          onChanged: onChanged,
           keyboardType: TextInputType.multiline,
           maxLines: null,
           // maxLength: 1000,

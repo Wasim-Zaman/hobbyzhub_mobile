@@ -9,6 +9,7 @@ import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/chat/private_chat.dart';
 import 'package:hobbyzhub/models/message/message.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
+import 'package:hobbyzhub/views/widgets/loading/loading_widget.dart';
 import 'package:hobbyzhub/views/widgets/loading/paginated_loading.dart';
 import 'package:hobbyzhub/views/widgets/text_fields/chat_field.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -36,10 +37,18 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
   // * Others
   String message = '';
   late dynamic otherUser;
+  String? myUserId;
 
   @override
   void initState() {
     super.initState();
+    UserSecureStorage.fetchUserId().then((id) {
+      setState(() {
+        myUserId = id;
+        // reset the counter for current user
+        resetCounter();
+      });
+    });
     otherUser = widget.chat.participants!
         .firstWhere((element) => element.userId.toString() != widget.userId);
 
@@ -55,17 +64,38 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
     });
   }
 
+  resetCounter() {
+    FirebaseFirestore.instance
+        .collection('private-chats')
+        .doc(widget.chat.room)
+        .set({
+          'unread': {myUserId: 0}
+        }, SetOptions(merge: true))
+        .then((_) => print('Counter reset for user $myUserId'))
+        .catchError((error) => print('Failed to reset counter: $error'));
+  }
+
   sendMessage({
     required String message,
     required String room,
     File? media,
     required Map createMetadataRequest,
   }) {
-    ChatCubit.get(context).sendMessage(
-      message: message,
-      room: room,
-      createMetadataRequest: createMetadataRequest,
-    );
+    if (messageController.text.isNotEmpty) {
+      ChatCubit.get(context).sendMessage(
+        message: message,
+        room: room,
+        createMetadataRequest: createMetadataRequest,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+    messageController.dispose();
+    resetCounter();
   }
 
   @override
@@ -106,7 +136,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: LoadingWidget());
             }
 
             if (snapshot.hasError) {

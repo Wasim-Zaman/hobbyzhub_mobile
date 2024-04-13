@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:hobbyzhub/controllers/get_post/get_post_controller.dart';
@@ -17,22 +16,17 @@ class GetPostCubit extends Cubit<GetPostState> {
 
   getPostList() async {
     emit(GetPostLoading(postsList: postModelList));
-    try {
-      var response = await getPostController.getPosts();
-      log(response.body);
 
-      if (response.statusCode == 200) {
-        var postList = PostModel.fromJson(jsonDecode(response.body));
-        postModelList = [postList];
-        emit(GetPostLoaded(postsList: [postList]));
-      } else {
-        postModelList = [];
-        emit(GetPostFailed());
-      }
-    } on SocketException {
-      emit(GetPostInternetError());
-    } catch (e) {
-      print(e);
+    var response = await getPostController.getPosts();
+    log("****Response****: ${response.body}");
+
+    if (response.statusCode == 200) {
+      var postList = PostModel.fromJson(jsonDecode(response.body));
+      postModelList = [postList];
+
+      emit(GetPostLoaded(postsList: [postList]));
+    } else {
+      postModelList = [];
       emit(GetPostFailed());
     }
   }

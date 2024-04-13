@@ -61,30 +61,20 @@ class ExploreCubit extends Cubit<ExploreState> {
   getRandomPosts() async {
     emit(ExploreGetRandomPostsLoading());
 
-    try {
-      // check internet connection
-      var networkStatus = await isNetworkAvailable();
-      if (!networkStatus) {
-        emit(ExploreGetRandomPostsError(message: "No internet connection"));
-        return;
-      }
-      var res = await ExploreController.getRandomPosts(
-        initialRandomPostsPage,
-        initialRandomPostsSize,
-      );
-      if (res.data.isEmpty) {
-        emit(ExploreGetRamdomPostsEmpty());
-      } else {
-        emit(ExploreGetRandomPostsSuccess(res: res));
-      }
-    } catch (err) {
-      if (err is ErrorException) {
-        emit(ExploreGetRandomPostsError(message: err.toString()));
-      } else {
-        emit(ExploreGetRandomPostsError(
-          message: "An error occurred while getting random posts",
-        ));
-      }
+    // check internet connection
+    var networkStatus = await isNetworkAvailable();
+    if (!networkStatus) {
+      emit(ExploreGetRandomPostsError(message: "No internet connection"));
+      return;
+    }
+    var res = await ExploreController.getRandomPosts(
+      initialRandomPostsPage,
+      initialRandomPostsSize,
+    );
+    if (res.data.isEmpty) {
+      emit(ExploreGetRamdomPostsEmpty());
+    } else {
+      emit(ExploreGetRandomPostsSuccess(res: res));
     }
   }
 
@@ -168,9 +158,8 @@ class ExploreCubit extends Cubit<ExploreState> {
   getHobbyPosts(String hobbyId) async {
     hobbiesPostsPage = 0;
     hobbiesPostsSize = 50;
-    emit(ExploreGetHobbyzPostsLoading());
+    emit(ExploreGetHobbyPostsLoading());
     try {
-// check internet connection
       var networkStatus = await isNetworkAvailable();
       if (!networkStatus) {
         return;
@@ -181,16 +170,16 @@ class ExploreCubit extends Cubit<ExploreState> {
         hobbiesPostsPage,
         hobbiesPostsSize,
       );
-      if (res.data.isEmpty) {
-        emit(ExploreGetHobbyzPostsEmpty());
-      } else {
-        emit(ExploreGetHobbyzPostsSuccess(res: res));
-      }
+      // if (res.data.isEmpty) {
+      //   emit(ExploreGetHobbyzPostsEmpty());
+      // } else {
+      // }
+      emit(ExploreGetHobbyPostsSuccess(res: res));
     } catch (err) {
       if (err is ErrorException) {
-        emit(ExploreGetHobbyzPostsError(message: err.toString()));
+        emit(ExploreGetHobbyPostsError(message: err.toString()));
       } else {
-        emit(ExploreGetHobbyzPostsError(
+        emit(ExploreGetHobbyPostsError(
           message: "An error occurred while getting hobbyz posts",
         ));
       }

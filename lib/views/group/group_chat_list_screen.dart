@@ -60,7 +60,7 @@ class _GroupChatListScreenState extends State<GroupChatListScreen> {
                   .collection('group-chats')
                   .where('type', isEqualTo: 'GROUP')
                   .where('participantIds', arrayContains: userId.toString())
-                  // .orderBy('lastMessage.timestamp', descending: true)
+                  .orderBy('lastMessage.timeStamp', descending: true)
                   .snapshots(),
               builder: (context,
                   AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -69,10 +69,11 @@ class _GroupChatListScreenState extends State<GroupChatListScreen> {
                     child: CircularProgressIndicator(),
                   );
                 }
-
-                groups = snapshot.data!.docs
-                    .map((e) => GroupChat.fromJson(e.data()))
-                    .toList();
+                if (snapshot.hasData) {
+                  groups = snapshot.data!.docs
+                      .map((e) => GroupChat.fromJson(e.data()))
+                      .toList();
+                }
 
                 return Padding(
                   padding: const EdgeInsets.all(16.0),

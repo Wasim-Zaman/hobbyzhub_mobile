@@ -10,6 +10,7 @@ import 'package:hobbyzhub/blocs/chat/private/private_chat_cubit.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/assets/app_assets.dart';
+import 'package:hobbyzhub/global/colors/app_colors.dart';
 import 'package:hobbyzhub/models/chat/private_chat.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_dialogs.dart';
@@ -297,12 +298,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     );
                   }
                   if (snapshot.hasError) {
-                    return const Center(
-                        child: Text(
-                      "Something went wrong !",
-                    ));
-                  }
-                  if (snapshot.hasData) {
+                    return const Center(child: Text("Something went wrong !"));
+                  } else if (snapshot.hasData) {
                     chats = snapshot.data!.docs.map((doc) {
                       dev.log(doc.data().toString());
                       return PrivateChat.fromJson(doc.data());
@@ -376,44 +373,45 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                           ],
                                         ),
                                       ),
-                                      if (chats[index].lastMessage != null)
-                                        Expanded(
-                                            child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              DateTime.parse(chats[index]
-                                                      .timeStamp!
-                                                      .toDate()
-                                                      .toString())
-                                                  .timeAgo,
-                                              style: const TextStyle(
-                                                color: Colors.grey,
+                                      Expanded(
+                                          child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          // Text(
+                                          //   DateTime.parse(chats[index]
+                                          //           .timeStamp!
+                                          //           .toDate()
+                                          //           .toString())
+                                          //       .timeAgo,
+                                          //   style: const TextStyle(
+                                          //     color: Colors.grey,
+                                          //   ),
+                                          // ).visible(
+                                          //     chats[index].lastMessage != null),
+                                          const SizedBox(height: 10),
+                                          // timestamp
+                                          if (chats[index].unread != null)
+                                            Badge(
+                                              label: Text(
+                                                chats[index]
+                                                    .unread!['$userId']
+                                                    .toString(),
                                               ),
+                                              backgroundColor:
+                                                  AppColors.primary,
                                             ).visible(
-                                                chats[index].lastMessage !=
-                                                    null),
-                                            const SizedBox(height: 10),
-                                            // timestamp
-                                            // if (chats[index].unread != null)
-                                            //   Badge(
-                                            //     label: Text(
-                                            //       docs[index]['unread']['$userId']
-                                            //           .toString(),
-                                            //     ),
-                                            //     backgroundColor:
-                                            //         AppColors.primary,
-                                            //   ).visible(
-                                            //     docs[index]['unread']
-                                            //                 ['$userId'] !=
-                                            //             0 ||
-                                            //         docs[index]['unread'] != null,
-                                            //   ),
-                                          ],
-                                        )),
+                                              chats[index]
+                                                      .unread!
+                                                      .containsKey(userId) &&
+                                                  chats[index]
+                                                          .unread![userId] !=
+                                                      0,
+                                            ),
+                                        ],
+                                      )),
                                     ],
                                   ),
                                 ),

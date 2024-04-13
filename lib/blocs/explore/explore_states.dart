@@ -17,7 +17,7 @@ final class ExploreGetSubscribedHobbyzLoading extends ExploreState {}
 
 final class ExploreGetMoreSubscribedHobbyzLoading extends ExploreState {}
 
-final class ExploreGetHobbyzPostsLoading extends ExploreState {}
+final class ExploreGetHobbyPostsLoading extends ExploreState {}
 
 final class ExploreGetMoreHobbyzPostsLoading extends ExploreState {}
 // Success states
@@ -52,9 +52,9 @@ final class ExploreGetMoreSubscribedHobbyzSuccess extends ExploreState {
   ExploreGetMoreSubscribedHobbyzSuccess({required this.res});
 }
 
-final class ExploreGetHobbyzPostsSuccess extends ExploreState {
+final class ExploreGetHobbyPostsSuccess extends ExploreState {
   final ApiResponse res;
-  ExploreGetHobbyzPostsSuccess({required this.res});
+  ExploreGetHobbyPostsSuccess({required this.res});
 }
 
 final class ExploreGetMoreHobbyzPostsSuccess extends ExploreState {
@@ -93,9 +93,9 @@ final class ExploreGetMoreSubscribedHobbyzError extends ExploreState {
   ExploreGetMoreSubscribedHobbyzError({required this.message});
 }
 
-final class ExploreGetHobbyzPostsError extends ExploreState {
+final class ExploreGetHobbyPostsError extends ExploreState {
   final String message;
-  ExploreGetHobbyzPostsError({required this.message});
+  ExploreGetHobbyPostsError({required this.message});
 }
 
 // Empty states

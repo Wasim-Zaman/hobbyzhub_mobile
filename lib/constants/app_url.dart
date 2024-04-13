@@ -123,5 +123,5 @@ abstract class ExploreUrl {
   static final getRandomUsers = "$baseUrl/api/v1/accounts/users/shuffled";
   static final getRandomPosts = "$baseUrl/api/v1/posts/shuffled";
   static final getHobbyz = "$baseUrl/api/v1/categories/hobby/subscribers";
-  static final getPostsByHobby = "$baseUrl/api/v1/posts/explore-by-hobby";
+  static final getPostsByHobby = "$baseUrl/api/v1/posts/post";
 }

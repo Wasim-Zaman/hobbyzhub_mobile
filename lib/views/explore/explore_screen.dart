@@ -9,6 +9,7 @@ import 'package:hobbyzhub/blocs/explore/explore_cubit.dart';
 import 'package:hobbyzhub/blocs/user/user_bloc.dart';
 import 'package:hobbyzhub/constants/app_text_style.dart';
 import 'package:hobbyzhub/global/colors/app_colors.dart';
+import 'package:hobbyzhub/models/category/category_model.dart';
 import 'package:hobbyzhub/models/user/user.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
@@ -63,13 +64,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
       body: screen == 0
           ? BlocConsumer<ExploreCubit, ExploreState>(
               listener: (context, state) {
-                if (state is ExploreGetHobbyzPostsSuccess) {
-                  ExploreCubit.get(context).hobbyzPosts = state.res.data;
-                } else if (state is ExploreGetSubscribedHobbyzSuccess) {
-                  ExploreCubit.get(context).hobbyz = state.res.data;
-                } else if (state is ExploreGetHobbyzPostsSuccess) {
+                print(state);
+                if (state is ExploreGetHobbyPostsSuccess) {
                   ExploreCubit.get(context).hobbyzPosts = state.res.data;
                   screen = 1;
+                } else if (state is ExploreGetSubscribedHobbyzSuccess) {
+                  ExploreCubit.get(context).hobbyz = state.res.data;
+                } else if (state is ExploreGetHobbyPostsError) {
+                  print(state.message);
                 }
               },
               builder: (context, state) {
@@ -78,11 +80,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     SizedBox(
                       height: 40,
                       child: HobbyItems(hobbies: [
-                        'All',
-                        ...ExploreCubit.get(context)
-                            .hobbyz
-                            .map((e) => e.categoryName ?? '')
-                            .toList()
+                        CategoryModel(categoryName: 'All', categoryId: "1"),
+                        ...ExploreCubit.get(context).hobbyz
                       ]),
                     ),
                     16.height,
@@ -103,7 +102,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 }
 
 class HobbyItems extends StatefulWidget {
-  final List<String> hobbies;
+  final List<CategoryModel> hobbies;
 
   const HobbyItems({super.key, required this.hobbies});
 
@@ -121,9 +120,6 @@ class _HobbyItemsState extends State<HobbyItems> {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        // setState(() {
-        //   selectedIndex = (selectedIndex + 1) % widget.hobbies.length;
-        // });
         ExploreCubit.get(context).getMoreSubscribedHobbyz();
       }
     });
@@ -144,7 +140,9 @@ class _HobbyItemsState extends State<HobbyItems> {
               setState(() {
                 selectedIndex = index;
               });
-              ExploreCubit.get(context).getHobbyPosts(widget.hobbies[index]);
+              ExploreCubit.get(context).getHobbyPosts(
+                widget.hobbies[index].categoryId.toString(),
+              );
             },
             style: OutlinedButton.styleFrom(
               side: BorderSide(
@@ -159,7 +157,7 @@ class _HobbyItemsState extends State<HobbyItems> {
                   : AppColors.transparent,
             ),
             child: Text(
-              widget.hobbies[index],
+              widget.hobbies[index].categoryName ?? "",
               style: TextStyle(
                 color: selectedIndex == index
                     ? AppColors.white
@@ -316,38 +314,42 @@ class _HobbyPostsWidgetState extends State<HobbyPostsWidget> {
   var postsScroll = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text("Posts", style: AppTextStyle.subHeading),
-        10.height,
-        BlocConsumer<ExploreCubit, ExploreState>(
-          listener: (context, state) {
-            if (state is ExploreGetHobbyzPostsSuccess) {
-              ExploreCubit.get(context).hobbyzPosts = state.res.data;
-            } else if (state is ExploreGetMoreHobbyzPostsSuccess) {
-              ExploreCubit.get(context).hobbyzPosts.addAll(state.res.data);
-            }
-          },
-          builder: (context, state) {
-            return Expanded(
-                child: MasonryGridView.count(
-              controller: postsScroll,
-              crossAxisCount: 2,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-              itemBuilder: (context, index) {
-                var post = ExploreCubit.get(context).hobbyzPosts[index];
-                return GridTile(
-                  child: CachedNetworkImage(
-                    imageUrl: post.imageUrls!.first,
-                  ),
-                );
-              },
-              itemCount: ExploreCubit.get(context).hobbyzPosts.length,
-            ));
-          },
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Posts", style: AppTextStyle.subHeading),
+          10.height,
+          BlocConsumer<ExploreCubit, ExploreState>(
+            listener: (context, state) {
+              if (state is ExploreGetHobbyPostsSuccess) {
+                ExploreCubit.get(context).hobbyzPosts = state.res.data;
+              } else if (state is ExploreGetMoreHobbyzPostsSuccess) {
+                ExploreCubit.get(context).hobbyzPosts.addAll(state.res.data);
+              }
+            },
+            builder: (context, state) {
+              return Expanded(
+                  child: MasonryGridView.count(
+                controller: postsScroll,
+                crossAxisCount: 2,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                itemBuilder: (context, index) {
+                  var post = ExploreCubit.get(context).hobbyzPosts[index];
+                  return GridTile(
+                    child: CachedNetworkImage(
+                      imageUrl: post.imageUrls!.first,
+                    ),
+                  );
+                },
+                itemCount: ExploreCubit.get(context).hobbyzPosts.length,
+              ));
+            },
+          ),
+        ],
+      ),
     );
   }
 }

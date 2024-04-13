@@ -20,7 +20,6 @@ class ExploreController {
       'Authorization': 'Bearer $token',
     };
     final response = await ApiManager.getRequest(url, headers: headers);
-    log(response.body);
     final responseBody = jsonDecode(response.body);
     if (responseBody['success']) {
       List<Post> posts = [];
@@ -84,13 +83,15 @@ class ExploreController {
   ) async {
     final token = await UserSecureStorage.fetchToken();
     final url =
-        "${ExploreUrl.getPostsByHobby}?hobbyId=$hobbyId&page=$page&size=$size";
+        "${ExploreUrl.getPostsByHobby}?categoryId=$hobbyId&page=$page&size=$size";
     final headers = <String, String>{
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     };
     final response = await ApiManager.getRequest(url, headers: headers);
     final responseBody = jsonDecode(response.body);
+    print("********** status ${response.statusCode}");
+    log(response.body);
     if (responseBody['success'] && responseBody['status'] == 200) {
       List<Post> posts = [];
       responseBody['data']['content'].forEach((post) {

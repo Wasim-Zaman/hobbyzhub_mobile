@@ -61,20 +61,29 @@ class ExploreCubit extends Cubit<ExploreState> {
   getRandomPosts() async {
     emit(ExploreGetRandomPostsLoading());
 
-    // check internet connection
-    var networkStatus = await isNetworkAvailable();
-    if (!networkStatus) {
-      emit(ExploreGetRandomPostsError(message: "No internet connection"));
-      return;
-    }
-    var res = await ExploreController.getRandomPosts(
-      initialRandomPostsPage,
-      initialRandomPostsSize,
-    );
-    if (res.data.isEmpty) {
-      emit(ExploreGetRamdomPostsEmpty());
-    } else {
-      emit(ExploreGetRandomPostsSuccess(res: res));
+    try {
+      var networkStatus = await isNetworkAvailable();
+      if (!networkStatus) {
+        emit(ExploreGetRandomPostsError(message: "No internet connection"));
+        return;
+      }
+      var res = await ExploreController.getRandomPosts(
+        initialRandomPostsPage,
+        initialRandomPostsSize,
+      );
+      if (res.data.isEmpty) {
+        emit(ExploreGetRamdomPostsEmpty());
+      } else {
+        emit(ExploreGetRandomPostsSuccess(res: res));
+      }
+    } catch (err) {
+      if (err is ErrorException) {
+        emit(ExploreGetRandomPostsError(message: err.toString()));
+      } else {
+        emit(ExploreGetRandomPostsError(
+          message: "An error occurred while getting random posts",
+        ));
+      }
     }
   }
 

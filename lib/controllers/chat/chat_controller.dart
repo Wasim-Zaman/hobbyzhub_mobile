@@ -30,7 +30,7 @@ abstract class ChatController {
     };
 
     final response = await ApiManager.postRequest(body, url, headers: headers);
-    log(response.statusCode.toString());
+    log("Create private chat status: ${response.statusCode}");
     log(response.body);
     final responseBody = jsonDecode(response.body);
     if (responseBody['success'] == true) {
@@ -180,6 +180,8 @@ abstract class ChatController {
     final token = await UserSecureStorage.fetchToken();
 
     final body = {"room": room, "from": from, "size": size};
+    print(body);
+    print(token);
 
     final headers = <String, String>{
       'Content-Type': 'application/json',

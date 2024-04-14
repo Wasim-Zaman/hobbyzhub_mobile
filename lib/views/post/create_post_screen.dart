@@ -217,11 +217,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       filled: true,
                     ),
                     onEditingComplete: () {
-                      hashTags.add(hashTagsController.text);
-                      // add the hash tag to the list of hash tags
-                      hashTagsBloc.add(HashTagsEventHandler(hashTags));
-                      // clear the hash tag text field
-                      hashTagsController.clear();
+                      if (hashTagsController.text.isNotEmpty) {
+                        hashTags.add(hashTagsController.text);
+                        // add the hash tag to the list of hash tags
+                        hashTagsBloc.add(HashTagsEventHandler(hashTags));
+                        // clear the hash tag text field
+                        hashTagsController.clear();
+                      } else {
+                        // hide keyboard
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      }
                     },
                   ),
                   20.height,

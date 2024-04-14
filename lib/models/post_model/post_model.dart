@@ -39,24 +39,24 @@ class PostModel {
 class HashTag {
   String hashTagId;
   String tagName;
-  List<Datum> posts;
+  List<Datum>? posts;
 
   HashTag({
     required this.hashTagId,
     required this.tagName,
-    required this.posts,
+    this.posts,
   });
 
   factory HashTag.fromJson(Map<String, dynamic> json) => HashTag(
         hashTagId: json["hashTagId"],
         tagName: json["tagName"],
-        posts: List<Datum>.from(json["posts"].map((x) => Datum.fromJson(x))),
+        // posts: List<Datum>.from(json["posts"].map((x) => Datum.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "hashTagId": hashTagId,
         "tagName": tagName,
-        "posts": List<dynamic>.from(posts.map((x) => x.toJson())),
+        // "posts": List<dynamic>.from(posts.map((x) => x.toJson())),
       };
 }
 

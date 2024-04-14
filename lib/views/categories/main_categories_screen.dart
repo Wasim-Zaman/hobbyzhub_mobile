@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +23,7 @@ class MainCategoriesScreen extends StatefulWidget {
   const MainCategoriesScreen({Key? key, required this.model}) : super(key: key);
 
   @override
-  _MainCategoriesScreenState createState() => _MainCategoriesScreenState();
+  State<MainCategoriesScreen> createState() => _MainCategoriesScreenState();
 }
 
 class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
@@ -39,10 +37,21 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
   bool _isSearching = false;
   FocusNode searchNode = FocusNode();
 
+  // Pagination
+  var categoryScrollController = ScrollController();
+  int page = 0;
+  int paginatedBy = 10;
+
   @override
   void initState() {
     initBlocs();
     getInitialCategories();
+    categoryScrollController.addListener(() {
+      if (categoryScrollController.position.pixels ==
+          categoryScrollController.position.maxScrollExtent) {
+        getMoreCategories();
+      }
+    });
     super.initState();
   }
 
@@ -62,7 +71,13 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
     categoriesBloc = categoriesBloc..add(CategoriesFetchInitialEvent());
   }
 
-  getMoreCategories() {}
+  getMoreCategories() {
+    categoriesBloc = categoriesBloc
+      ..add(CategoriesFetchMoreEvent(
+        page: page,
+        paginatedBy: paginatedBy,
+      ));
+  }
 
   searchCategoriesBySlug(slug) {
     categoriesBloc = categoriesBloc..add(CategoriesSeachEvent(slug: slug));
@@ -86,7 +101,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
     return Visibility(
       visible: _isSearching,
       child: AnimatedCrossFade(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         firstChild: IconButton(
           icon: Image.asset(ImageAssets.searchImage, height: 30, width: 30),
           onPressed: () {
@@ -101,7 +116,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
             focusNode: searchNode,
             decoration: InputDecoration(
               hintText: 'Search...',
-              contentPadding: EdgeInsets.symmetric(horizontal: 20),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20),
               prefixIcon: Image.asset(ImageAssets.searchImage),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -151,7 +166,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
         actions: [
           IconButton(
             icon: _isSearching
-                ? Icon(Icons.cancel_rounded, size: 30)
+                ? const Icon(Icons.cancel_rounded, size: 30)
                 : Image.asset(
                     ImageAssets.searchImage,
                     height: 30.h,
@@ -180,7 +195,7 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
         },
         builder: (context, state) {
           if (state is CategoriesLoadingState) {
-            return Center(child: LoadingWidget());
+            return const Center(child: LoadingWidget());
           } else if (state is CategoriesNotFoundState) {
             return Padding(
               padding: const EdgeInsets.all(20.0),
@@ -285,6 +300,8 @@ class _MainCategoriesScreenState extends State<MainCategoriesScreen> {
                 Expanded(
                   child: GridView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 12.w),
+                    physics: const BouncingScrollPhysics(),
+                    controller: categoryScrollController,
                     itemCount: categories.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -355,7 +372,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.r),
           ),
-          shadows: [
+          shadows: const [
             BoxShadow(
               color: Color(0x26000000),
               blurRadius: 7,
@@ -371,7 +388,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
             CachedNetworkImage(
               imageUrl: widget.category.iconLink.toString(),
               height: 40.h,
-              placeholder: (context, url) => LoadingWidget(),
+              placeholder: (context, url) => const LoadingWidget(),
               errorWidget: (context, url, error) => Icon(
                 Icons.image_outlined,
                 size: 40.sp,

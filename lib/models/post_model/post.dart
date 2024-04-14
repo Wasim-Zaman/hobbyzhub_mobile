@@ -208,11 +208,11 @@ class HashTag {
   HashTag.fromJson(Map<String, dynamic> json) {
     hashTagId = json['hashTagId'];
     tagName = json['tagName'];
-    if (json['posts'] != null) {
-      posts = (json['posts'] as List)
-          .map((v) => Post.fromJson(v as Map<String, dynamic>))
-          .toSet();
-    }
+    // if (json['posts'] != null) {
+    //   posts = (json['posts'] as List)
+    //       .map((v) => Post.fromJson(v as Map<String, dynamic>))
+    //       .toSet();
+    // }
   }
 
   Map<String, dynamic> toJson() {

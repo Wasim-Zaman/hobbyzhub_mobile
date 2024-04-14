@@ -64,7 +64,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
       body: screen == 0
           ? BlocConsumer<ExploreCubit, ExploreState>(
               listener: (context, state) {
-                print(state);
                 if (state is ExploreGetHobbyPostsSuccess) {
                   ExploreCubit.get(context).hobbyzPosts = state.res.data;
                   screen = 1;
@@ -183,9 +182,17 @@ class _RandomPeopleAndHobbyzState extends State<RandomPeopleAndHobbyz> {
   final ScrollController hobbiesScroll = ScrollController();
   final ScrollController usersScroll = ScrollController();
 
+  String? userId;
+
   @override
   void initState() {
     super.initState();
+
+    UserSecureStorage.fetchUserId().then((value) {
+      setState(() {
+        userId = value;
+      });
+    });
 
     ExploreCubit.get(context).getRandomPosts();
     ExploreCubit.get(context).getRandomUsers();
@@ -205,101 +212,115 @@ class _RandomPeopleAndHobbyzState extends State<RandomPeopleAndHobbyz> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Users Section
-          Text("People", style: AppTextStyle.subHeading),
-          10.height,
-          BlocConsumer<ExploreCubit, ExploreState>(
-            listener: (context, state) {
-              if (state is ExploreGetRandomUsersSuccess) {
-                ExploreCubit.get(context).users = state.res.data;
-              } else if (state is ExploreGetMoreRandomUsersSuccess) {
-                ExploreCubit.get(context).users.addAll(state.res.data);
-              }
-            },
-            builder: (context, state) {
-              return Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  controller: usersScroll,
-                  itemBuilder: (context, index) {
-                    if (index == ExploreCubit.get(context).users.length) {
-                      return Center(
-                        child: LoadingWidget(),
-                      ).visible(state is ExploreGetMoreRandomUsersLoading);
+    return userId == null
+        ? Center(child: LoadingWidget())
+        : Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Users Section
+                Text("People", style: AppTextStyle.subHeading),
+                10.height,
+                BlocConsumer<ExploreCubit, ExploreState>(
+                  listener: (context, state) {
+                    if (state is ExploreGetRandomUsersSuccess) {
+                      ExploreCubit.get(context).users = state.res.data;
+                      ExploreCubit.get(context).users =
+                          ExploreCubit.get(context)
+                              .users
+                              .where((element) =>
+                                  element.userId.toString() != userId)
+                              .toList();
+                    } else if (state is ExploreGetMoreRandomUsersSuccess) {
+                      ExploreCubit.get(context).users.addAll(state.res.data);
                     }
-                    var user = ExploreCubit.get(context).users[index];
-                    return GestureDetector(
-                      onTap: () {
-                        AppNavigator.goToPage(
-                          context: context,
-                          screen: ThirdPersonProfileScreen(
-                            userId: user.userId.toString(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(right: 10.w),
-                        child: GridTile(
-                          // footer: GridTileBar(
-                          //   title: Text(user.fullName ?? ''),
-                          //   backgroundColor: Colors.black.withOpacity(0.5),
-                          // ),
-                          child: CachedNetworkImage(
-                            imageUrl: user.profileImage ?? '',
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                          ),
-                        ),
+                  },
+                  builder: (context, state) {
+                    return Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        controller: usersScroll,
+                        itemBuilder: (context, index) {
+                          if (index == ExploreCubit.get(context).users.length) {
+                            return Center(
+                              child: LoadingWidget(),
+                            ).visible(
+                                state is ExploreGetMoreRandomUsersLoading);
+                          }
+                          var user = ExploreCubit.get(context).users[index];
+                          return GestureDetector(
+                            onTap: () {
+                              AppNavigator.goToPage(
+                                context: context,
+                                screen: ThirdPersonProfileScreen(
+                                  userId: user.userId.toString(),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(right: 10.w),
+                              child: UserWidget(
+                                user: user,
+                              ),
+                            ),
+                          );
+                        },
+                        itemCount: ExploreCubit.get(context).users.length + 1,
                       ),
                     );
                   },
-                  itemCount: ExploreCubit.get(context).users.length + 1,
                 ),
-              );
-            },
-          ),
-          20.height,
-          // Posts Section
-          Text("Hobbies", style: AppTextStyle.subHeading),
-          10.height,
-          BlocConsumer<ExploreCubit, ExploreState>(
-            listener: (context, state) {
-              if (state is ExploreGetRandomPostsSuccess) {
-                ExploreCubit.get(context).posts = state.res.data;
-              } else if (state is ExploreGetMoreRandomPostsSuccess) {
-                ExploreCubit.get(context).posts.addAll(state.res.data);
-              } else if (state is ExploreGetRandomPostsError) {
-                print(state.message);
-              }
-            },
-            builder: (context, state) {
-              return Expanded(
-                  flex: 3,
-                  child: MasonryGridView.count(
-                    controller: hobbiesScroll,
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 4,
-                    crossAxisSpacing: 4,
-                    itemBuilder: (context, index) {
-                      var post = ExploreCubit.get(context).posts[index];
-                      return GridTile(
-                        child: CachedNetworkImage(
-                          imageUrl: post.imageUrls!.first,
-                        ),
-                      );
-                    },
-                    itemCount: ExploreCubit.get(context).posts.length,
-                  ));
-            },
-          ),
-        ],
-      ),
-    );
+                20.height,
+                // Posts Section
+                Text("Hobbies", style: AppTextStyle.subHeading),
+                10.height,
+                BlocConsumer<ExploreCubit, ExploreState>(
+                  listener: (context, state) {
+                    if (state is ExploreGetRandomPostsSuccess) {
+                      ExploreCubit.get(context).posts = state.res.data;
+                    } else if (state is ExploreGetMoreRandomPostsSuccess) {
+                      ExploreCubit.get(context).posts.addAll(state.res.data);
+                    } else if (state is ExploreGetRandomPostsError) {
+                      print(state.message);
+                    }
+                  },
+                  builder: (context, state) {
+                    return Expanded(
+                        flex: 3,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: MasonryGridView.count(
+                                controller: hobbiesScroll,
+                                shrinkWrap: true,
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 4,
+                                crossAxisSpacing: 4,
+                                itemBuilder: (context, index) {
+                                  var post =
+                                      ExploreCubit.get(context).posts[index];
+                                  return GridTile(
+                                    child: CachedNetworkImage(
+                                      imageUrl: post.imageUrls!.first,
+                                    ),
+                                  );
+                                },
+                                itemCount:
+                                    ExploreCubit.get(context).posts.length,
+                              ),
+                            ),
+                            20.height,
+                            LoadingWidget().visible(
+                                state is ExploreGetMoreRandomPostsLoading),
+                            10.height,
+                          ],
+                        ));
+                  },
+                ),
+              ],
+            ),
+          );
   }
 }
 
@@ -515,6 +536,57 @@ class _UsersListScreenState extends State<UsersListScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class UserWidget extends StatelessWidget {
+  final User user;
+
+  const UserWidget({Key? key, required this.user}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // Image Container
+        Container(
+          width: 120,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            image: DecorationImage(
+              image: CachedNetworkImageProvider(user.profileImage.toString()),
+              fit: BoxFit
+                  .cover, // Cover the entire container while maintaining aspect ratio
+            ),
+          ),
+        ),
+        // Dark Transparent Background with Name
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color:
+                  Colors.black.withOpacity(0.6), // Dark transparent background
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+              ),
+            ),
+            child: Text(
+              user.fullName ?? '',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

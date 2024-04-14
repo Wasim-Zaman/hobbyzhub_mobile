@@ -248,8 +248,8 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
               stream: FirebaseFirestore.instance
                   .collection('messages')
                   .where('room', isEqualTo: widget.chat.room.toString())
-                  // .orderBy('timestamp', descending: true)
-                  .limit(7)
+                  .orderBy('timeStamp', descending: true)
+                  .limit(10)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -259,9 +259,7 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
 
                 if (snapshot.hasError) {
                   return Text(snapshot.error.toString());
-                }
-
-                if (snapshot.hasData) {
+                } else if (snapshot.hasData) {
                   messages = snapshot.data!.docs
                       .map((doc) =>
                           Message.fromJson(doc.data() as Map<String, dynamic>))

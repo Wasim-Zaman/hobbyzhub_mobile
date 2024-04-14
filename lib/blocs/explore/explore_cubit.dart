@@ -179,12 +179,13 @@ class ExploreCubit extends Cubit<ExploreState> {
         hobbiesPostsPage,
         hobbiesPostsSize,
       );
-      // if (res.data.isEmpty) {
-      //   emit(ExploreGetHobbyzPostsEmpty());
-      // } else {
-      // }
-      emit(ExploreGetHobbyPostsSuccess(res: res));
+      if (res.data.isEmpty) {
+        emit(ExploreGetHobbyzPostsEmpty());
+      } else {
+        emit(ExploreGetHobbyPostsSuccess(res: res));
+      }
     } catch (err) {
+      print(err);
       if (err is ErrorException) {
         emit(ExploreGetHobbyPostsError(message: err.toString()));
       } else {
@@ -197,16 +198,25 @@ class ExploreCubit extends Cubit<ExploreState> {
 
   getMoreHobbyPosts(String hobbyId) async {
     hobbiesPostsPage++;
-    // check internet connection
-    var networkStatus = await isNetworkAvailable();
-    if (!networkStatus) {
-      return;
+    try {
+      var networkStatus = await isNetworkAvailable();
+      if (!networkStatus) {
+        return;
+      }
+      var res = await ExploreController.getHobbyPosts(
+        hobbyId,
+        hobbiesPostsPage,
+        hobbiesPostsSize,
+      );
+      emit(ExploreGetMoreHobbyzPostsSuccess(res: res));
+    } catch (err) {
+      if (err is ErrorException) {
+        emit(ExploreGetHobbyPostsError(message: err.toString()));
+      } else {
+        emit(ExploreGetHobbyPostsError(
+          message: "An error occurred while getting hobbyz posts",
+        ));
+      }
     }
-    var res = await ExploreController.getHobbyPosts(
-      hobbyId,
-      hobbiesPostsPage,
-      hobbiesPostsSize,
-    );
-    emit(ExploreGetMoreHobbyzPostsSuccess(res: res));
   }
 }

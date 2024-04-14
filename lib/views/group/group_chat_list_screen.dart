@@ -59,7 +59,7 @@ class _GroupChatListScreenState extends State<GroupChatListScreen> {
               stream: FirebaseFirestore.instance
                   .collection('group-chats')
                   .where('participantIds', arrayContains: userId.toString())
-                  .orderBy('lastMessage.timeStamp', descending: true)
+                  // .orderBy('lastMessage.timeStamp', descending: true)
                   .snapshots(),
               builder: (context,
                   AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {

@@ -432,9 +432,7 @@ class _CommentScreenState extends State<CommentScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: 30.h,
-                          ),
+                          SizedBox(height: 30.h),
                           Row(
                             children: [
                               state.specificPostsList.first.data.profileImage ==

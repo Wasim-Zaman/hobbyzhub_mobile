@@ -225,26 +225,3 @@ class HashTag {
     return data;
   }
 }
-
-List<Post> dummyPosts = List.generate(100, (index) {
-  return Post(
-    postId: 'post_$index',
-    userId: 'user_$index',
-    caption: 'This is a dummy post number $index',
-    imageUrls: ['image_url_$index'],
-    postTime: DateTime.now().toString(),
-    likes: {},
-    comments: {},
-    status: true,
-    hashTags: [
-      HashTag(
-        hashTagId: 'tag_$index',
-        tagName: 'tag$index',
-      )
-    ],
-    username: 'user_$index',
-    profileImage: 'profile_image_$index',
-    likeCount: index,
-    deActivateComments: false,
-  );
-});

@@ -12,7 +12,7 @@ import 'package:hobbyzhub/utils/secure_storage.dart';
 
 class ExploreController {
   static Future<ApiResponse> getRandomPosts(int page, int size) async {
-    final url = "${ExploreUrl.getRandomPosts}";
+    final url = "${ExploreUrl.getRandomPosts}?page=$page&size=$size";
     final token = await UserSecureStorage.fetchToken();
 
     final headers = <String, String>{
@@ -83,7 +83,8 @@ class ExploreController {
     int size,
   ) async {
     final token = await UserSecureStorage.fetchToken();
-    final url = "${ExploreUrl.getPostsByHobby}?categoryId=$hobbyId";
+    final url =
+        "${ExploreUrl.getPostsByHobby}?categoryId=$hobbyId&page=$page&size=$size";
     final headers = <String, String>{
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -91,12 +92,12 @@ class ExploreController {
     final response = await ApiManager.getRequest(url, headers: headers);
     log(response.body);
     final responseBody = jsonDecode(response.body);
-    if (responseBody['success'] && responseBody['status'] == 200) {
+    if (responseBody['success']) {
       List<Post> posts = [];
-      responseBody['data']['posts'].forEach((post) {
+      responseBody['data']['content'][0]['posts'].forEach((post) {
         posts.add(Post.fromJson(post));
       });
-      return ApiResponse.fromJson(responseBody, (p0) => posts);
+      return ApiResponse.fromJson(responseBody, (data) => posts);
     } else {
       throw ErrorException(responseBody['message']);
     }

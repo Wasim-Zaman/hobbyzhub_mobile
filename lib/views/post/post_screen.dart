@@ -180,13 +180,14 @@ class _PostScreenState extends State<PostScreen> {
                                                               .data
                                                               .profileImage ??
                                                           ''),
-                                                      fit: BoxFit.fill,
+                                                      fit: BoxFit.cover,
                                                     ),
                                                     shape:
                                                         RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              10),
+                                                        10,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -367,7 +368,7 @@ class _PostScreenState extends State<PostScreen> {
                                                                 DecorationImage(
                                                               image: NetworkImage(
                                                                   "${state.storiesList[index].storyImages[0]}"),
-                                                              fit: BoxFit.fill,
+                                                              fit: BoxFit.cover,
                                                             ),
                                                             shape:
                                                                 RoundedRectangleBorder(

@@ -53,15 +53,15 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
         .firstWhere((element) => element.userId.toString() != widget.userId);
 
     // use scroll controller to scroll to the last message
-    scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
-        ChatCubit.get(context).getMessages(
-          room: widget.chat.room.toString(),
-          from: messages.length,
-        );
-      }
-    });
+    // scrollController.addListener(() {
+    //   if (scrollController.position.pixels ==
+    //       scrollController.position.maxScrollExtent) {
+    //     ChatCubit.get(context).getMessages(
+    //       room: widget.chat.room.toString(),
+    //       from: messages.length,
+    //     );
+    //   }
+    // });
   }
 
   resetCounter() {
@@ -131,7 +131,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
               .collection('messages')
               .where('room', isEqualTo: widget.chat.room.toString())
               .orderBy('timeStamp', descending: true)
-              .limit(10)
+              // .limit(10)
               .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -202,7 +202,7 @@ class _PrivateMessagingScreenState extends State<PrivateMessagingScreen> {
                               messageController.clear();
                             } else if (state is ChatSendMessageSuccess) {
                               messageController.clear();
-                            } else {
+                            } else if (state is ChatSendMessageError) {
                               messageController.text = message;
                             }
                           },

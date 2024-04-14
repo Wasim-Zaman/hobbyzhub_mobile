@@ -52,16 +52,16 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
       });
     });
 
-    // use scroll controller to scroll to the last message
-    chatScrollController.addListener(() {
-      if (chatScrollController.position.pixels ==
-          chatScrollController.position.maxScrollExtent) {
-        ChatCubit.get(context).getMessages(
-          room: widget.chat.room.toString(),
-          from: messages.length,
-        );
-      }
-    });
+    // // use scroll controller to scroll to the last message
+    // chatScrollController.addListener(() {
+    //   if (chatScrollController.position.pixels ==
+    //       chatScrollController.position.maxScrollExtent) {
+    //     ChatCubit.get(context).getMessages(
+    //       room: widget.chat.room.toString(),
+    //       from: messages.length,
+    //     );
+    //   }
+    // });
   }
 
   resetCounter() {
@@ -249,7 +249,6 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
                   .collection('messages')
                   .where('room', isEqualTo: widget.chat.room.toString())
                   .orderBy('timeStamp', descending: true)
-                  .limit(10)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -311,7 +310,7 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> {
                           messageController.clear();
                         } else if (state is ChatSendMessageSuccess) {
                           messageController.clear();
-                        } else {
+                        } else if (state is ChatSendMessageError) {
                           messageController.text = message;
                         }
                       },

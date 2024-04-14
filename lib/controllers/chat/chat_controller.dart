@@ -175,13 +175,17 @@ abstract class ChatController {
   }
 
   static Future<ApiResponse> getServerMessages(String room,
-      {required int from, int size = 100}) async {
+      {required int from, int size = 20}) async {
     final url = ChatUrl.getMessages;
     final token = await UserSecureStorage.fetchToken();
 
-    final body = {"room": room, "from": from, "size": size};
+    final body = {
+      "room": room,
+      "from": from.toString(),
+      "size": size.toString(),
+    };
+
     print(body);
-    print(token);
 
     final headers = <String, String>{
       'Content-Type': 'application/json',

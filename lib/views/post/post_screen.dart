@@ -20,7 +20,6 @@ import 'package:hobbyzhub/utils/app_dialogs.dart';
 import 'package:hobbyzhub/utils/app_navigator.dart';
 import 'package:hobbyzhub/utils/secure_storage.dart';
 import 'package:hobbyzhub/views/explore/explore_screen.dart';
-import 'package:hobbyzhub/views/notification/notification_screen.dart';
 import 'package:hobbyzhub/views/post/comments/comment_screen.dart';
 import 'package:hobbyzhub/views/post/story/story_screen.dart';
 import 'package:hobbyzhub/views/profile/third_person_profile_screen.dart';
@@ -124,16 +123,16 @@ class _PostScreenState extends State<PostScreen> {
               },
               icon: Image.asset(ImageAssets.searchImage, height: 20, width: 20),
             ),
-            IconButton(
-              onPressed: () {
-                AppNavigator.goToPage(
-                  context: context,
-                  screen: const NotificationScreen(),
-                );
-              },
-              icon:
-                  Image.asset(ImageAssets.notification, height: 20, width: 20),
-            ),
+            // IconButton(
+            //   onPressed: () {
+            //     AppNavigator.goToPage(
+            //       context: context,
+            //       screen: const NotificationScreen(),
+            //     );
+            //   },
+            //   icon:
+            //       Image.asset(ImageAssets.notification, height: 20, width: 20),
+            // ),
           ],
         ),
         body: SingleChildScrollView(
